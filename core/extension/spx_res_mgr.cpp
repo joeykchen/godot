@@ -32,16 +32,17 @@
 #include "core/io/file_access.h"
 #include "core/io/image.h"
 #include "core/io/image_loader.h"
-#include "editor/import/resource_importer_wav.h"
 #include "modules/minimp3/audio_stream_mp3.h"
-#include "modules/minimp3/resource_importer_mp3.h"
 #include "scene/2d/audio_stream_player_2d.h"
 #include "scene/main/window.h"
 #include "scene/resources/atlas_texture.h"
 #include "scene/resources/audio_stream_wav.h"
 #include "scene/resources/image_texture.h"
 #include "scene/resources/sprite_frames.h"
-#include "spx.h"
+#ifdef TOOLS_ENABLED
+#include "editor/import/resource_importer_wav.h"
+#include "modules/minimp3/resource_importer_mp3.h"
+#endif
 
 void SpxResMgr::on_awake() {
 	SpxBaseMgr::on_awake();
@@ -49,7 +50,13 @@ void SpxResMgr::on_awake() {
 	anim_frames.instantiate();
 }
 
+bool SpxResMgr::is_dynamic_anim_mode() const {
+	return is_dynamic_anim;
+}
+
 Ref<AudioStreamWAV> SpxResMgr::_load_wav(const String &path) {
+	Ref<AudioStreamWAV> sample;
+#ifdef TOOLS_ENABLED
 	Ref<ResourceImporterWAV> importer = memnew(ResourceImporterWAV);
 	List<ResourceImporter::ImportOption> options_list;
 	importer->get_import_options("", &options_list);
@@ -57,16 +64,17 @@ Ref<AudioStreamWAV> SpxResMgr::_load_wav(const String &path) {
 	for (const ResourceImporter::ImportOption &E : options_list) {
 		options_map[E.option.name] = E.default_value;
 	}
-	Ref<AudioStreamWAV> sample;
 	importer->import_asset(sample, path, options_map, nullptr);
+#endif
 	return sample;
-}
-bool SpxResMgr::is_dynamic_anim_mode() const {
-	return is_dynamic_anim;
 }
 
 Ref<AudioStreamMP3> SpxResMgr::_load_mp3(const String &path) {
+	Ref<AudioStreamMP3> sample;
+#ifdef TOOLS_ENABLED
 	return ResourceImporterMP3::import_mp3(path);
+#endif
+	return sample;
 }
 
 Ref<AudioStream> SpxResMgr::_load_audio_direct(const String &p_path) {
