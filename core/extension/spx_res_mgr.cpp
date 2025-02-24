@@ -108,14 +108,14 @@ Ref<AudioStream> SpxResMgr::_load_audio_direct(const String &p_path) {
 
 Ref<Texture2D> SpxResMgr::_load_texture_direct(const String &p_path) {
 	String path = p_path;
-	if (!path.begins_with(game_data_root) && game_data_root != "res://") {
+	if (!path.begins_with("/tmp/") && !path.begins_with(game_data_root) && game_data_root != "res://") {
 		if (path.begins_with("../")) {
 			path = path.substr(3, -1);
 		}
 		path = game_data_root + "/" + path;
 	}
-
-	if (cached_texture.has(path)) {
+	// data in tmp dir would not keep in cache 
+	if (!path.begins_with("/tmp/") && cached_texture.has(path)) {
 		return cached_texture[path];
 	}
 
@@ -133,7 +133,7 @@ Ref<Texture2D> SpxResMgr::_load_texture_direct(const String &p_path) {
 }
 
 Ref<Texture2D> SpxResMgr::load_texture(String path) {
-	if (!is_load_direct) {
+	if (!is_load_direct && !path.begins_with("/")) {
 		Ref<Resource> res = ResourceLoader::load(path);
 		if (res.is_null()) {
 			print_line("load texture failed !", path);
