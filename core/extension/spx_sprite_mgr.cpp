@@ -329,6 +329,16 @@ void SpxSpriteMgr::set_texture(GdObj obj, GdString path) {
 	sprite->set_texture(path);
 }
 
+void SpxSpriteMgr::set_texture_altas_direct(GdObj obj, GdString path, GdRect2 rect2) {
+	check_and_get_sprite_v()
+	sprite->set_texture_altas_direct(path, rect2, true);
+}
+
+void SpxSpriteMgr::set_texture_direct(GdObj obj, GdString path) {
+	check_and_get_sprite_v()
+	sprite->set_texture_direct(path, true);
+}
+
 GdString SpxSpriteMgr::get_texture(GdObj obj) {
 	check_and_get_sprite_r(GdString())
 	return sprite->get_texture();

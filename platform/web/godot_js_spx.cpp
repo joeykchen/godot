@@ -255,6 +255,10 @@ void gdspx_res_has_file(GdString* p_path,GdBool* ret_val) {
 	*ret_val = resMgr->has_file(*p_path);
 }
 EMSCRIPTEN_KEEPALIVE
+void gdspx_res_reload_texture(GdString* path) {
+	 resMgr->reload_texture(*path);
+}
+EMSCRIPTEN_KEEPALIVE
 void gdspx_scene_change_scene_to_file(GdString* path) {
 	 sceneMgr->change_scene_to_file(*path);
 }
@@ -377,6 +381,14 @@ void gdspx_sprite_set_texture_altas(GdObj* obj,GdString* path,GdRect2* rect2) {
 EMSCRIPTEN_KEEPALIVE
 void gdspx_sprite_set_texture(GdObj* obj,GdString* path) {
 	 spriteMgr->set_texture(*obj, *path);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_sprite_set_texture_altas_direct(GdObj* obj,GdString* path,GdRect2* rect2) {
+	 spriteMgr->set_texture_altas_direct(*obj, *path, *rect2);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_sprite_set_texture_direct(GdObj* obj,GdString* path) {
+	 spriteMgr->set_texture_direct(*obj, *path);
 }
 EMSCRIPTEN_KEEPALIVE
 void gdspx_sprite_get_texture(GdObj* obj,GdString* ret_val) {

@@ -113,6 +113,9 @@ public:
 	void set_texture_altas(GdString path, GdRect2 rect2);
 	void set_texture(GdString path);
 
+	void set_texture_altas_direct(GdString path, GdRect2 rect2, GdBool direct);
+	void set_texture_direct(GdString path, GdBool direct);
+
 	GdString get_texture();
 
 	// animation

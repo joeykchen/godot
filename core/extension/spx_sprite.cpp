@@ -276,9 +276,9 @@ void SpxSprite::set_color(GdColor color) {
 GdColor SpxSprite::get_color() {
 	return anim2d->get_self_modulate();
 }
-void SpxSprite::set_texture_altas(GdString path, GdRect2 rect2) {
+void SpxSprite::set_texture_altas_direct(GdString path, GdRect2 rect2, GdBool direct) {
 	auto path_str = SpxStr(path);
-	Ref<Texture2D> texture = resMgr->load_texture(path_str);
+	Ref<Texture2D> texture = resMgr->load_texture(path_str, direct);
 
 	Ref<AtlasTexture> atlas_texture_frame = memnew(AtlasTexture);
 	atlas_texture_frame->set_atlas(texture);
@@ -298,9 +298,9 @@ void SpxSprite::set_texture_altas(GdString path, GdRect2 rect2) {
 	}
 }
 
-void SpxSprite::set_texture(GdString path) {
+void SpxSprite::set_texture_direct(GdString path, GdBool direct) {
 	auto path_str = SpxStr(path);
-	Ref<Texture2D> texture = resMgr->load_texture(path_str);
+	Ref<Texture2D> texture = resMgr->load_texture(path_str, direct);
 	if (texture.is_valid()) {
 		anim2d->set_sprite_frames(default_sprite_frames);
 		auto frames = anim2d->get_sprite_frames();
@@ -314,7 +314,12 @@ void SpxSprite::set_texture(GdString path) {
 		print_error("can not find a texture: " + path_str);
 	}
 }
-
+void SpxSprite::set_texture_altas(GdString path, GdRect2 rect2) {
+	return set_texture_altas_direct(path, rect2, false);
+}
+void SpxSprite::set_texture(GdString path) {
+	return set_texture_direct(path, false);
+}
 GdString SpxSprite::get_texture() {
 	auto tex = anim2d->get_sprite_frames()->get_frame_texture(SpxSpriteMgr::default_texture_anim, 0);
 	if (tex == nullptr)

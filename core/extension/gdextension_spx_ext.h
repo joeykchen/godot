@@ -250,6 +250,7 @@ typedef void (*GDExtensionSpxResGetBoundFromAlpha)(GdString p_path, GdRect2* ret
 typedef void (*GDExtensionSpxResGetImageSize)(GdString p_path, GdVec2* ret_value);
 typedef void (*GDExtensionSpxResReadAllText)(GdString p_path, GdString* ret_value);
 typedef void (*GDExtensionSpxResHasFile)(GdString p_path, GdBool* ret_value);
+typedef void (*GDExtensionSpxResReloadTexture)(GdString path);
 // SpxScene
 typedef void (*GDExtensionSpxSceneChangeSceneToFile)(GdString path);
 typedef void (*GDExtensionSpxSceneReloadCurrentScene)(GdInt* ret_value);
@@ -283,6 +284,8 @@ typedef void (*GDExtensionSpxSpriteSetColor)(GdObj obj, GdColor color);
 typedef void (*GDExtensionSpxSpriteGetColor)(GdObj obj, GdColor* ret_value);
 typedef void (*GDExtensionSpxSpriteSetTextureAltas)(GdObj obj, GdString path, GdRect2 rect2);
 typedef void (*GDExtensionSpxSpriteSetTexture)(GdObj obj, GdString path);
+typedef void (*GDExtensionSpxSpriteSetTextureAltasDirect)(GdObj obj, GdString path, GdRect2 rect2);
+typedef void (*GDExtensionSpxSpriteSetTextureDirect)(GdObj obj, GdString path);
 typedef void (*GDExtensionSpxSpriteGetTexture)(GdObj obj, GdString* ret_value);
 typedef void (*GDExtensionSpxSpriteSetVisible)(GdObj obj, GdBool visible);
 typedef void (*GDExtensionSpxSpriteGetVisible)(GdObj obj, GdBool* ret_value);
