@@ -255,6 +255,10 @@ void gdspx_res_has_file(GdString* p_path,GdBool* ret_val) {
 	*ret_val = resMgr->has_file(*p_path);
 }
 EMSCRIPTEN_KEEPALIVE
+void gdspx_res_reload_texture(GdString* path) {
+	 resMgr->reload_texture(*path);
+}
+EMSCRIPTEN_KEEPALIVE
 void gdspx_scene_change_scene_to_file(GdString* path) {
 	 sceneMgr->change_scene_to_file(*path);
 }

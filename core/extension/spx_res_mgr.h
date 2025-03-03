@@ -60,6 +60,7 @@ public:
 	void on_awake() override;
 	Ref<Texture2D> load_texture(String path);
 	Ref<AudioStream> load_audio(String path);
+	Ref<Texture2D> _reload_texture(String path);
 	void set_game_datas(String path, Vector<String> files);
 	Ref<SpriteFrames> get_anim_frames(const String& anim_name);
 	String get_anim_key_name(const String& sprite_type_name,const String& anim_name);
@@ -74,6 +75,7 @@ public:
 	GdVec2 get_image_size(GdString p_path);
 	GdString read_all_text(GdString p_path);
 	GdBool has_file(GdString p_path);
+	void reload_texture(GdString path);
 };
 
 #endif // SPX_RES_MGR_H

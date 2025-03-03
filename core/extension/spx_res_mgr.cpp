@@ -144,6 +144,29 @@ Ref<Texture2D> SpxResMgr::load_texture(String path) {
 		return _load_texture_direct(path);
 	}
 }
+Ref<Texture2D> SpxResMgr::_reload_texture(String path) {
+	if (cached_texture.has(path)) {
+		auto tex = (Ref<ImageTexture>)cached_texture[path];
+		Ref<Image> image;
+		image.instantiate();
+		Error err = ImageLoader::load_image(path, image);
+		if (err != OK) {
+			print_line("Failed to load image: " + String::num_int64(err), path);
+			return Ref<Texture2D>();
+		}
+		tex->set_image(image);
+		cached_texture.erase(path);
+		cached_texture.insert(path, tex);
+		return tex;
+	}else{
+		return _load_texture_direct(path);
+	}
+}
+
+void SpxResMgr::reload_texture(GdString path) {
+	auto path_str = SpxStr(path);
+	_reload_texture(path_str);
+}
 
 void SpxResMgr::set_game_datas(String path, Vector<String> files) {
 	game_data_root = path;

@@ -449,6 +449,14 @@ function gdspx_res_has_file(p_path) {
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
+function gdspx_res_reload_texture(path) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_res_reload_texture']; 
+	
+	_arg0 = ToGdString(path);
+	_gdFuncPtr(_arg0);
+	FreeGdString(_arg0); 
+
+}
 function gdspx_scene_change_scene_to_file(path) {
 	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_scene_change_scene_to_file']; 
 	
