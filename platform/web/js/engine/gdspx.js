@@ -781,6 +781,28 @@ function gdspx_sprite_set_texture(obj,path) {
 	FreeGdString(_arg1); 
 
 }
+function gdspx_sprite_set_texture_altas_direct(obj,path,rect2) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_texture_altas_direct']; 
+	
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdString(path);
+	_arg2 = ToGdRect2(rect2);
+	_gdFuncPtr(_arg0, _arg1, _arg2);
+	FreeGdObj(_arg0); 
+	FreeGdString(_arg1); 
+	FreeGdRect2(_arg2); 
+
+}
+function gdspx_sprite_set_texture_direct(obj,path) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_texture_direct']; 
+	
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdString(path);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdString(_arg1); 
+
+}
 function gdspx_sprite_get_texture(obj) {
 	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_texture']; 
 	_retValue = AllocGdString();

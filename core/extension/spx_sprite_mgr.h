@@ -88,6 +88,9 @@ public:
 
 	void set_texture_altas(GdObj obj, GdString path, GdRect2 rect2);
 	void set_texture(GdObj obj, GdString path);
+	void set_texture_altas_direct(GdObj obj, GdString path, GdRect2 rect2);
+	void set_texture_direct(GdObj obj, GdString path);
+	
 	GdString get_texture(GdObj obj);
 	void set_visible(GdObj obj, GdBool visible);
 	GdBool get_visible(GdObj obj);

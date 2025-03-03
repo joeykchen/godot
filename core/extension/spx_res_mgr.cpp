@@ -132,18 +132,6 @@ Ref<Texture2D> SpxResMgr::_load_texture_direct(const String &p_path) {
 	return texture;
 }
 
-Ref<Texture2D> SpxResMgr::load_texture(String path) {
-	if (!is_load_direct && !path.begins_with("/")) {
-		Ref<Resource> res = ResourceLoader::load(path);
-		if (res.is_null()) {
-			print_line("load texture failed !", path);
-			return Ref<Texture2D>();
-		}
-		return res;
-	} else {
-		return _load_texture_direct(path);
-	}
-}
 Ref<Texture2D> SpxResMgr::_reload_texture(String path) {
 	if (cached_texture.has(path)) {
 		auto tex = (Ref<ImageTexture>)cached_texture[path];
@@ -168,12 +156,25 @@ void SpxResMgr::reload_texture(GdString path) {
 	_reload_texture(path_str);
 }
 
+Ref<Texture2D> SpxResMgr::load_texture(String path, GdBool direct) {
+	if (!is_load_direct && !direct) {
+		Ref<Resource> res = ResourceLoader::load(path);
+		if (res.is_null()) {
+			print_line("load texture failed !", path);
+			return Ref<Texture2D>();
+		}
+		return res;
+	} else {
+		return _load_texture_direct(path);
+	}
+}
+
 void SpxResMgr::set_game_datas(String path, Vector<String> files) {
 	game_data_root = path;
 }
 
-Ref<AudioStream> SpxResMgr::load_audio(String path) {
-	if (!is_load_direct) {
+Ref<AudioStream> SpxResMgr::load_audio(String path, GdBool direct) {
+	if (!is_load_direct && !direct) {
 		Ref<Resource> res = ResourceLoader::load(path);
 		if (res.is_null()) {
 			print_line("load audio failed !", path);

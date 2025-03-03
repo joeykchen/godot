@@ -302,6 +302,12 @@ static void gdextension_spx_sprite_set_texture_altas(GdObj obj,GdString path,GdR
 static void gdextension_spx_sprite_set_texture(GdObj obj,GdString path) {
 	 spriteMgr->set_texture(obj, path);
 }
+static void gdextension_spx_sprite_set_texture_altas_direct(GdObj obj,GdString path,GdRect2 rect2) {
+	 spriteMgr->set_texture_altas_direct(obj, path, rect2);
+}
+static void gdextension_spx_sprite_set_texture_direct(GdObj obj,GdString path) {
+	 spriteMgr->set_texture_direct(obj, path);
+}
 static void gdextension_spx_sprite_get_texture(GdObj obj,GdString* ret_val) {
 	*ret_val = spriteMgr->get_texture(obj);
 }
@@ -704,6 +710,8 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_get_color);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_texture_altas);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_texture);
+	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_texture_altas_direct);
+	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_texture_direct);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_get_texture);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_visible);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_get_visible);

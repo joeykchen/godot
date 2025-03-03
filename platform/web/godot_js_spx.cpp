@@ -383,6 +383,14 @@ void gdspx_sprite_set_texture(GdObj* obj,GdString* path) {
 	 spriteMgr->set_texture(*obj, *path);
 }
 EMSCRIPTEN_KEEPALIVE
+void gdspx_sprite_set_texture_altas_direct(GdObj* obj,GdString* path,GdRect2* rect2) {
+	 spriteMgr->set_texture_altas_direct(*obj, *path, *rect2);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_sprite_set_texture_direct(GdObj* obj,GdString* path) {
+	 spriteMgr->set_texture_direct(*obj, *path);
+}
+EMSCRIPTEN_KEEPALIVE
 void gdspx_sprite_get_texture(GdObj* obj,GdString* ret_val) {
 	*ret_val = spriteMgr->get_texture(*obj);
 }
