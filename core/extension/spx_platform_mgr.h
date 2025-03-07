@@ -36,6 +36,9 @@
 
 class SpxPlatformMgr : SpxBaseMgr {
 	SPXCLASS(SpxPlatformMgr, SpxBaseMgr)
+	String persistant_data_dir = "res://";
+public:
+	void on_awake() override;
 public:
 	void set_window_position(GdVec2 pos);
 	GdVec2 get_window_position();
@@ -50,6 +53,10 @@ public:
 
 	GdFloat get_time_scale();
 	void set_time_scale(GdFloat time_scale);
+
+	GdString get_persistant_data_dir();
+	void set_persistant_data_dir(GdString path);
+	GdBool is_in_persistant_data_dir(GdString path);
 };
 
 #endif // SPX_OS_MGR_H

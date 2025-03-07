@@ -377,6 +377,32 @@ function gdspx_platform_set_time_scale(time_scale) {
 	FreeGdFloat(_arg0); 
 
 }
+function gdspx_platform_get_persistant_data_dir() {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_get_persistant_data_dir']; 
+	_retValue = AllocGdString();
+	_gdFuncPtr(_retValue);
+	_finalRetValue = ToJsString(_retValue);
+	FreeGdString(_retValue); 
+	return _finalRetValue
+}
+function gdspx_platform_set_persistant_data_dir(path) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_set_persistant_data_dir']; 
+	
+	_arg0 = ToGdString(path);
+	_gdFuncPtr(_arg0);
+	FreeGdString(_arg0); 
+
+}
+function gdspx_platform_is_in_persistant_data_dir(path) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_is_in_persistant_data_dir']; 
+	_retValue = AllocGdBool();
+	_arg0 = ToGdString(path);
+	_gdFuncPtr(_arg0, _retValue);
+	FreeGdString(_arg0); 
+	_finalRetValue = ToJsBool(_retValue);
+	FreeGdBool(_retValue); 
+	return _finalRetValue
+}
 function gdspx_res_create_animation(sprite_type_name,anim_name,context,fps,is_altas) {
 	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_res_create_animation']; 
 	

@@ -227,6 +227,18 @@ void gdspx_platform_set_time_scale(GdFloat* time_scale) {
 	 platformMgr->set_time_scale(*time_scale);
 }
 EMSCRIPTEN_KEEPALIVE
+void gdspx_platform_get_persistant_data_dir(GdString* ret_val) {
+	*ret_val = platformMgr->get_persistant_data_dir();
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_platform_set_persistant_data_dir(GdString* path) {
+	 platformMgr->set_persistant_data_dir(*path);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_platform_is_in_persistant_data_dir(GdString* path,GdBool* ret_val) {
+	*ret_val = platformMgr->is_in_persistant_data_dir(*path);
+}
+EMSCRIPTEN_KEEPALIVE
 void gdspx_res_create_animation(GdString* sprite_type_name,GdString* anim_name,GdString* context,GdInt* fps,GdBool* is_altas) {
 	 resMgr->create_animation(*sprite_type_name, *anim_name, *context, *fps, *is_altas);
 }
