@@ -39,6 +39,9 @@ class SpxPlatformMgr : SpxBaseMgr {
 	String persistant_data_dir = "res://";
 public:
 	void on_awake() override;
+	void _set_persistant_data_dir(String path);
+	String _get_persistant_data_dir();
+	
 public:
 	void set_window_position(GdVec2 pos);
 	GdVec2 get_window_position();

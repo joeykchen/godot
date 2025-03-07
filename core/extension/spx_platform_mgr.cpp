@@ -92,13 +92,20 @@ GdFloat SpxPlatformMgr::get_time_scale() {
 }
 
 GdString SpxPlatformMgr::get_persistant_data_dir(){
-	SpxBaseMgr::temp_return_str = persistant_data_dir;
+	SpxBaseMgr::temp_return_str = _get_persistant_data_dir();
 	return &SpxBaseMgr::temp_return_str;
 }
 
+String SpxPlatformMgr::_get_persistant_data_dir(){	
+	return persistant_data_dir;
+}
+
+void SpxPlatformMgr::_set_persistant_data_dir(String path){	
+	persistant_data_dir = path;
+}
 void SpxPlatformMgr::set_persistant_data_dir(GdString path){	
 	auto path_str = SpxStr(path);
-	persistant_data_dir = path_str;
+	_set_persistant_data_dir(path_str);
 }
 
 GdBool SpxPlatformMgr::is_in_persistant_data_dir(GdString path){	
