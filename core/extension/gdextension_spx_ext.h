@@ -242,6 +242,9 @@ typedef void (*GDExtensionSpxPlatformSetDebugMode)(GdBool enable);
 typedef void (*GDExtensionSpxPlatformIsDebugMode)(GdBool* ret_value);
 typedef void (*GDExtensionSpxPlatformGetTimeScale)(GdFloat* ret_value);
 typedef void (*GDExtensionSpxPlatformSetTimeScale)(GdFloat time_scale);
+typedef void (*GDExtensionSpxPlatformGetPersistantDataDir)(GdString* ret_value);
+typedef void (*GDExtensionSpxPlatformSetPersistantDataDir)(GdString path);
+typedef void (*GDExtensionSpxPlatformIsInPersistantDataDir)(GdString path, GdBool* ret_value);
 // SpxRes
 typedef void (*GDExtensionSpxResCreateAnimation)(GdString sprite_type_name,GdString anim_name, GdString context, GdInt fps, GdBool is_altas);
 typedef void (*GDExtensionSpxResSetLoadMode)(GdBool is_direct_mode);

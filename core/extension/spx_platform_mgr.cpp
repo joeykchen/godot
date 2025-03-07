@@ -33,6 +33,12 @@
 #include "scene/main/window.h"
 #include "spx.h"
 
+void SpxPlatformMgr::on_awake() {
+	SpxBaseMgr::on_awake();
+	persistant_data_dir = ::OS::get_singleton()->get_user_data_dir();
+	print_line("SpxPlatformMgr::persistant_data_dir ", persistant_data_dir);
+}
+
 void SpxPlatformMgr::set_window_position(GdVec2 pos) {
 	DisplayServer::get_singleton()->window_set_position(Size2i(pos.x, pos.y));
 }
@@ -83,4 +89,19 @@ void SpxPlatformMgr::set_time_scale(GdFloat time_scale) {
 
 GdFloat SpxPlatformMgr::get_time_scale() {
 	return Engine::get_singleton()->get_time_scale();
+}
+
+GdString SpxPlatformMgr::get_persistant_data_dir(){
+	SpxBaseMgr::temp_return_str = persistant_data_dir;
+	return &SpxBaseMgr::temp_return_str;
+}
+
+void SpxPlatformMgr::set_persistant_data_dir(GdString path){	
+	auto path_str = SpxStr(path);
+	persistant_data_dir = path_str;
+}
+
+GdBool SpxPlatformMgr::is_in_persistant_data_dir(GdString path){	
+	auto path_str = SpxStr(path);
+	return path_str.begins_with(persistant_data_dir);
 }
