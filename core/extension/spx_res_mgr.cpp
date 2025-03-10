@@ -39,10 +39,14 @@
 #include "scene/resources/audio_stream_wav.h"
 #include "scene/resources/image_texture.h"
 #include "scene/resources/sprite_frames.h"
+#include "spx_engine.h"
+#include "spx_platform_mgr.h"
 #ifdef TOOLS_ENABLED
 #include "editor/import/resource_importer_wav.h"
 #include "modules/minimp3/resource_importer_mp3.h"
 #endif
+
+#define platformMgr SpxEngine::get_singleton()->get_platform()
 
 void SpxResMgr::on_awake() {
 	SpxBaseMgr::on_awake();
@@ -79,7 +83,7 @@ Ref<AudioStreamMP3> SpxResMgr::_load_mp3(const String &path) {
 
 Ref<AudioStream> SpxResMgr::_load_audio_direct(const String &p_path) {
 	String path = p_path;
-	if (!path.begins_with(game_data_root) && game_data_root != "res://") {
+	if (!path.begins_with(platformMgr->_get_persistant_data_dir()) && game_data_root != "res://") {
 		if (path.begins_with("../")) {
 			path = path.substr(3, -1);
 		}
@@ -108,14 +112,14 @@ Ref<AudioStream> SpxResMgr::_load_audio_direct(const String &p_path) {
 
 Ref<Texture2D> SpxResMgr::_load_texture_direct(const String &p_path) {
 	String path = p_path;
-	if (!path.begins_with("/tmp/") && !path.begins_with(game_data_root) && game_data_root != "res://") {
+	if (!path.begins_with(platformMgr->_get_persistant_data_dir()) && game_data_root != "res://") {
 		if (path.begins_with("../")) {
 			path = path.substr(3, -1);
 		}
 		path = game_data_root + "/" + path;
 	}
 	// data in tmp dir would not keep in cache 
-	if (!path.begins_with("/tmp/") && cached_texture.has(path)) {
+	if (cached_texture.has(path)) {
 		return cached_texture[path];
 	}
 
@@ -170,7 +174,9 @@ Ref<Texture2D> SpxResMgr::load_texture(String path, GdBool direct) {
 }
 
 void SpxResMgr::set_game_datas(String path, Vector<String> files) {
+	print_line("SpxResMgr::set_game_datas", path);
 	game_data_root = path;
+	platformMgr->_set_persistant_data_dir(path);
 }
 
 Ref<AudioStream> SpxResMgr::load_audio(String path, GdBool direct) {
@@ -185,9 +191,11 @@ Ref<AudioStream> SpxResMgr::load_audio(String path, GdBool direct) {
 		return _load_audio_direct(path);
 	}
 }
+
 Ref<SpriteFrames> SpxResMgr::get_anim_frames(const String &anim_name) {
 	return anim_frames;
 }
+
 String SpxResMgr::get_anim_key_name(const String &sprite_type_name, const String &anim_name) {
 	return sprite_type_name + "::" + anim_name;
 }
