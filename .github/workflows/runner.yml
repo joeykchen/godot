@@ -9,20 +9,20 @@ jobs:
   # Run all the builds and some of the tests.
   # Remove static checks job.
 
-  # android-build:
-  #   if: ${{ vars.DISABLE_GODOT_CI == '' }}
-  #   name: 🤖 Android
-  #   uses: ./.github/workflows/android_builds.yml
+  android-build:
+    if: ${{ vars.DISABLE_GODOT_CI == '' }}
+    name: 🤖 Android
+    uses: ./.github/workflows/android_builds.yml
 
-  # ios-build:
-  #   if: ${{ vars.DISABLE_GODOT_CI == '' }}
-  #   name: 🍏 iOS
-  #   uses: ./.github/workflows/ios_builds.yml
+  ios-build:
+    if: ${{ vars.DISABLE_GODOT_CI == '' }}
+    name: 🍏 iOS
+    uses: ./.github/workflows/ios_builds.yml
 
-  # web-build:
-  #   if: ${{ vars.DISABLE_GODOT_CI == '' }}
-  #   name: 🌐 Web
-  #   uses: ./.github/workflows/web_builds.yml
+  web-build:
+    if: ${{ vars.DISABLE_GODOT_CI == '' }}
+    name: 🌐 Web
+    uses: ./.github/workflows/web_builds.yml
 
   linux-build:
     if: ${{ vars.DISABLE_GODOT_CI == '' }}
