@@ -7,7 +7,7 @@ concurrency:
 
 jobs:
   # Run all the builds and some of the tests.
-
+  # Remove static checks job.
   android-build:
     if: ${{ vars.DISABLE_GODOT_CI == '' }}
     name: 🤖 Android
