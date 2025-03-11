@@ -274,7 +274,7 @@ void SpxSpriteMgr::set_position(GdObj obj, GdVec2 pos) {
 	sprite->set_position(GdVec2(pos.x, -pos.y));
 }
 
-void SpxSpriteMgr::set_rotation(GdObj obj, float rot) {
+void SpxSpriteMgr::set_rotation(GdObj obj, GdFloat rot) {
 	check_and_get_sprite_v()
 	sprite->set_rotation(rot);
 }
