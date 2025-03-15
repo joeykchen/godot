@@ -305,6 +305,12 @@ static void gdextension_spx_sprite_set_color(GdObj obj,GdColor color) {
 static void gdextension_spx_sprite_get_color(GdObj obj,GdColor* ret_val) {
 	*ret_val = spriteMgr->get_color(obj);
 }
+static void gdextension_spx_sprite_set_material_params(GdObj obj,GdString effect,GdFloat amount) {
+	 spriteMgr->set_material_params(obj, effect, amount);
+}
+static void gdextension_spx_sprite_get_material_params(GdObj obj,GdString effect,GdFloat* ret_val) {
+	*ret_val = spriteMgr->get_material_params(obj, effect);
+}
 static void gdextension_spx_sprite_set_texture_altas(GdObj obj,GdString path,GdRect2 rect2) {
 	 spriteMgr->set_texture_altas(obj, path, rect2);
 }
@@ -720,6 +726,8 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_get_render_scale);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_color);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_get_color);
+	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_material_params);
+	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_get_material_params);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_texture_altas);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_texture);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_texture_altas_direct);

@@ -785,6 +785,30 @@ function gdspx_sprite_get_color(obj) {
 	FreeGdColor(_retValue); 
 	return _finalRetValue
 }
+function gdspx_sprite_set_material_params(obj,effect,amount) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_material_params']; 
+	
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdString(effect);
+	_arg2 = ToGdFloat(amount);
+	_gdFuncPtr(_arg0, _arg1, _arg2);
+	FreeGdObj(_arg0); 
+	FreeGdString(_arg1); 
+	FreeGdFloat(_arg2); 
+
+}
+function gdspx_sprite_get_material_params(obj,effect) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_material_params']; 
+	_retValue = AllocGdFloat();
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdString(effect);
+	_gdFuncPtr(_arg0, _arg1, _retValue);
+	FreeGdObj(_arg0); 
+	FreeGdString(_arg1); 
+	_finalRetValue = ToJsFloat(_retValue);
+	FreeGdFloat(_retValue); 
+	return _finalRetValue
+}
 function gdspx_sprite_set_texture_altas(obj,path,rect2) {
 	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_texture_altas']; 
 	

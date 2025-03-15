@@ -144,6 +144,15 @@ void SpxSprite::on_start() {
 		anim2d->set_sprite_frames(default_sprite_frames);
 	}
 
+	default_material = anim2d->get_material();
+	if(default_material.is_null()) {
+		default_material.instantiate();
+		anim2d->set_material(default_material);
+	}
+	// Ref<Shader> shader = ResourceLoader::load("");
+	default_material.ptr()->set_shader(ResourceLoader::load("res://engine/shader/spx_sprite_shader.gdshader"));
+	anim2d->set_texture_repeat(TEXTURE_REPEAT_ENABLED);
+
 	visible_notifier = (get_component<VisibleOnScreenNotifier2D>());
 	if (visible_notifier == nullptr) {
 		visible_notifier = memnew(VisibleOnScreenNotifier2D);
@@ -270,12 +279,21 @@ void SpxSprite::on_sprite_screen_entered() {
 }
 
 void SpxSprite::set_color(GdColor color) {
-	anim2d->set_self_modulate(color);
+	default_material->set_shader_parameter("color", color);
 }
 
 GdColor SpxSprite::get_color() {
 	return anim2d->get_self_modulate();
 }
+
+void SpxSprite::set_material_params(GdString effect, GdFloat amount) {
+	default_material->set_shader_parameter(SpxStr(effect), amount);
+}
+
+GdFloat SpxSprite::get_material_params(GdString effect) {
+	return default_material->get_shader_parameter(SpxStr(effect));
+}
+
 void SpxSprite::set_texture_altas_direct(GdString path, GdRect2 rect2, GdBool direct) {
 	auto path_str = SpxStr(path);
 	Ref<Texture2D> texture = resMgr->load_texture(path_str, direct);
