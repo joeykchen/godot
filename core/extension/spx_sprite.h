@@ -60,6 +60,7 @@ protected:
 	void _notification(int p_what);
 	void _draw();
 	Ref<SpriteFrames> default_sprite_frames;
+	Ref<ShaderMaterial> default_material;
 	AnimatedSprite2D *anim2d;
 	Area2D *area2d;
 	CollisionShape2D *trigger2d;
@@ -110,6 +111,10 @@ public:
 	// render
 	void set_color(GdColor color);
 	GdColor get_color();
+
+	void set_material_params(GdString effect, GdFloat amount);
+	GdFloat get_material_params(GdString effect);
+
 	void set_texture_altas(GdString path, GdRect2 rect2);
 	void set_texture(GdString path);
 

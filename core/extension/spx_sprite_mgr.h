@@ -89,6 +89,9 @@ public:
 	void set_color(GdObj obj, GdColor color);
 	GdColor get_color(GdObj obj);
 
+	void set_material_params(GdObj obj, GdString effect, GdFloat amount);
+	GdFloat get_material_params(GdObj obj, GdString effect);
+
 	void set_texture_altas(GdObj obj, GdString path, GdRect2 rect2);
 	void set_texture(GdObj obj, GdString path);
 	void set_texture_altas_direct(GdObj obj, GdString path, GdRect2 rect2);

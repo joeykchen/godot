@@ -387,6 +387,14 @@ void gdspx_sprite_get_color(GdObj* obj,GdColor* ret_val) {
 	*ret_val = spriteMgr->get_color(*obj);
 }
 EMSCRIPTEN_KEEPALIVE
+void gdspx_sprite_set_material_params(GdObj* obj,GdString* effect,GdFloat* amount) {
+	 spriteMgr->set_material_params(*obj, *effect, *amount);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_sprite_get_material_params(GdObj* obj,GdString* effect,GdFloat* ret_val) {
+	*ret_val = spriteMgr->get_material_params(*obj, *effect);
+}
+EMSCRIPTEN_KEEPALIVE
 void gdspx_sprite_set_texture_altas(GdObj* obj,GdString* path,GdRect2* rect2) {
 	 spriteMgr->set_texture_altas(*obj, *path, *rect2);
 }
