@@ -144,15 +144,6 @@ void SpxSprite::on_start() {
 		anim2d->set_sprite_frames(default_sprite_frames);
 	}
 
-	default_material = anim2d->get_material();
-	if(default_material.is_null()) {
-		default_material.instantiate();
-		anim2d->set_material(default_material);
-	}
-	// Ref<Shader> shader = ResourceLoader::load("");
-	default_material.ptr()->set_shader(ResourceLoader::load("res://engine/shader/spx_sprite_shader.gdshader"));
-	anim2d->set_texture_repeat(TEXTURE_REPEAT_ENABLED);
-
 	visible_notifier = (get_component<VisibleOnScreenNotifier2D>());
 	if (visible_notifier == nullptr) {
 		visible_notifier = memnew(VisibleOnScreenNotifier2D);
@@ -286,11 +277,51 @@ GdColor SpxSprite::get_color() {
 	return anim2d->get_self_modulate();
 }
 
+void SpxSprite::set_material_shader(GdString path) {
+	Ref<Shader> shader = ResourceLoader::load(SpxStr(path));
+	if (shader.is_null()) {
+		print_line("load spx_sprite_shader failed !",SpxStr(path));
+		return;
+	}
+	
+	default_material = anim2d->get_material();
+	if (default_material.is_null())
+	{
+		default_material.instantiate();
+		anim2d->set_material(default_material);
+	}
+	
+	default_material.ptr()->set_shader(shader);
+	// uv_effect dependon texture repeat
+	anim2d->set_texture_repeat(TEXTURE_REPEAT_ENABLED);
+}
+
+GdString SpxSprite::get_material_shader() {
+	default_material = anim2d->get_material();
+	if (default_material.is_null())
+	{
+		return nullptr;
+	}
+	SpxBaseMgr::temp_return_str = default_material.ptr()->get_shader()->get_path();
+	return &SpxBaseMgr::temp_return_str;
+}
+
 void SpxSprite::set_material_params(GdString effect, GdFloat amount) {
+	if (default_material.is_null())
+	{
+		print_line("set_material_params failed, the material and shader have not been set, please initialize the shader first!");
+		return;
+	}
+	
 	default_material->set_shader_parameter(SpxStr(effect), amount);
 }
 
 GdFloat SpxSprite::get_material_params(GdString effect) {
+	if (default_material.is_null())
+	{
+		print_line("get_material_params failed, the material and shader have not been set, please initialize the shader first!");
+		return 0;
+	}
 	return default_material->get_shader_parameter(SpxStr(effect));
 }
 

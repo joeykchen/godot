@@ -88,7 +88,9 @@ public:
 	GdVec2 get_render_scale(GdObj obj);
 	void set_color(GdObj obj, GdColor color);
 	GdColor get_color(GdObj obj);
-
+	
+	void set_material_shader(GdObj obj, GdString path);
+	GdString get_material_shader(GdObj obj);
 	void set_material_params(GdObj obj, GdString effect, GdFloat amount);
 	GdFloat get_material_params(GdObj obj, GdString effect);
 
@@ -120,7 +122,7 @@ public:
 	GdBool is_anim_centered(GdObj obj);
 	void set_anim_offset(GdObj obj, GdVec2 p_offset);
 	GdVec2 get_anim_offset(GdObj obj);
-	void set_anim_flip_h(GdObj obj, GdBool p_flip);
+	void set_anim_flip_h(GdObj obj, GdBool p_flip); 
 	GdBool is_anim_flipped_h(GdObj obj);
 	void set_anim_flip_v(GdObj obj, GdBool p_flip);
 	GdBool is_anim_flipped_v(GdObj obj);

@@ -319,6 +319,15 @@ GdColor SpxSpriteMgr::get_color(GdObj obj) {
 	check_and_get_sprite_r(GdColor()) return sprite->get_color();
 }
 
+void SpxSpriteMgr::set_material_shader(GdObj obj, GdString path) {
+	check_and_get_sprite_v()
+	sprite->set_material_shader(path);
+}
+
+GdString SpxSpriteMgr::get_material_shader(GdObj obj) {
+	check_and_get_sprite_r(GdString()) return sprite->get_material_shader();
+}
+
 void SpxSpriteMgr::set_material_params(GdObj obj, GdString effect, GdFloat amount) {
 	check_and_get_sprite_v()
 	sprite->set_material_params(effect, amount);
