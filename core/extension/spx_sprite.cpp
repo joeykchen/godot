@@ -182,6 +182,7 @@ GdObj SpxSprite::get_gid() {
 void SpxSprite::set_type_name(GdString type_name) {
 	auto name = SpxStr(type_name);
 	spx_type_name = name;
+	this->set_name(name);
 }
 
 void SpxSprite::set_spx_type_name(String type_name) {
@@ -283,14 +284,14 @@ void SpxSprite::set_material_shader(GdString path) {
 		print_line("load spx_sprite_shader failed !",SpxStr(path));
 		return;
 	}
-	
+
 	default_material = anim2d->get_material();
 	if (default_material.is_null())
 	{
 		default_material.instantiate();
 		anim2d->set_material(default_material);
 	}
-	
+
 	default_material.ptr()->set_shader(shader);
 	// uv_effect dependon texture repeat
 	anim2d->set_texture_repeat(TEXTURE_REPEAT_ENABLED);
@@ -312,7 +313,7 @@ void SpxSprite::set_material_params(GdString effect, GdFloat amount) {
 		print_line("set_material_params failed, the material and shader have not been set, please initialize the shader first!");
 		return;
 	}
-	
+
 	default_material->set_shader_parameter(SpxStr(effect), amount);
 }
 

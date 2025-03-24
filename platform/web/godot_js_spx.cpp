@@ -671,6 +671,14 @@ void gdspx_sprite_is_trigger_enabled(GdObj* obj,GdBool* ret_val) {
 	*ret_val = spriteMgr->is_trigger_enabled(*obj);
 }
 EMSCRIPTEN_KEEPALIVE
+void gdspx_sprite_check_collision_by_color(GdObj* obj,GdColor* color,GdFloat* color_threshold,GdBool* ret_val) {
+	*ret_val = spriteMgr->check_collision_by_color(*obj, *color, *color_threshold);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_sprite_check_collision_by_alpha(GdObj* obj,GdFloat* alpha_threshold,GdBool* ret_val) {
+	*ret_val = spriteMgr->check_collision_by_alpha(*obj, *alpha_threshold);
+}
+EMSCRIPTEN_KEEPALIVE
 void gdspx_ui_bind_node(GdObj* obj,GdString* rel_path,GdObj* ret_val) {
 	*ret_val = uiMgr->bind_node(*obj, *rel_path);
 }

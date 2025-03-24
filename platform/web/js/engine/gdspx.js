@@ -1515,6 +1515,32 @@ function gdspx_sprite_is_trigger_enabled(obj) {
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
+function gdspx_sprite_check_collision_by_color(obj,color,color_threshold) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_check_collision_by_color']; 
+	_retValue = AllocGdBool();
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdColor(color);
+	_arg2 = ToGdFloat(color_threshold);
+	_gdFuncPtr(_arg0, _arg1, _arg2, _retValue);
+	FreeGdObj(_arg0); 
+	FreeGdColor(_arg1); 
+	FreeGdFloat(_arg2); 
+	_finalRetValue = ToJsBool(_retValue);
+	FreeGdBool(_retValue); 
+	return _finalRetValue
+}
+function gdspx_sprite_check_collision_by_alpha(obj,alpha_threshold) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_check_collision_by_alpha']; 
+	_retValue = AllocGdBool();
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdFloat(alpha_threshold);
+	_gdFuncPtr(_arg0, _arg1, _retValue);
+	FreeGdObj(_arg0); 
+	FreeGdFloat(_arg1); 
+	_finalRetValue = ToJsBool(_retValue);
+	FreeGdBool(_retValue); 
+	return _finalRetValue
+}
 function gdspx_ui_bind_node(obj,rel_path) {
 	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_bind_node']; 
 	_retValue = AllocGdObj();
