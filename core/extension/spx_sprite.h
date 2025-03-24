@@ -109,6 +109,8 @@ public:
 
 	void set_type_name(GdString type_name);
 	// render
+	void set_material_shader(GdString path);
+	GdString get_material_shader();
 	void set_color(GdColor color);
 	GdColor get_color();
 
