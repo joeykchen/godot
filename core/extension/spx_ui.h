@@ -36,6 +36,7 @@
 #include "scene/gui/check_button.h"
 #include "scene/gui/control.h"
 #include "scene/gui/label.h"
+#include "scene/gui/line_edit.h"
 #include "scene/gui/texture_rect.h"
 
 enum class ESpxUiType {
@@ -45,6 +46,7 @@ enum class ESpxUiType {
 	Button = 3,
 	Image = 4,
 	Toggle = 5,
+	Input = 6,
 };
 
 class SpxUi;
@@ -54,6 +56,7 @@ typedef TextureRect SpxImage;
 typedef Button SpxButton;
 typedef CheckButton SpxToggle;
 typedef Control SpxControl;
+typedef LineEdit SpxInput;
 
 class SpxUi :ISpxUi{
 public:
@@ -69,7 +72,7 @@ public:
 	SpxImage *get_image();
 	SpxButton *get_button();
 	SpxToggle *get_toggle();
-
+	SpxInput *get_input();
 public:
 	virtual void on_destroy_call() override;
 	virtual void on_start()  override;

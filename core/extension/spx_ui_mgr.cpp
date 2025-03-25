@@ -72,6 +72,9 @@ ESpxUiType SpxUiMgr::get_node_type(Node *obj) {
 	if (dynamic_cast<SpxToggle *>(obj)) {
 		return ESpxUiType::Toggle;
 	}
+	if (dynamic_cast<SpxInput *>(obj)) {
+		return ESpxUiType::Input;
+	}
 
 
 	if (dynamic_cast<SpxControl *>(obj)) {
