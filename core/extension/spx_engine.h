@@ -47,6 +47,7 @@ class SpxSceneMgr;
 class SpxCameraMgr;
 class SpxPlatformMgr;
 class SpxResMgr;
+class SpxExtMgr;
 
 class SpxEngine : SpxBaseMgr {
 	static SpxEngine *singleton;
@@ -55,7 +56,7 @@ public:
 	static SpxEngine *get_singleton() { return singleton; }
 	static bool has_initialed() { return singleton != nullptr; }
 	static void register_callbacks(GDExtensionSpxCallbackInfoPtr callback_ptr);
-	virtual ~SpxEngine() = default; // Added virtual destructor to fix -Werror=non-virtual-dtor
+	virtual ~SpxEngine() = default; 
 
 private:
 	Vector<SpxBaseMgr *> mgrs;
@@ -68,6 +69,7 @@ private:
 	SpxCameraMgr *camera;
 	SpxPlatformMgr *platform;
 	SpxResMgr *res;
+	SpxExtMgr *ext;
 
 public:
 	SpxInputMgr *get_input() { return input; }
@@ -79,6 +81,7 @@ public:
 	SpxCameraMgr *get_camera() { return camera; }
 	SpxPlatformMgr *get_platform() { return platform; }
 	SpxResMgr *get_res() { return res; }
+	SpxExtMgr *get_ext() { return ext; }
 
 private:
 	SceneTree *tree;

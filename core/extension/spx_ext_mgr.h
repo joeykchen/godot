@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  spx_audio_mgr.h                                                       */
+/*  spx_ext_mgr.h                                                      */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,48 +28,48 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef SPX_AUDIO_MGR_H
-#define SPX_AUDIO_MGR_H
+#ifndef SPX_EXT_MGR_H
+#define SPX_EXT_MGR_H
 
 #include "gdextension_spx_ext.h"
+#include "scene/2d/node_2d.h"
 #include "spx_base_mgr.h"
 
-class AudioStreamPlayer2D;
-
-class SpxAudioMgr : SpxBaseMgr {
-	SPXCLASS(SpxAudioMgr, SpxBaseMgr)
+class SpxPen;
+class SpxExtMgr : SpxBaseMgr {
+	SPXCLASS(SpxExtMgr, SpxBaseMgr)
 public:
-	virtual ~SpxAudioMgr() = default; // Added virtual destructor to fix -Werror=non-virtual-dtor
+	virtual ~SpxExtMgr() = default;
 
 private:
-	List<AudioStreamPlayer2D*> audios;
-	AudioStreamPlayer2D *music;
+	RBMap<GdObj, SpxPen *> id_pens;
+	Node *pen_root;
+
+	static Mutex lock;
+private:
+	SpxPen *_get_pen(GdObj id);
 
 public:
 	void on_awake() override;
+	void on_start() override;
 	void on_destroy() override;
 	void on_update(float delta) override;
-private:
-	void set_volume(int bus,GdFloat volume);
-	GdFloat get_volume(int bus);
+
 public:
-	void stop_all();
-
-	void play_sfx(GdString path);
-
-	void play_music(GdString path);
-	void pause_music();
-	void resume_music();
-	GdFloat get_music_timer();
-	void set_music_timer(GdFloat time);
-	GdBool is_music_playing();
-
-	void set_sfx_volume(GdFloat volume);
-	GdFloat get_sfx_volume();
-	void set_music_volume(GdFloat volume);
-	GdFloat get_music_volume();
-	void set_master_volume(GdFloat volume);
-	GdFloat get_master_volume();
+	// obj APIs
+	void destroy_all_pens();
+	GdObj create_pen();
+	void destroy_pen(GdObj obj);
+	void pen_stamp(GdObj obj);
+	void move_pen_to(GdObj obj, GdVec2 position);
+	void pen_down(GdObj obj, GdBool move_by_mouse);
+	void pen_up(GdObj obj);
+	void set_pen_color_to(GdObj obj, GdColor color);
+	void change_pen_by(GdObj obj, GdInt property, GdFloat amount);
+	void set_pen_to(GdObj obj, GdInt property, GdFloat value);
+	void change_pen_size_by(GdObj obj, GdFloat amount);
+	void set_pen_size_to(GdObj obj, GdFloat size);
+	void set_pen_stamp_texture(GdObj obj, GdString texture_path);
 };
 
-#endif // SPX_AUDIO_MGR_H
+#endif // SPX_EXT_MGR_H

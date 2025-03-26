@@ -155,6 +155,128 @@ function gdspx_camera_get_viewport_rect() {
 	FreeGdRect2(_retValue); 
 	return _finalRetValue
 }
+function gdspx_ext_destroy_all_pens() {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_destroy_all_pens']; 
+	
+	_gdFuncPtr();
+
+}
+function gdspx_ext_create_pen() {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_create_pen']; 
+	_retValue = AllocGdObj();
+	_gdFuncPtr(_retValue);
+	_finalRetValue = ToJsObj(_retValue);
+	FreeGdObj(_retValue); 
+	return _finalRetValue
+}
+function gdspx_ext_destroy_pen(obj) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_destroy_pen']; 
+	
+	_arg0 = ToGdObj(obj);
+	_gdFuncPtr(_arg0);
+	FreeGdObj(_arg0); 
+
+}
+function gdspx_ext_pen_stamp(obj) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_pen_stamp']; 
+	
+	_arg0 = ToGdObj(obj);
+	_gdFuncPtr(_arg0);
+	FreeGdObj(_arg0); 
+
+}
+function gdspx_ext_move_pen_to(obj,position) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_move_pen_to']; 
+	
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdVec2(position);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdVec2(_arg1); 
+
+}
+function gdspx_ext_pen_down(obj,move_by_mouse) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_pen_down']; 
+	
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdBool(move_by_mouse);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdBool(_arg1); 
+
+}
+function gdspx_ext_pen_up(obj) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_pen_up']; 
+	
+	_arg0 = ToGdObj(obj);
+	_gdFuncPtr(_arg0);
+	FreeGdObj(_arg0); 
+
+}
+function gdspx_ext_set_pen_color_to(obj,color) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_set_pen_color_to']; 
+	
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdColor(color);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdColor(_arg1); 
+
+}
+function gdspx_ext_change_pen_by(obj,property,amount) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_change_pen_by']; 
+	
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdInt(property);
+	_arg2 = ToGdFloat(amount);
+	_gdFuncPtr(_arg0, _arg1, _arg2);
+	FreeGdObj(_arg0); 
+	FreeGdInt(_arg1); 
+	FreeGdFloat(_arg2); 
+
+}
+function gdspx_ext_set_pen_to(obj,property,value) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_set_pen_to']; 
+	
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdInt(property);
+	_arg2 = ToGdFloat(value);
+	_gdFuncPtr(_arg0, _arg1, _arg2);
+	FreeGdObj(_arg0); 
+	FreeGdInt(_arg1); 
+	FreeGdFloat(_arg2); 
+
+}
+function gdspx_ext_change_pen_size_by(obj,amount) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_change_pen_size_by']; 
+	
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdFloat(amount);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdFloat(_arg1); 
+
+}
+function gdspx_ext_set_pen_size_to(obj,size) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_set_pen_size_to']; 
+	
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdFloat(size);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdFloat(_arg1); 
+
+}
+function gdspx_ext_set_pen_stamp_texture(obj,texture_path) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_set_pen_stamp_texture']; 
+	
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdString(texture_path);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdString(_arg1); 
+
+}
 function gdspx_input_get_mouse_pos() {
 	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_input_get_mouse_pos']; 
 	_retValue = AllocGdVec2();

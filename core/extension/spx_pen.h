@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  spx_audio_mgr.h                                                       */
+/*  spx_ext_pen.h                                                      */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,48 +28,62 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef SPX_AUDIO_MGR_H
-#define SPX_AUDIO_MGR_H
+#ifndef SPX_PEN_H
+#define SPX_PEN_H
 
 #include "gdextension_spx_ext.h"
+#include "scene/2d/line_2d.h"
+#include "scene/2d/node_2d.h"
+#include "scene/2d/sprite_2d.h"
 #include "spx_base_mgr.h"
 
-class AudioStreamPlayer2D;
+class SpxSprite;
+class SpxPen {
+private:
+	GdObj id;
+	Node *root;
+	Line2D *current_line = nullptr;
+	bool is_pen_down = false;
+	float min_draw_distance = 1.0f;
 
-class SpxAudioMgr : SpxBaseMgr {
-	SPXCLASS(SpxAudioMgr, SpxBaseMgr)
-public:
-	virtual ~SpxAudioMgr() = default; // Added virtual destructor to fix -Werror=non-virtual-dtor
+	struct PenProperties {
+		Color color = Color(0, 0, 0, 1); // BLACK
+		float size = 2.0f;
+		float saturation = 1.0f;
+		float brightness = 1.0f;
+		float transparency = 0.0f;
+	} pen_properties;
+
+	Vector2 current_pen_pos;
+	bool move_by_mouse = false;
+
+	Ref<Texture2D> stamp_texture;
 
 private:
-	List<AudioStreamPlayer2D*> audios;
-	AudioStreamPlayer2D *music;
+	Line2D *_create_new_line();
+	void _start_new_line();
+	Color _get_current_color() const;
 
 public:
-	void on_awake() override;
-	void on_destroy() override;
-	void on_update(float delta) override;
-private:
-	void set_volume(int bus,GdFloat volume);
-	GdFloat get_volume(int bus);
+	void on_create(GdInt id, Node *root);
+	void on_destroy();
+	void on_update(float delta);
+
 public:
-	void stop_all();
-
-	void play_sfx(GdString path);
-
-	void play_music(GdString path);
-	void pause_music();
-	void resume_music();
-	GdFloat get_music_timer();
-	void set_music_timer(GdFloat time);
-	GdBool is_music_playing();
-
-	void set_sfx_volume(GdFloat volume);
-	GdFloat get_sfx_volume();
-	void set_music_volume(GdFloat volume);
-	GdFloat get_music_volume();
-	void set_master_volume(GdFloat volume);
-	GdFloat get_master_volume();
+	// Pen APIs
+	void erase_all();
+	GdObj get_id();
+	void on_down(GdBool move_by_mouse);
+	void on_up();
+	void stamp();
+	void move_to(GdVec2 position);
+	void set_color_to(GdColor color);
+	void change_by(GdInt property, GdFloat amount);
+	void set_to(GdInt property, GdFloat value);
+	void change_size_by(GdFloat amount);
+	void set_size_to(GdFloat size);
+	void set_stamp_texture(GdString texture_path);
 };
 
-#endif // SPX_AUDIO_MGR_H
+
+#endif // SPX_PEN_H
