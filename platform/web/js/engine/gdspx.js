@@ -15,102 +15,162 @@ function gdspx_audio_stop_all() {
 	_gdFuncPtr();
 
 }
-function gdspx_audio_play_sfx(path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_play_sfx']; 
-	
-	_arg0 = ToGdString(path);
-	_gdFuncPtr(_arg0);
-	FreeGdString(_arg0); 
-
-}
-function gdspx_audio_play_music(path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_play_music']; 
-	
-	_arg0 = ToGdString(path);
-	_gdFuncPtr(_arg0);
-	FreeGdString(_arg0); 
-
-}
-function gdspx_audio_pause_music() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_pause_music']; 
-	
-	_gdFuncPtr();
-
-}
-function gdspx_audio_resume_music() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_resume_music']; 
-	
-	_gdFuncPtr();
-
-}
-function gdspx_audio_get_music_timer() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_get_music_timer']; 
-	_retValue = AllocGdFloat();
+function gdspx_audio_create_audio() {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_create_audio']; 
+	_retValue = AllocGdObj();
 	_gdFuncPtr(_retValue);
+	_finalRetValue = ToJsObj(_retValue);
+	FreeGdObj(_retValue); 
+	return _finalRetValue
+}
+function gdspx_audio_destroy_audio(obj) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_destroy_audio']; 
+	
+	_arg0 = ToGdObj(obj);
+	_gdFuncPtr(_arg0);
+	FreeGdObj(_arg0); 
+
+}
+function gdspx_audio_set_pitch(obj,pitch) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_set_pitch']; 
+	
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdFloat(pitch);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdFloat(_arg1); 
+
+}
+function gdspx_audio_get_pitch(obj) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_get_pitch']; 
+	_retValue = AllocGdFloat();
+	_arg0 = ToGdObj(obj);
+	_gdFuncPtr(_arg0, _retValue);
+	FreeGdObj(_arg0); 
 	_finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
-function gdspx_audio_set_music_timer(time) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_set_music_timer']; 
+function gdspx_audio_set_pan(obj,pan) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_set_pan']; 
 	
-	_arg0 = ToGdFloat(time);
-	_gdFuncPtr(_arg0);
-	FreeGdFloat(_arg0); 
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdFloat(pan);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdFloat(_arg1); 
 
 }
-function gdspx_audio_is_music_playing() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_is_music_playing']; 
+function gdspx_audio_get_pan(obj) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_get_pan']; 
+	_retValue = AllocGdFloat();
+	_arg0 = ToGdObj(obj);
+	_gdFuncPtr(_arg0, _retValue);
+	FreeGdObj(_arg0); 
+	_finalRetValue = ToJsFloat(_retValue);
+	FreeGdFloat(_retValue); 
+	return _finalRetValue
+}
+function gdspx_audio_play(obj,path) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_play']; 
+	
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdString(path);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdString(_arg1); 
+
+}
+function gdspx_audio_pause(obj) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_pause']; 
+	
+	_arg0 = ToGdObj(obj);
+	_gdFuncPtr(_arg0);
+	FreeGdObj(_arg0); 
+
+}
+function gdspx_audio_resume(obj) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_resume']; 
+	
+	_arg0 = ToGdObj(obj);
+	_gdFuncPtr(_arg0);
+	FreeGdObj(_arg0); 
+
+}
+function gdspx_audio_stop(obj) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_stop']; 
+	
+	_arg0 = ToGdObj(obj);
+	_gdFuncPtr(_arg0);
+	FreeGdObj(_arg0); 
+
+}
+function gdspx_audio_set_loop(obj,loop) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_set_loop']; 
+	
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdBool(loop);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdBool(_arg1); 
+
+}
+function gdspx_audio_get_loop(obj) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_get_loop']; 
 	_retValue = AllocGdBool();
-	_gdFuncPtr(_retValue);
+	_arg0 = ToGdObj(obj);
+	_gdFuncPtr(_arg0, _retValue);
+	FreeGdObj(_arg0); 
 	_finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-function gdspx_audio_set_sfx_volume(volume) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_set_sfx_volume']; 
-	
-	_arg0 = ToGdFloat(volume);
-	_gdFuncPtr(_arg0);
-	FreeGdFloat(_arg0); 
-
-}
-function gdspx_audio_get_sfx_volume() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_get_sfx_volume']; 
+function gdspx_audio_get_timer(obj) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_get_timer']; 
 	_retValue = AllocGdFloat();
-	_gdFuncPtr(_retValue);
+	_arg0 = ToGdObj(obj);
+	_gdFuncPtr(_arg0, _retValue);
+	FreeGdObj(_arg0); 
 	_finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
-function gdspx_audio_set_music_volume(volume) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_set_music_volume']; 
+function gdspx_audio_set_timer(obj,time) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_set_timer']; 
 	
-	_arg0 = ToGdFloat(volume);
-	_gdFuncPtr(_arg0);
-	FreeGdFloat(_arg0); 
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdFloat(time);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdFloat(_arg1); 
 
 }
-function gdspx_audio_get_music_volume() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_get_music_volume']; 
-	_retValue = AllocGdFloat();
-	_gdFuncPtr(_retValue);
-	_finalRetValue = ToJsFloat(_retValue);
-	FreeGdFloat(_retValue); 
+function gdspx_audio_is_playing(obj) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_is_playing']; 
+	_retValue = AllocGdBool();
+	_arg0 = ToGdObj(obj);
+	_gdFuncPtr(_arg0, _retValue);
+	FreeGdObj(_arg0); 
+	_finalRetValue = ToJsBool(_retValue);
+	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-function gdspx_audio_set_master_volume(volume) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_set_master_volume']; 
+function gdspx_audio_set_volume(obj,volume) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_set_volume']; 
 	
-	_arg0 = ToGdFloat(volume);
-	_gdFuncPtr(_arg0);
-	FreeGdFloat(_arg0); 
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdFloat(volume);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdFloat(_arg1); 
 
 }
-function gdspx_audio_get_master_volume() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_get_master_volume']; 
+function gdspx_audio_get_volume(obj) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_get_volume']; 
 	_retValue = AllocGdFloat();
-	_gdFuncPtr(_retValue);
+	_arg0 = ToGdObj(obj);
+	_gdFuncPtr(_arg0, _retValue);
+	FreeGdObj(_arg0); 
 	_finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue

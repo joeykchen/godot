@@ -29,150 +29,167 @@
 /**************************************************************************/
 
 #include "spx_audio_mgr.h"
+#include "spx_audio.h"
+#include "spx_audio_bus_pool.h"
 
 #include "scene/2d/audio_stream_player_2d.h"
 #include "spx_engine.h"
 #include "spx_res_mgr.h"
 
-const int BUS_MASTER = 0;
-const int BUS_SFX = 1;
-const int BUS_MUSIC = 2;
-const StringName STR_BUS_MASTER = "Master";
-const StringName STR_BUS_SFX = "Master";
-const StringName STR_BUS_MUSIC = "Master";
+
+#define check_and_get_audio_v()                                               \
+	auto audio = _get_audio(obj);                                             \
+	if (audio == nullptr) {                                                   \
+		print_error("try to get property of a null audio gid=" + itos(obj));  \
+		return;                                                               \
+	}
+
+#define check_and_get_audio_r(VALUE)                                          \
+	auto audio = _get_audio(obj);                                             \
+	if (audio == nullptr) {                                                   \
+		print_error("try to get property of a null audio gid=" + itos(obj));  \
+		return VALUE;                                                         \
+	}
+
+Mutex SpxAudioMgr::lock;
 
 void SpxAudioMgr::on_awake() {
 	SpxBaseMgr::on_awake();
-	// add default bus : music and sfx
-	AudioServer::get_singleton()->set_bus_count(3);
-	AudioServer::get_singleton()->set_bus_name(BUS_SFX, STR_BUS_SFX);
-	AudioServer::get_singleton()->set_bus_name(BUS_MUSIC, STR_BUS_MUSIC);
+	// Initialize SpxAudioBusPool
+	SpxAudioBusPool::init();
 
-	AudioServer::get_singleton()->set_bus_send(BUS_SFX, STR_BUS_MASTER);
-	AudioServer::get_singleton()->set_bus_send(BUS_MUSIC, STR_BUS_MASTER);
+	root = memnew(Node2D);
+	root->set_name("audio_root");
+	get_spx_root()->add_child(root);
 
-	music = memnew(AudioStreamPlayer2D);
-	music->set_bus(STR_BUS_MASTER);
-	owner->add_child(music);
 }
 
-void SpxAudioMgr::stop_all() {
-	for (List<AudioStreamPlayer2D *>::Element *item = audios.front(); item;) {
-		item->get()->queue_free();
-		item = item->next();
+void SpxAudioMgr::on_update(float delta) {
+	SpxBaseMgr::on_update(delta);
+	lock.lock();
+	for (const KeyValue<GdObj, SpxAudio *> &E : id_audios) {
+		E.value->on_update(delta);
 	}
-	audios.clear();
-	if (music) {
-		pause_music();
-	}
+	lock.unlock();
 }
 
 void SpxAudioMgr::on_destroy() {
-	stop_all();
-	if (music) {
-		music->queue_free();
-		music = nullptr;
+	lock.lock();
+	for (const KeyValue<GdObj, SpxAudio *> &E : id_audios) {
+		E.value->on_destroy();
 	}
+	id_audios.clear();
+	if (root) {
+		root->queue_free();
+		root = nullptr;
+	}
+	lock.unlock();
 	SpxBaseMgr::on_destroy();
 }
-void SpxAudioMgr::on_update(float delta) {
-	SpxBaseMgr::on_update(delta);
 
-	// Check for music looping - if music exists and has a valid stream but isn't playing, restart it
-	if (music && music->get_stream().is_valid() && !music->is_playing() && !music->get_stream_paused()) {
-		music->play();
+SpxAudio *SpxAudioMgr::_get_audio(GdObj obj) {
+	if (id_audios.has(obj)) {
+		return id_audios[obj];
 	}
+	return nullptr;
+}
 
-	// check the audio is done
-	for (auto item = audios.front(); item;) {
-		const auto audio = item->get();
-		auto *next = item->next();
-		if (!audio->is_playing()) {
-			audio->queue_free();
-			audios.erase(item);
-		}
-		item = next;
+void SpxAudioMgr::stop_all() {
+	lock.lock();
+	for (const KeyValue<GdObj, SpxAudio *> &E : id_audios) {
+		E.value->stop_all();
 	}
+	lock.unlock();
 }
 
-void SpxAudioMgr::play_sfx(GdString path) {
-	auto path_str = SpxStr(path);
-	Ref<AudioStream> stream = resMgr->load_audio(path_str);
-
-	auto audio = memnew(AudioStreamPlayer2D);
-	audio->set_bus(STR_BUS_SFX);
-	owner->add_child(audio);
-	audio->set_stream(stream);
-	audio->play();
-	audio->set_name(SpxStr(path));
-	audios.push_back(audio);
+GdObj SpxAudioMgr::create_audio() {
+	auto id = get_unique_id();
+	lock.lock();
+	SpxAudio *node = memnew(SpxAudio);
+	node->on_create(id, root);
+	id_audios[id] = node;
+	lock.unlock();
+	return id;
 }
 
-GdBool SpxAudioMgr::is_music_playing() {
-	return music->is_playing();
+void SpxAudioMgr::destroy_audio(GdObj obj) {
+	lock.lock();
+	auto audio = _get_audio(obj);
+	if (audio != nullptr) {
+		id_audios.erase(obj);
+		audio->on_destroy();
+	}
+	lock.unlock();
 }
 
-void SpxAudioMgr::play_music(GdString path) {
-	auto path_str = SpxStr(path);
-	Ref<AudioStream> stream = resMgr->load_audio(path_str);
-
-	// Instead of using signals (which require get_instance_id), we'll check in the update method
-	// if the music has finished playing and restart it if needed
-	
-	music->set_stream(stream);
-	music->set_autoplay(false);
-	music->set_max_polyphony(1);
-	music->set_max_distance(2000);
-
-	music->play();
+GdBool SpxAudioMgr::is_playing(GdObj obj) {
+	check_and_get_audio_r(false)
+	return audio->is_playing();
 }
 
-void SpxAudioMgr::pause_music() {
-	music->set_stream_paused(true);
+void SpxAudioMgr::play(GdObj obj, GdString path) {
+	check_and_get_audio_v()
+	audio->play(path);
 }
 
-void SpxAudioMgr::resume_music() {
-	music->set_stream_paused(false);
+void SpxAudioMgr::pause(GdObj obj) {
+	check_and_get_audio_v()
+	audio->pause();
 }
 
-GdFloat SpxAudioMgr::get_music_timer() {
-	return music->get_playback_position();
+void SpxAudioMgr::resume(GdObj obj) {
+	check_and_get_audio_v()
+	audio->resume();
 }
 
-void SpxAudioMgr::set_music_timer(GdFloat time) {
-	music->seek(time);
+void SpxAudioMgr::stop(GdObj obj) {
+	check_and_get_audio_v()
+	audio->stop();
 }
 
-void SpxAudioMgr::set_volume(int bus, GdFloat volume) {
-	auto dbval = Math::linear_to_db(volume);
-	AudioServer::get_singleton()->set_bus_volume_db(bus, dbval);
-}
-GdFloat SpxAudioMgr::get_volume(int bus) {
-	auto dbval = AudioServer::get_singleton()->get_bus_volume_db(bus);
-	return Math::linear_to_db(dbval);
+void SpxAudioMgr::set_loop(GdObj obj, GdBool loop) {
+	check_and_get_audio_v()
+	audio->set_loop(loop);
 }
 
-void SpxAudioMgr::set_sfx_volume(GdFloat volume) {
-	set_volume(BUS_SFX, volume);
+GdBool SpxAudioMgr::get_loop(GdObj obj) {
+	check_and_get_audio_r(false)
+	return audio->get_loop();
 }
 
-GdFloat SpxAudioMgr::get_sfx_volume() {
-	return get_volume(BUS_SFX);
+GdFloat SpxAudioMgr::get_timer(GdObj obj) {
+	check_and_get_audio_r(0.0)
+	return audio->get_timer();
 }
 
-void SpxAudioMgr::set_music_volume(GdFloat volume) {
-	set_volume(BUS_MUSIC, volume);
+void SpxAudioMgr::set_timer(GdObj obj, GdFloat time) {
+	check_and_get_audio_v()
+	audio->set_timer(time);
 }
 
-GdFloat SpxAudioMgr::get_music_volume() {
-	return get_volume(BUS_MUSIC);
+void SpxAudioMgr::set_pitch(GdObj obj, GdFloat pitch) {
+	check_and_get_audio_v()
+	audio->set_pitch(pitch);
+}
+GdFloat SpxAudioMgr::get_pitch(GdObj obj) {
+	check_and_get_audio_r(0.0)
+	return audio->get_pitch();
+}
+void SpxAudioMgr::set_pan(GdObj obj, GdFloat pan) {
+	check_and_get_audio_v()
+	audio->set_pan(pan);
+}
+GdFloat SpxAudioMgr::get_pan(GdObj obj) {
+	check_and_get_audio_r(0.0)
+	return audio->get_pan();
 }
 
-void SpxAudioMgr::set_master_volume(GdFloat volume) {
-	set_volume(BUS_MASTER, volume);
-}
-GdFloat SpxAudioMgr::get_master_volume() {
-	return get_volume(BUS_MASTER);
+void SpxAudioMgr::set_volume(GdObj obj, GdFloat volume) {
+	check_and_get_audio_v()
+	audio->set_volume(volume);
 }
 
-
+GdFloat SpxAudioMgr::get_volume(GdObj obj) {
+	check_and_get_audio_r(0.0)
+	return audio->get_volume();
+}

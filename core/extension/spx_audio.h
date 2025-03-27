@@ -1,5 +1,5 @@
-/**************************************************************************/
-/*  spx_audio_mgr.h                                                       */
+﻿/**************************************************************************/
+/*  spx_audio.h                                                       */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,61 +28,54 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef SPX_AUDIO_MGR_H
-#define SPX_AUDIO_MGR_H
+#ifndef SPX_AUDIO_H
+#define SPX_AUDIO_H
 
-#include "gdextension_spx_ext.h"
-#include "spx_base_mgr.h"
-#include "scene/main/node.h"
-#include "scene/2d/node_2d.h"
-#include "core/templates/rb_map.h"
 #include "core/templates/list.h"
-#include "core/os/mutex.h"
+#include "gdextension_spx_ext.h"
+#include "scene/main/node.h"
 
-// Forward declarations
-class SpxAudio;
 class AudioStreamPlayer2D;
 
-class SpxAudioMgr : SpxBaseMgr {
-	SPXCLASS(SpxAudioMgr, SpxBaseMgr)
+class SpxAudio {
 private:
-	RBMap<GdObj, SpxAudio *> id_audios;
-	Node *root = nullptr;
+	List<AudioStreamPlayer2D *> audios;
+	AudioStreamPlayer2D *cur_audio = nullptr;
+	Node *root;
+	GdObj id;
 
-	static Mutex lock;
-	SpxAudio *_get_audio(GdObj obj);
+	int bus_id;
+	StringName bus_name;
+
+	GdFloat cur_pitch = 1.0;
+
+private:
+	void on_bus_dirty();
 
 public:
-	virtual ~SpxAudioMgr() = default; // Added virtual destructor to fix -Werror=non-virtual-dtor
-
-public:
-	void on_awake() override;
-	void on_destroy() override;
-	void on_update(float delta) override;
+	void on_create(GdObj id, Node *root);
+	void on_destroy();
+	void on_update(float delta);
 
 public:
 	void stop_all();
+	void set_pitch(GdFloat pitch);
+	GdFloat get_pitch();
+	void set_pan(GdFloat pan);
+	GdFloat get_pan();
+	void set_volume(GdFloat volume);
+	GdFloat get_volume();
 
-	GdObj create_audio();
-	void destroy_audio(GdObj obj);
+	void play(GdString path);
+	void pause();
+	void resume();
+	void stop();
+    void set_loop(GdBool loop);
+	GdBool get_loop();
 
-	void set_pitch(GdObj obj, GdFloat pitch);
-	GdFloat get_pitch(GdObj obj);
-	void set_pan(GdObj obj, GdFloat pan);
-	GdFloat get_pan(GdObj obj);
-
-	void play(GdObj obj, GdString path);
-	void pause(GdObj obj);
-	void resume(GdObj obj);
-	void stop(GdObj obj);
-	void set_loop(GdObj obj, GdBool loop);
-	GdBool get_loop(GdObj obj);
-	
-	GdFloat get_timer(GdObj obj);
-	void set_timer(GdObj obj, GdFloat time);
-	GdBool is_playing(GdObj obj);
-	void set_volume(GdObj obj, GdFloat volume);
-	GdFloat get_volume(GdObj obj);
+	GdFloat get_timer();
+	void set_timer(GdFloat time);
+	GdBool is_playing();
 };
 
-#endif // SPX_AUDIO_MGR_H
+#endif // SPX_AUDIO_H

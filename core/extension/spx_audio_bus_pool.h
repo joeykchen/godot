@@ -1,5 +1,5 @@
-/**************************************************************************/
-/*  spx_audio_mgr.h                                                       */
+﻿/**************************************************************************/
+/*  spx_audio_bus_pool.h                                                       */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,61 +28,44 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef SPX_AUDIO_MGR_H
-#define SPX_AUDIO_MGR_H
+#ifndef SPX_AUDIO_BUS_POOL_H
+#define SPX_AUDIO_BUS_POOL_H
 
+#include "core/string/ustring.h"
 #include "gdextension_spx_ext.h"
-#include "spx_base_mgr.h"
 #include "scene/main/node.h"
-#include "scene/2d/node_2d.h"
-#include "core/templates/rb_map.h"
-#include "core/templates/list.h"
-#include "core/os/mutex.h"
 
-// Forward declarations
-class SpxAudio;
-class AudioStreamPlayer2D;
+class SpxAudioBusPool {
+	static SpxAudioBusPool *singleton;
 
-class SpxAudioMgr : SpxBaseMgr {
-	SPXCLASS(SpxAudioMgr, SpxBaseMgr)
+public:
+	static const int BUS_MASTER = 0;
+	static const int BUS_SFX = 1;
+	static const int BUS_MUSIC = 2;
+	static const StringName STR_BUS_MASTER;
+	static const StringName STR_BUS_SFX;
+	static const StringName STR_BUS_MUSIC;
+
 private:
-	RBMap<GdObj, SpxAudio *> id_audios;
-	Node *root = nullptr;
+	static const int DEFAULT_BUS_COUNT = 4; // Default number of buses including master
+	static const int BUS_EXPANSION_SIZE = 4; // Number of buses to add when expanding
 
-	static Mutex lock;
-	SpxAudio *_get_audio(GdObj obj);
-
-public:
-	virtual ~SpxAudioMgr() = default; // Added virtual destructor to fix -Werror=non-virtual-dtor
-
-public:
-	void on_awake() override;
-	void on_destroy() override;
-	void on_update(float delta) override;
+	Vector<int> free_buses; // Pool of available bus IDs
+	HashMap<int, bool> active_buses; // Track active buses
+	int current_bus_count = 0; // Current total number of buses
+private:
+	void expand_buses();
+	bool is_valid_bus(int id);
 
 public:
-	void stop_all();
-
-	GdObj create_audio();
-	void destroy_audio(GdObj obj);
-
-	void set_pitch(GdObj obj, GdFloat pitch);
-	GdFloat get_pitch(GdObj obj);
-	void set_pan(GdObj obj, GdFloat pan);
-	GdFloat get_pan(GdObj obj);
-
-	void play(GdObj obj, GdString path);
-	void pause(GdObj obj);
-	void resume(GdObj obj);
-	void stop(GdObj obj);
-	void set_loop(GdObj obj, GdBool loop);
-	GdBool get_loop(GdObj obj);
-	
-	GdFloat get_timer(GdObj obj);
-	void set_timer(GdObj obj, GdFloat time);
-	GdBool is_playing(GdObj obj);
-	void set_volume(GdObj obj, GdFloat volume);
-	GdFloat get_volume(GdObj obj);
+	static SpxAudioBusPool *get_singleton();
+	static void init();
+	int alloc();
+	void free(int id);
+	void set_volume(int id, GdFloat volume);
+	GdFloat get_volume(int id);
+	void set_pan(int id, GdFloat pan);
+	GdFloat get_pan(int id);
+	StringName get_bus_name(int id);
 };
-
-#endif // SPX_AUDIO_MGR_H
+#endif // SPX_AUDIO_BUS_POOL_H

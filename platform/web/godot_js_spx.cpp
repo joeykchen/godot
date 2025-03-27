@@ -63,56 +63,72 @@ void gdspx_audio_stop_all() {
 	 audioMgr->stop_all();
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_audio_play_sfx(GdString* path) {
-	 audioMgr->play_sfx(*path);
+void gdspx_audio_create_audio(GdObj* ret_val) {
+	*ret_val = audioMgr->create_audio();
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_audio_play_music(GdString* path) {
-	 audioMgr->play_music(*path);
+void gdspx_audio_destroy_audio(GdObj* obj) {
+	 audioMgr->destroy_audio(*obj);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_audio_pause_music() {
-	 audioMgr->pause_music();
+void gdspx_audio_set_pitch(GdObj* obj,GdFloat* pitch) {
+	 audioMgr->set_pitch(*obj, *pitch);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_audio_resume_music() {
-	 audioMgr->resume_music();
+void gdspx_audio_get_pitch(GdObj* obj,GdFloat* ret_val) {
+	*ret_val = audioMgr->get_pitch(*obj);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_audio_get_music_timer(GdFloat* ret_val) {
-	*ret_val = audioMgr->get_music_timer();
+void gdspx_audio_set_pan(GdObj* obj,GdFloat* pan) {
+	 audioMgr->set_pan(*obj, *pan);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_audio_set_music_timer(GdFloat* time) {
-	 audioMgr->set_music_timer(*time);
+void gdspx_audio_get_pan(GdObj* obj,GdFloat* ret_val) {
+	*ret_val = audioMgr->get_pan(*obj);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_audio_is_music_playing(GdBool* ret_val) {
-	*ret_val = audioMgr->is_music_playing();
+void gdspx_audio_play(GdObj* obj,GdString* path) {
+	 audioMgr->play(*obj, *path);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_audio_set_sfx_volume(GdFloat* volume) {
-	 audioMgr->set_sfx_volume(*volume);
+void gdspx_audio_pause(GdObj* obj) {
+	 audioMgr->pause(*obj);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_audio_get_sfx_volume(GdFloat* ret_val) {
-	*ret_val = audioMgr->get_sfx_volume();
+void gdspx_audio_resume(GdObj* obj) {
+	 audioMgr->resume(*obj);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_audio_set_music_volume(GdFloat* volume) {
-	 audioMgr->set_music_volume(*volume);
+void gdspx_audio_stop(GdObj* obj) {
+	 audioMgr->stop(*obj);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_audio_get_music_volume(GdFloat* ret_val) {
-	*ret_val = audioMgr->get_music_volume();
+void gdspx_audio_set_loop(GdObj* obj,GdBool* loop) {
+	 audioMgr->set_loop(*obj, *loop);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_audio_set_master_volume(GdFloat* volume) {
-	 audioMgr->set_master_volume(*volume);
+void gdspx_audio_get_loop(GdObj* obj,GdBool* ret_val) {
+	*ret_val = audioMgr->get_loop(*obj);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_audio_get_master_volume(GdFloat* ret_val) {
-	*ret_val = audioMgr->get_master_volume();
+void gdspx_audio_get_timer(GdObj* obj,GdFloat* ret_val) {
+	*ret_val = audioMgr->get_timer(*obj);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_audio_set_timer(GdObj* obj,GdFloat* time) {
+	 audioMgr->set_timer(*obj, *time);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_audio_is_playing(GdObj* obj,GdBool* ret_val) {
+	*ret_val = audioMgr->is_playing(*obj);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_audio_set_volume(GdObj* obj,GdFloat* volume) {
+	 audioMgr->set_volume(*obj, *volume);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_audio_get_volume(GdObj* obj,GdFloat* ret_val) {
+	*ret_val = audioMgr->get_volume(*obj);
 }
 EMSCRIPTEN_KEEPALIVE
 void gdspx_camera_get_camera_position(GdVec2* ret_val) {
