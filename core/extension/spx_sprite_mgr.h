@@ -32,9 +32,13 @@
 #define SPX_SPRITE_MGR_H
 
 #include "gdextension_spx_ext.h"
+#include "scene/2d/animated_sprite_2d.h"
 #include "spx_base_mgr.h"
+#include <functional>
 
 class SpxSprite;
+
+typedef std::function<bool(GdColor, GdColor)> ColorCheckFunc;
 
 class SpxSpriteMgr : SpxBaseMgr {
 	SPXCLASS(SpxSpriteMgr, SpxBaseMgr)
@@ -44,6 +48,11 @@ public:
 private:
 	RBMap<GdObj, SpxSprite *> id_objects;
 	Node* dont_destroy_root;
+
+	Ref<Image> _get_current_frame_image(AnimatedSprite2D *sprite);
+	Rect2 _get_sprite_aabb(AnimatedSprite2D *anim2d);
+	Vector2 _to_image_coord(const Transform2D &trans, Vector2 image_size, Vector2 pos);
+	GdBool _check_collision(GdObj obj, ColorCheckFunc check_func);
 
 public:
 	static StringName default_texture_anim;
@@ -88,7 +97,7 @@ public:
 	GdVec2 get_render_scale(GdObj obj);
 	void set_color(GdObj obj, GdColor color);
 	GdColor get_color(GdObj obj);
-	
+
 	void set_material_shader(GdObj obj, GdString path);
 	GdString get_material_shader(GdObj obj);
 	void set_material_params(GdObj obj, GdString effect, GdFloat amount);
@@ -98,7 +107,7 @@ public:
 	void set_texture(GdObj obj, GdString path);
 	void set_texture_altas_direct(GdObj obj, GdString path, GdRect2 rect2);
 	void set_texture_direct(GdObj obj, GdString path);
-	
+
 	GdString get_texture(GdObj obj);
 	void set_visible(GdObj obj, GdBool visible);
 	GdBool get_visible(GdObj obj);
@@ -122,7 +131,7 @@ public:
 	GdBool is_anim_centered(GdObj obj);
 	void set_anim_offset(GdObj obj, GdVec2 p_offset);
 	GdVec2 get_anim_offset(GdObj obj);
-	void set_anim_flip_h(GdObj obj, GdBool p_flip); 
+	void set_anim_flip_h(GdObj obj, GdBool p_flip);
 	GdBool is_anim_flipped_h(GdObj obj);
 	void set_anim_flip_v(GdObj obj, GdBool p_flip);
 	GdBool is_anim_flipped_v(GdObj obj);
@@ -172,6 +181,9 @@ public:
 	void set_trigger_enabled(GdObj obj, GdBool trigger);
 	GdBool is_trigger_enabled(GdObj obj);
 
+	// misc
+	GdBool check_collision_by_color(GdObj obj, GdColor color,GdFloat color_threshold);
+	GdBool check_collision_by_alpha(GdObj obj, GdFloat alpha_threshold);
 };
 
 #endif // SPX_SPRITE_MGR_H

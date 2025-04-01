@@ -61,13 +61,13 @@ protected:
 	void _draw();
 	Ref<SpriteFrames> default_sprite_frames;
 	Ref<ShaderMaterial> default_material;
-	AnimatedSprite2D *anim2d;
 	Area2D *area2d;
 	CollisionShape2D *trigger2d;
 	CollisionShape2D *collider2d;
 	VisibleOnScreenNotifier2D *visible_notifier;
 
 public:
+	AnimatedSprite2D *anim2d;
 	CollisionShape2D *get_trigger() { return trigger2d; }
 
 public:
