@@ -45,6 +45,7 @@ class AudioStreamPlayer2D;
 
 class SpxAudioMgr : SpxBaseMgr {
 	SPXCLASS(SpxAudioMgr, SpxBaseMgr)
+
 private:
 	RBMap<GdObj, SpxAudio *> id_audios;
 	Node *root = nullptr;

@@ -674,8 +674,138 @@ void SpxSpriteMgr::set_trigger_enabled(GdObj obj, GdBool trigger) {
 	check_and_get_sprite_v()
 	sprite->set_trigger_enabled(trigger);
 }
-
 GdBool SpxSpriteMgr::is_trigger_enabled(GdObj obj) {
 	check_and_get_sprite_r(false)
 	return sprite->is_trigger_enabled();
+}
+
+Ref<Image> SpxSpriteMgr::_get_current_frame_image(AnimatedSprite2D *sprite) {
+	Ref<SpriteFrames> frames = sprite->get_sprite_frames();
+	if (frames.is_null()) {
+		return Ref<Texture2D>();
+	}
+
+	String current_animation = sprite->get_animation();
+	int current_frame = sprite->get_frame();
+
+	if (!frames->has_animation(current_animation)) {
+		return Ref<Texture2D>();
+	}
+
+	auto texture = frames->get_frame_texture(current_animation, current_frame);
+	if (texture.is_null()) {
+		return Ref<Image>();
+	}
+	Ref<Image> image = texture->get_image();
+	if (image.is_null()) {
+		return Ref<Image>();
+	}
+	return image;
+}
+
+Rect2 SpxSpriteMgr::_get_sprite_aabb(AnimatedSprite2D *anim2d) {
+	if (!anim2d)
+		return Rect2();
+
+	Ref<Texture2D> texture = anim2d->get_sprite_frames()->get_frame_texture(anim2d->get_animation(), anim2d->get_frame());
+	if (texture.is_null())
+		return Rect2();
+
+	Vector2 texture_size = texture->get_size();
+	Transform2D transform = anim2d->get_global_transform();
+
+	Vector2 top_left = transform.xform(Vector2(-texture_size.x / 2, -texture_size.y / 2));
+	Vector2 top_right = transform.xform(Vector2(texture_size.x / 2, -texture_size.y / 2));
+	Vector2 bottom_left = transform.xform(Vector2(-texture_size.x / 2, texture_size.y / 2));
+	Vector2 bottom_right = transform.xform(Vector2(texture_size.x / 2, texture_size.y / 2));
+
+	float min_x = MIN(MIN(top_left.x, top_right.x), MIN(bottom_left.x, bottom_right.x));
+	float max_x = MAX(MAX(top_left.x, top_right.x), MAX(bottom_left.x, bottom_right.x));
+	float min_y = MIN(MIN(top_left.y, top_right.y), MIN(bottom_left.y, bottom_right.y));
+	float max_y = MAX(MAX(top_left.y, top_right.y), MAX(bottom_left.y, bottom_right.y));
+
+	return Rect2(Vector2(min_x, min_y), Vector2(max_x - min_x, max_y - min_y));
+}
+
+Vector2 SpxSpriteMgr::_to_image_coord(const Transform2D &trans, Vector2 image_size, Vector2 pos) {
+	Vector2 xpos = trans.xform(pos);
+	auto half_size = Vector2(image_size.x / 2.0, image_size.y / 2.0);
+	return Vector2(xpos.x + half_size.x,  xpos.y + half_size.y);
+}
+
+GdBool SpxSpriteMgr::check_collision_by_color(GdObj obj, GdColor color, GdFloat color_threshold) {
+	return _check_collision(obj, [=](GdColor a, GdColor b) -> bool {
+		auto diff = color - b;
+		auto dist = Math::sqrt(diff.r * diff.r + diff.g * diff.g + diff.b * diff.b + diff.a * diff.a);
+		return dist < color_threshold;
+	});
+}
+
+GdBool SpxSpriteMgr::check_collision_by_alpha(GdObj obj, GdFloat alpha_threshold) {
+	return _check_collision(obj, [alpha_threshold](GdColor a, GdColor b) -> bool {
+		return a.a > alpha_threshold && b.a > alpha_threshold;
+	});
+}
+
+GdBool SpxSpriteMgr::_check_collision(GdObj obj, ColorCheckFunc check_func) {
+	check_and_get_sprite_r(false) // Ensure sprite exists
+
+	AnimatedSprite2D *anim1 = sprite->anim2d;
+	if (!anim1) {
+		return false;
+	}
+	Ref<Image> image1 = _get_current_frame_image(anim1);
+	if (image1.is_null()) {
+		return false;
+	}
+	// Calculate the sprite's AABB
+	Rect2 rect1 = _get_sprite_aabb(anim1);
+	Transform2D transform1 = anim1->get_global_transform();
+	Vector2i size1 = image1->get_size();
+	auto trans1 = transform1.affine_inverse();
+
+	// Iterate through all objects
+	for (const auto &item : id_objects) {
+		SpxSprite *sp2 = item.value;
+		if (sprite == sp2) {
+			continue; // Skip itself
+		}
+
+		AnimatedSprite2D *anim2 = sp2->anim2d;
+		if (!anim2) {
+			continue;
+		}
+		Ref<Image> image2 = _get_current_frame_image(anim2);
+		if (image2.is_null()) {
+			continue;
+		}
+
+		Rect2 rect2 = _get_sprite_aabb(anim2);
+		if (!rect1.intersects(rect2)) {
+			continue; // Skip if AABBs do not intersect
+		}
+		// Compute the overlapping region
+		Rect2 overlap = rect1.intersection(rect2);
+		Transform2D transform2 = anim2->get_global_transform();
+		Vector2i size2 = image2->get_size();
+		auto trans2 = transform2.affine_inverse();
+
+		// Iterate through the overlapping area for pixel-perfect collision detection
+		for (int x = overlap.position.x; x < overlap.position.x + overlap.size.x; x++) {
+			for (int y = overlap.position.y; y < overlap.position.y + overlap.size.y; y++) {
+				Vector2 local_pos1 = _to_image_coord(trans1, size1, Vector2(x, y));
+				Vector2 local_pos2 = _to_image_coord(trans2, size2, Vector2(x, y));
+
+				if (local_pos1.x >= 0 && local_pos1.x <= size1.x-1 && local_pos1.y >= 0 && local_pos1.y <= size1.y-1 &&
+						local_pos2.x >= 0 && local_pos2.x <= size2.x-1 && local_pos2.y >= 0 && local_pos2.y <= size2.y-1) {
+					Color color1 = image1->get_pixel((int)local_pos1.x,  (int)local_pos1.y);
+					Color color2 = image2->get_pixel((int)local_pos2.x,  (int)local_pos2.y);
+					if (check_func(color1, color2)) {
+						return true;
+					}
+				}
+			}
+		}
+	}
+	return false;
 }

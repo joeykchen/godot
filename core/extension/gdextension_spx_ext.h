@@ -220,6 +220,20 @@ typedef void (*GDExtensionSpxCameraSetCameraPosition)(GdVec2 position);
 typedef void (*GDExtensionSpxCameraGetCameraZoom)(GdVec2* ret_value);
 typedef void (*GDExtensionSpxCameraSetCameraZoom)(GdVec2 size);
 typedef void (*GDExtensionSpxCameraGetViewportRect)(GdRect2* ret_value);
+// SpxExt
+typedef void (*GDExtensionSpxExtDestroyAllPens)();
+typedef void (*GDExtensionSpxExtCreatePen)(GdObj* ret_value);
+typedef void (*GDExtensionSpxExtDestroyPen)(GdObj obj);
+typedef void (*GDExtensionSpxExtPenStamp)(GdObj obj);
+typedef void (*GDExtensionSpxExtMovePenTo)(GdObj obj, GdVec2 position);
+typedef void (*GDExtensionSpxExtPenDown)(GdObj obj, GdBool move_by_mouse);
+typedef void (*GDExtensionSpxExtPenUp)(GdObj obj);
+typedef void (*GDExtensionSpxExtSetPenColorTo)(GdObj obj, GdColor color);
+typedef void (*GDExtensionSpxExtChangePenBy)(GdObj obj, GdInt property, GdFloat amount);
+typedef void (*GDExtensionSpxExtSetPenTo)(GdObj obj, GdInt property, GdFloat value);
+typedef void (*GDExtensionSpxExtChangePenSizeBy)(GdObj obj, GdFloat amount);
+typedef void (*GDExtensionSpxExtSetPenSizeTo)(GdObj obj, GdFloat size);
+typedef void (*GDExtensionSpxExtSetPenStampTexture)(GdObj obj, GdString texture_path);
 // SpxInput
 typedef void (*GDExtensionSpxInputGetMousePos)(GdVec2* ret_value);
 typedef void (*GDExtensionSpxInputGetKey)(GdInt key, GdBool* ret_value);
@@ -360,6 +374,8 @@ typedef void (*GDExtensionSpxSpriteSetTriggerCircle)(GdObj obj, GdVec2 center, G
 typedef void (*GDExtensionSpxSpriteSetTriggerCapsule)(GdObj obj, GdVec2 center, GdVec2 size);
 typedef void (*GDExtensionSpxSpriteSetTriggerEnabled)(GdObj obj, GdBool trigger);
 typedef void (*GDExtensionSpxSpriteIsTriggerEnabled)(GdObj obj, GdBool* ret_value);
+typedef void (*GDExtensionSpxSpriteCheckCollisionByColor)(GdObj obj, GdColor color,GdFloat color_threshold, GdBool* ret_value);
+typedef void (*GDExtensionSpxSpriteCheckCollisionByAlpha)(GdObj obj, GdFloat alpha_threshold, GdBool* ret_value);
 // SpxUi
 typedef void (*GDExtensionSpxUiBindNode)(GdObj obj, GdString rel_path, GdObj* ret_value);
 typedef void (*GDExtensionSpxUiCreateNode)(GdString path, GdObj* ret_value);

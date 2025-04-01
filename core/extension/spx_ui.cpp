@@ -43,13 +43,20 @@ SpxControl *SpxUi::get_control() {
 }
 SpxLabel *SpxUi::get_label(){
 	get_spx_control_type(Label)
-} SpxImage *SpxUi::get_image(){
+}
+SpxImage *SpxUi::get_image(){
 	get_spx_control_type(Image)
-} SpxButton *SpxUi::get_button(){
+}
+SpxButton *SpxUi::get_button(){
 	get_spx_control_type(Button)
-} SpxToggle *SpxUi::get_toggle() {
+}
+SpxToggle *SpxUi::get_toggle() {
 	get_spx_control_type(Toggle)
 }
+SpxInput *SpxUi::get_input() {
+	get_spx_control_type(Input)
+}
+
 
 void SpxUi::on_destroy_call() {
 	if (!Spx::initialed)
@@ -149,6 +156,9 @@ void SpxUi::set_text(GdString text) {
 		case ESpxUiType::Toggle:
 			get_toggle()->set_text(value);
 			break;
+		case ESpxUiType::Input:
+			get_input()->set_text(value);
+			break;
 		default:
 			print_error("not support set_text() type " + itos(type));
 			break;
@@ -167,6 +177,9 @@ GdString SpxUi::get_text() {
 			break;
 		case ESpxUiType::Toggle:
 			value = get_toggle()->get_text();
+			break;
+		case ESpxUiType::Input:
+			value = get_input()->get_text();
 			break;
 		default:
 			print_error("not support get_text() type " + itos(type));

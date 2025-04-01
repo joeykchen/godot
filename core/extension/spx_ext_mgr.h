@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  spx_engine.h                                                          */
+/*  spx_ext_mgr.h                                                      */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,81 +28,48 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef SPX_ENGINE_H
-#define SPX_ENGINE_H
+#ifndef SPX_EXT_MGR_H
+#define SPX_EXT_MGR_H
 
 #include "gdextension_spx_ext.h"
+#include "scene/2d/node_2d.h"
 #include "spx_base_mgr.h"
 
-#include <cstdint>
-class SceneTree;
-class Window;
-class Node;
-class SpxInputMgr;
-class SpxAudioMgr;
-class SpxPhysicMgr;
-class SpxSpriteMgr;
-class SpxUiMgr;
-class SpxSceneMgr;
-class SpxCameraMgr;
-class SpxPlatformMgr;
-class SpxResMgr;
-class SpxExtMgr;
-
-class SpxEngine : SpxBaseMgr {
-	static SpxEngine *singleton;
-
+class SpxPen;
+class SpxExtMgr : SpxBaseMgr {
+	SPXCLASS(SpxExtMgr, SpxBaseMgr)
 public:
-	static SpxEngine *get_singleton() { return singleton; }
-	static bool has_initialed() { return singleton != nullptr; }
-	static void register_callbacks(GDExtensionSpxCallbackInfoPtr callback_ptr);
-	virtual ~SpxEngine() = default; 
+	virtual ~SpxExtMgr() = default;
 
 private:
-	Vector<SpxBaseMgr *> mgrs;
-	SpxInputMgr *input;
-	SpxAudioMgr *audio;
-	SpxPhysicMgr *physic;
-	SpxSpriteMgr *sprite;
-	SpxUiMgr *ui;
-	SpxSceneMgr *scene;
-	SpxCameraMgr *camera;
-	SpxPlatformMgr *platform;
-	SpxResMgr *res;
-	SpxExtMgr *ext;
+	RBMap<GdObj, SpxPen *> id_pens;
+	Node *pen_root;
 
-public:
-	SpxInputMgr *get_input() { return input; }
-	SpxAudioMgr *get_audio() { return audio; }
-	SpxPhysicMgr *get_physic() { return physic; }
-	SpxSpriteMgr *get_sprite() { return sprite; }
-	SpxUiMgr *get_ui() { return ui; }
-	SpxSceneMgr *get_scene() { return scene; }
-	SpxCameraMgr *get_camera() { return camera; }
-	SpxPlatformMgr *get_platform() { return platform; }
-	SpxResMgr *get_res() { return res; }
-	SpxExtMgr *get_ext() { return ext; }
-
+	static Mutex lock;
 private:
-	SceneTree *tree;
-	Node *spx_root;
-	GdInt global_id;
-	SpxCallbackInfo callbacks;
+	SpxPen *_get_pen(GdObj id);
 
 public:
-	SpxCallbackInfo *get_callbacks();
-
-public:
-	GdInt get_unique_id() override;
-	Node *get_spx_root() override;
-	SceneTree *get_tree() override;
-	Window *get_root();
-	void set_root_node(SceneTree *p_tree, Node *p_node);
-
 	void on_awake() override;
-	void on_fixed_update(float delta) override;
-	void on_update(float delta) override;
+	void on_start() override;
 	void on_destroy() override;
+	void on_update(float delta) override;
+
+public:
+	// obj APIs
+	void destroy_all_pens();
+	GdObj create_pen();
+	void destroy_pen(GdObj obj);
+	void pen_stamp(GdObj obj);
+	void move_pen_to(GdObj obj, GdVec2 position);
+	void pen_down(GdObj obj, GdBool move_by_mouse);
+	void pen_up(GdObj obj);
+	void set_pen_color_to(GdObj obj, GdColor color);
+	void change_pen_by(GdObj obj, GdInt property, GdFloat amount);
+	void set_pen_to(GdObj obj, GdInt property, GdFloat value);
+	void change_pen_size_by(GdObj obj, GdFloat amount);
+	void set_pen_size_to(GdObj obj, GdFloat size);
+	void set_pen_stamp_texture(GdObj obj, GdString texture_path);
 };
 
-#endif // SPX_ENGINE_H
+#endif // SPX_EXT_MGR_H
