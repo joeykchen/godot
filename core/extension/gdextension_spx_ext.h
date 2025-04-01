@@ -197,19 +197,23 @@ typedef struct {
 
 // SpxAudio
 typedef void (*GDExtensionSpxAudioStopAll)();
-typedef void (*GDExtensionSpxAudioPlaySfx)(GdString path);
-typedef void (*GDExtensionSpxAudioPlayMusic)(GdString path);
-typedef void (*GDExtensionSpxAudioPauseMusic)();
-typedef void (*GDExtensionSpxAudioResumeMusic)();
-typedef void (*GDExtensionSpxAudioGetMusicTimer)(GdFloat* ret_value);
-typedef void (*GDExtensionSpxAudioSetMusicTimer)(GdFloat time);
-typedef void (*GDExtensionSpxAudioIsMusicPlaying)(GdBool* ret_value);
-typedef void (*GDExtensionSpxAudioSetSfxVolume)(GdFloat volume);
-typedef void (*GDExtensionSpxAudioGetSfxVolume)(GdFloat* ret_value);
-typedef void (*GDExtensionSpxAudioSetMusicVolume)(GdFloat volume);
-typedef void (*GDExtensionSpxAudioGetMusicVolume)(GdFloat* ret_value);
-typedef void (*GDExtensionSpxAudioSetMasterVolume)(GdFloat volume);
-typedef void (*GDExtensionSpxAudioGetMasterVolume)(GdFloat* ret_value);
+typedef void (*GDExtensionSpxAudioCreateAudio)(GdObj* ret_value);
+typedef void (*GDExtensionSpxAudioDestroyAudio)(GdObj obj);
+typedef void (*GDExtensionSpxAudioSetPitch)(GdObj obj, GdFloat pitch);
+typedef void (*GDExtensionSpxAudioGetPitch)(GdObj obj, GdFloat* ret_value);
+typedef void (*GDExtensionSpxAudioSetPan)(GdObj obj, GdFloat pan);
+typedef void (*GDExtensionSpxAudioGetPan)(GdObj obj, GdFloat* ret_value);
+typedef void (*GDExtensionSpxAudioPlay)(GdObj obj, GdString path);
+typedef void (*GDExtensionSpxAudioPause)(GdObj obj);
+typedef void (*GDExtensionSpxAudioResume)(GdObj obj);
+typedef void (*GDExtensionSpxAudioStop)(GdObj obj);
+typedef void (*GDExtensionSpxAudioSetLoop)(GdObj obj, GdBool loop);
+typedef void (*GDExtensionSpxAudioGetLoop)(GdObj obj, GdBool* ret_value);
+typedef void (*GDExtensionSpxAudioGetTimer)(GdObj obj, GdFloat* ret_value);
+typedef void (*GDExtensionSpxAudioSetTimer)(GdObj obj, GdFloat time);
+typedef void (*GDExtensionSpxAudioIsPlaying)(GdObj obj, GdBool* ret_value);
+typedef void (*GDExtensionSpxAudioSetVolume)(GdObj obj, GdFloat volume);
+typedef void (*GDExtensionSpxAudioGetVolume)(GdObj obj, GdFloat* ret_value);
 // SpxCamera
 typedef void (*GDExtensionSpxCameraGetCameraPosition)(GdVec2* ret_value);
 typedef void (*GDExtensionSpxCameraSetCameraPosition)(GdVec2 position);
