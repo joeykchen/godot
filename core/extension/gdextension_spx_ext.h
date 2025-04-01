@@ -216,6 +216,20 @@ typedef void (*GDExtensionSpxCameraSetCameraPosition)(GdVec2 position);
 typedef void (*GDExtensionSpxCameraGetCameraZoom)(GdVec2* ret_value);
 typedef void (*GDExtensionSpxCameraSetCameraZoom)(GdVec2 size);
 typedef void (*GDExtensionSpxCameraGetViewportRect)(GdRect2* ret_value);
+// SpxExt
+typedef void (*GDExtensionSpxExtDestroyAllPens)();
+typedef void (*GDExtensionSpxExtCreatePen)(GdObj* ret_value);
+typedef void (*GDExtensionSpxExtDestroyPen)(GdObj obj);
+typedef void (*GDExtensionSpxExtPenStamp)(GdObj obj);
+typedef void (*GDExtensionSpxExtMovePenTo)(GdObj obj, GdVec2 position);
+typedef void (*GDExtensionSpxExtPenDown)(GdObj obj, GdBool move_by_mouse);
+typedef void (*GDExtensionSpxExtPenUp)(GdObj obj);
+typedef void (*GDExtensionSpxExtSetPenColorTo)(GdObj obj, GdColor color);
+typedef void (*GDExtensionSpxExtChangePenBy)(GdObj obj, GdInt property, GdFloat amount);
+typedef void (*GDExtensionSpxExtSetPenTo)(GdObj obj, GdInt property, GdFloat value);
+typedef void (*GDExtensionSpxExtChangePenSizeBy)(GdObj obj, GdFloat amount);
+typedef void (*GDExtensionSpxExtSetPenSizeTo)(GdObj obj, GdFloat size);
+typedef void (*GDExtensionSpxExtSetPenStampTexture)(GdObj obj, GdString texture_path);
 // SpxInput
 typedef void (*GDExtensionSpxInputGetMousePos)(GdVec2* ret_value);
 typedef void (*GDExtensionSpxInputGetKey)(GdInt key, GdBool* ret_value);

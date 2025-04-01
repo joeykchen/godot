@@ -37,6 +37,7 @@
 #include "core/extension/spx_engine.h"
 #include "core/extension/spx_audio_mgr.h"
 #include "core/extension/spx_camera_mgr.h"
+#include "core/extension/spx_ext_mgr.h"
 #include "core/extension/spx_input_mgr.h"
 #include "core/extension/spx_physic_mgr.h"
 #include "core/extension/spx_platform_mgr.h"
@@ -48,6 +49,7 @@
 #include <emscripten.h>
 #define audioMgr SpxEngine::get_singleton()->get_audio()
 #define cameraMgr SpxEngine::get_singleton()->get_camera()
+#define extMgr SpxEngine::get_singleton()->get_ext()
 #define inputMgr SpxEngine::get_singleton()->get_input()
 #define physicMgr SpxEngine::get_singleton()->get_physic()
 #define platformMgr SpxEngine::get_singleton()->get_platform()
@@ -133,6 +135,58 @@ void gdspx_camera_set_camera_zoom(GdVec2* size) {
 EMSCRIPTEN_KEEPALIVE
 void gdspx_camera_get_viewport_rect(GdRect2* ret_val) {
 	*ret_val = cameraMgr->get_viewport_rect();
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_ext_destroy_all_pens() {
+	 extMgr->destroy_all_pens();
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_ext_create_pen(GdObj* ret_val) {
+	*ret_val = extMgr->create_pen();
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_ext_destroy_pen(GdObj* obj) {
+	 extMgr->destroy_pen(*obj);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_ext_pen_stamp(GdObj* obj) {
+	 extMgr->pen_stamp(*obj);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_ext_move_pen_to(GdObj* obj,GdVec2* position) {
+	 extMgr->move_pen_to(*obj, *position);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_ext_pen_down(GdObj* obj,GdBool* move_by_mouse) {
+	 extMgr->pen_down(*obj, *move_by_mouse);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_ext_pen_up(GdObj* obj) {
+	 extMgr->pen_up(*obj);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_ext_set_pen_color_to(GdObj* obj,GdColor* color) {
+	 extMgr->set_pen_color_to(*obj, *color);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_ext_change_pen_by(GdObj* obj,GdInt* property,GdFloat* amount) {
+	 extMgr->change_pen_by(*obj, *property, *amount);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_ext_set_pen_to(GdObj* obj,GdInt* property,GdFloat* value) {
+	 extMgr->set_pen_to(*obj, *property, *value);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_ext_change_pen_size_by(GdObj* obj,GdFloat* amount) {
+	 extMgr->change_pen_size_by(*obj, *amount);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_ext_set_pen_size_to(GdObj* obj,GdFloat* size) {
+	 extMgr->set_pen_size_to(*obj, *size);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_ext_set_pen_stamp_texture(GdObj* obj,GdString* texture_path) {
+	 extMgr->set_pen_stamp_texture(*obj, *texture_path);
 }
 EMSCRIPTEN_KEEPALIVE
 void gdspx_input_get_mouse_pos(GdVec2* ret_val) {

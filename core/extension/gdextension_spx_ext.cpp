@@ -37,6 +37,7 @@
 #include "spx_engine.h"
 #include "spx_audio_mgr.h"
 #include "spx_camera_mgr.h"
+#include "spx_ext_mgr.h"
 #include "spx_input_mgr.h"
 #include "spx_physic_mgr.h"
 #include "spx_platform_mgr.h"
@@ -47,6 +48,7 @@
 
 #define audioMgr SpxEngine::get_singleton()->get_audio()
 #define cameraMgr SpxEngine::get_singleton()->get_camera()
+#define extMgr SpxEngine::get_singleton()->get_ext()
 #define inputMgr SpxEngine::get_singleton()->get_input()
 #define physicMgr SpxEngine::get_singleton()->get_physic()
 #define platformMgr SpxEngine::get_singleton()->get_platform()
@@ -115,6 +117,45 @@ static void gdextension_spx_camera_set_camera_zoom(GdVec2 size) {
 }
 static void gdextension_spx_camera_get_viewport_rect(GdRect2* ret_val) {
 	*ret_val = cameraMgr->get_viewport_rect();
+}
+static void gdextension_spx_ext_destroy_all_pens() {
+	 extMgr->destroy_all_pens();
+}
+static void gdextension_spx_ext_create_pen(GdObj* ret_val) {
+	*ret_val = extMgr->create_pen();
+}
+static void gdextension_spx_ext_destroy_pen(GdObj obj) {
+	 extMgr->destroy_pen(obj);
+}
+static void gdextension_spx_ext_pen_stamp(GdObj obj) {
+	 extMgr->pen_stamp(obj);
+}
+static void gdextension_spx_ext_move_pen_to(GdObj obj,GdVec2 position) {
+	 extMgr->move_pen_to(obj, position);
+}
+static void gdextension_spx_ext_pen_down(GdObj obj,GdBool move_by_mouse) {
+	 extMgr->pen_down(obj, move_by_mouse);
+}
+static void gdextension_spx_ext_pen_up(GdObj obj) {
+	 extMgr->pen_up(obj);
+}
+static void gdextension_spx_ext_set_pen_color_to(GdObj obj,GdColor color) {
+	 extMgr->set_pen_color_to(obj, color);
+}
+static void gdextension_spx_ext_change_pen_by(GdObj obj,GdInt property,GdFloat amount) {
+	 extMgr->change_pen_by(obj, property, amount);
+}
+static void gdextension_spx_ext_set_pen_to(GdObj obj,GdInt property,GdFloat value) {
+	 extMgr->set_pen_to(obj, property, value);
+}
+static void gdextension_spx_ext_change_pen_size_by(GdObj obj,GdFloat amount) {
+	 extMgr->change_pen_size_by(obj, amount);
+}
+static void gdextension_spx_ext_set_pen_size_to(GdObj obj,GdFloat size) {
+	 extMgr->set_pen_size_to(obj, size);
+}
+static void gdextension_spx_ext_set_pen_stamp_texture(GdObj obj,GdString texture_path) {
+	 extMgr->set_pen_stamp_texture(obj, texture_path);
 }
 static void gdextension_spx_input_get_mouse_pos(GdVec2* ret_val) {
 	*ret_val = inputMgr->get_mouse_pos();
@@ -669,6 +710,19 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_camera_get_camera_zoom);
 	REGISTER_SPX_INTERFACE_FUNC(spx_camera_set_camera_zoom);
 	REGISTER_SPX_INTERFACE_FUNC(spx_camera_get_viewport_rect);
+	REGISTER_SPX_INTERFACE_FUNC(spx_ext_destroy_all_pens);
+	REGISTER_SPX_INTERFACE_FUNC(spx_ext_create_pen);
+	REGISTER_SPX_INTERFACE_FUNC(spx_ext_destroy_pen);
+	REGISTER_SPX_INTERFACE_FUNC(spx_ext_pen_stamp);
+	REGISTER_SPX_INTERFACE_FUNC(spx_ext_move_pen_to);
+	REGISTER_SPX_INTERFACE_FUNC(spx_ext_pen_down);
+	REGISTER_SPX_INTERFACE_FUNC(spx_ext_pen_up);
+	REGISTER_SPX_INTERFACE_FUNC(spx_ext_set_pen_color_to);
+	REGISTER_SPX_INTERFACE_FUNC(spx_ext_change_pen_by);
+	REGISTER_SPX_INTERFACE_FUNC(spx_ext_set_pen_to);
+	REGISTER_SPX_INTERFACE_FUNC(spx_ext_change_pen_size_by);
+	REGISTER_SPX_INTERFACE_FUNC(spx_ext_set_pen_size_to);
+	REGISTER_SPX_INTERFACE_FUNC(spx_ext_set_pen_stamp_texture);
 	REGISTER_SPX_INTERFACE_FUNC(spx_input_get_mouse_pos);
 	REGISTER_SPX_INTERFACE_FUNC(spx_input_get_key);
 	REGISTER_SPX_INTERFACE_FUNC(spx_input_get_mouse_state);
