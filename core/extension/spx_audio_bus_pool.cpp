@@ -116,11 +116,7 @@ void SpxAudioBusPool::set_volume(int id, GdFloat volume) {
 	if (!is_valid_bus(id))
 		return;
 
-	// Clamp volume between 0 and 1
-	volume = CLAMP(volume, 0.0f, 1.0f);
-
 	// Convert to decibels (Godot uses decibel scale for volume)
-
 	auto db = Math::linear_to_db(volume);
 	AudioServer::get_singleton()->set_bus_volume_db(id, db);
 }
