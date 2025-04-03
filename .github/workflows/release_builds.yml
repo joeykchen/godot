@@ -259,9 +259,9 @@ jobs:
         arch: [x86_64, x86_32]
         include:
           - arch: x86_64
-            artifact_suffix: x86-64
+            artifact_suffix: x86_64
           - arch: x86_32
-            artifact_suffix: x86-32
+            artifact_suffix: x86_32
 
     steps:
       - name: Checkout
@@ -322,9 +322,9 @@ jobs:
         arch: [x86_64, x86_32]
         include:
           - arch: x86_64
-            artifact_suffix: x86-64
+            artifact_suffix: x86_64
           - arch: x86_32
-            artifact_suffix: x86-32
+            artifact_suffix: x86_32
 
     steps:
       - name: Checkout
@@ -394,7 +394,7 @@ jobs:
         arch: [x86_64, arm64]
         include:
           - arch: x86_64
-            artifact_suffix: x86-64
+            artifact_suffix: x86_64
           - arch: arm64
             artifact_suffix: arm64
 
@@ -459,7 +459,7 @@ jobs:
         arch: [x86_64, arm64]
         include:
           - arch: x86_64
-            artifact_suffix: x86-64
+            artifact_suffix: x86_64
           - arch: arm64
             artifact_suffix: arm64
 
