@@ -53,6 +53,7 @@ void SpxPen::on_create(GdInt id, Node * root) {
 	current_line = _create_new_line();
 	is_pen_down = false;
 	min_draw_distance = 1.0f;
+	pen_properties.transparency = 1.0f;
 }
 
 
@@ -79,7 +80,7 @@ Color SpxPen::_get_current_color() const {
 	float v = final_color.get_v();
 	s *= pen_properties.saturation;
 	v *= pen_properties.brightness;
-	final_color.set_hsv(h, s, v, 1.0f - pen_properties.transparency);
+	final_color.set_hsv(h, s, v, pen_properties.transparency);
 	return final_color;
 }
 
@@ -149,6 +150,7 @@ void SpxPen::on_up() {
 
 void SpxPen::set_color_to(GdColor color) {
 	pen_properties.color = color;
+	pen_properties.transparency = color.a;
 	_start_new_line();
 }
 
