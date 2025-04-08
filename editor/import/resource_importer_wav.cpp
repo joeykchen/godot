@@ -30,10 +30,14 @@
 
 #include "resource_importer_wav.h"
 
+#include "core/config/project_settings.h"
 #include "core/io/file_access.h"
 #include "core/io/marshalls.h"
 #include "core/io/resource_saver.h"
 #include "scene/resources/audio_stream_wav.h"
+
+#define DR_WAV_IMPLEMENTATION
+#include "dr_wav.h"
 
 const float TRIM_DB_LIMIT = -50;
 const int TRIM_FADE_OUT_FRAMES = 500;
@@ -92,234 +96,125 @@ void ResourceImporterWAV::get_import_options(const String &p_path, List<ImportOp
 	r_options->push_back(ImportOption(PropertyInfo(Variant::INT, "edit/loop_end"), -1));
 	r_options->push_back(ImportOption(PropertyInfo(Variant::INT, "compress/mode", PROPERTY_HINT_ENUM, "Disabled,RAM (Ima-ADPCM)"), 0));
 }
-Error ResourceImporterWAV::import_asset(Ref<AudioStreamWAV>& sample,const String &p_source_file, const HashMap<StringName, Variant> &p_options, List<String> *r_platform_variants, List<String> *r_gen_files, Variant *r_metadata) {
-	/* STEP 1, READ WAVE FILE */
+Error ResourceImporterWAV::import_asset(Ref<AudioStreamWAV> &sample, const String &p_source_file, const HashMap<StringName, Variant> &p_options, List<String> *r_platform_variants, List<String> *r_gen_files, Variant *r_metadata) {
+	// Read file using dr_wav
+	String actual_path = ProjectSettings::get_singleton()->globalize_path(p_source_file);
 
-	Error err;
-	Ref<FileAccess> file = FileAccess::open(p_source_file, FileAccess::READ, &err);
+	// print_line("Starting to read WAV file: " + actual_path);
 
-	ERR_FAIL_COND_V_MSG(err != OK, ERR_CANT_OPEN, "Cannot open file '" + p_source_file + "'.");
-
-	/* CHECK RIFF */
-	char riff[5];
-	riff[4] = 0;
-	file->get_buffer((uint8_t *)&riff, 4); //RIFF
-
-	if (riff[0] != 'R' || riff[1] != 'I' || riff[2] != 'F' || riff[3] != 'F') {
-		ERR_FAIL_V_MSG(ERR_FILE_UNRECOGNIZED, vformat("Not a WAV file. File should start with 'RIFF', but found '%s', in file of size %d bytes", riff, file->get_length()));
+	drwav wav;
+	if (!drwav_init_file(&wav, actual_path.utf8().get_data(), NULL)) {
+		ERR_FAIL_V_MSG(ERR_CANT_OPEN, "Cannot open WAV file '" + actual_path + "'.");
 	}
 
-	/* GET FILESIZE */
-	file->get_32(); // filesize
+	// Get audio format information
+	int format_channels = wav.channels;
+	int format_freq = wav.sampleRate;
+	int format_bits = wav.bitsPerSample;
+	drwav_uint64 frames = wav.totalPCMFrameCount;
+	bool is16 = format_bits != 8;
 
-	/* CHECK WAVE */
+	// Print audio format information
+	// print_line("Audio format information:");
+	// print_line("  Sample rate: " + String::num_int64(wav.sampleRate) + " Hz");
+	// print_line("  Channels: " + String::num_int64(wav.channels));
+	// print_line("  Bit depth: " + String::num_int64(wav.bitsPerSample) + " bits");
+	// print_line("  Total frames: " + String::num_int64(wav.totalPCMFrameCount));
+	// print_line("  Data chunk size: " + String::num_int64(wav.dataChunkDataSize) + " bytes");
+	// print_line("  Format tag: " + String::num_int64(wav.translatedFormatTag) + " (" + String(get_format_name(wav.translatedFormatTag)) + ")");
+	// print_line("  Container type: " + String::num_int64(wav.container));
 
-	char wave[5];
-	wave[4] = 0;
-	file->get_buffer((uint8_t *)&wave, 4); //WAVE
-
-	if (wave[0] != 'W' || wave[1] != 'A' || wave[2] != 'V' || wave[3] != 'E') {
-		ERR_FAIL_V_MSG(ERR_FILE_UNRECOGNIZED, vformat("Not a WAV file. Header should contain 'WAVE', but found '%s', in file of size %d bytes", wave, file->get_length()));
-	}
-
-	// Let users override potential loop points from the WAV.
-	// We parse the WAV loop points only with "Detect From WAV" (0).
-	int import_loop_mode = p_options["edit/loop_mode"];
-
-	int format_bits = 0;
-	int format_channels = 0;
-
-	AudioStreamWAV::LoopMode loop_mode = AudioStreamWAV::LOOP_DISABLED;
-	uint16_t compression_code = 1;
-	bool format_found = false;
-	bool data_found = false;
-	int format_freq = 0;
-	int loop_begin = 0;
-	int loop_end = 0;
-	int frames = 0;
-
+	// Allocate buffer
+	drwav_uint64 bufferSize = frames * format_channels;
 	Vector<float> data;
+	data.resize(bufferSize);
 
-	while (!file->eof_reached()) {
-		/* chunk */
-		char chunkID[4];
-		file->get_buffer((uint8_t *)&chunkID, 4); //RIFF
+	// Select appropriate reading method based on format
+	drwav_uint64 framesRead = 0;
 
-		/* chunk size */
-		uint32_t chunksize = file->get_32();
-		uint32_t file_pos = file->get_position(); //save file pos, so we can skip to next chunk safely
-
-		if (file->eof_reached()) {
-			//ERR_PRINT("EOF REACH");
+	switch (wav.translatedFormatTag) {
+		case 1: // PCM
+		case 3: // IEEE Float
+		case 6: // A-Law
+		case 7: // μ-Law
+		{
+			if (wav.bitsPerSample == 16) {
+				Vector<int16_t> temp_data;
+				temp_data.resize(bufferSize);
+				framesRead = drwav_read_pcm_frames_s16(&wav, frames, temp_data.ptrw());
+				for (int i = 0; i < framesRead * format_channels; i++) {
+					data.write[i] = temp_data[i] / 32768.f;
+				}
+			} else if (wav.bitsPerSample == 32) {
+				Vector<float> temp_data;
+				temp_data.resize(bufferSize);
+				framesRead = drwav_read_pcm_frames_f32(&wav, frames, temp_data.ptrw());
+				data = temp_data;
+			} else {
+				Vector<uint8_t> temp_data;
+				temp_data.resize(bufferSize);
+				size_t bytesRead = drwav_read_raw(&wav, bufferSize, temp_data.ptrw());
+				framesRead = bytesRead / format_channels;
+				for (int i = 0; i < framesRead * format_channels; i++) {
+					data.write[i] = (temp_data[i] - 128) / 128.f;
+				}
+			}
 			break;
 		}
 
-		if (chunkID[0] == 'f' && chunkID[1] == 'm' && chunkID[2] == 't' && chunkID[3] == ' ' && !format_found) {
-			/* IS FORMAT CHUNK */
-
-			//Issue: #7755 : Not a bug - usage of other formats (format codes) are unsupported in current importer version.
-			//Consider revision for engine version 3.0
-			compression_code = file->get_16();
-			if (compression_code != 1 && compression_code != 3) {
-				ERR_FAIL_V_MSG(ERR_INVALID_DATA, "Format not supported for WAVE file (not PCM). Save WAVE files as uncompressed PCM or IEEE float instead.");
+		case 2: // Microsoft ADPCM
+		case 17: // IMA ADPCM
+		case 20: // Yamaha ADPCM
+		case 50: // G.721 ADPCM
+		case 64: // G.722 ADPCM
+		case 65: // G.723 ADPCM
+		{
+			Vector<int16_t> temp_data;
+			temp_data.resize(bufferSize);
+			framesRead = drwav_read_pcm_frames_s16(&wav, frames, temp_data.ptrw());
+			// print_line("ADPCM frames read: " + String::num_int64(framesRead));
+			for (int i = 0; i < framesRead * format_channels; i++) {
+				data.write[i] = temp_data[i] / 32768.f;
 			}
-
-			format_channels = file->get_16();
-			if (format_channels != 1 && format_channels != 2) {
-				ERR_FAIL_V_MSG(ERR_INVALID_DATA, "Format not supported for WAVE file (not stereo or mono).");
-			}
-
-			format_freq = file->get_32(); //sampling rate
-
-			file->get_32(); // average bits/second (unused)
-			file->get_16(); // block align (unused)
-			format_bits = file->get_16(); // bits per sample
-
-			if (format_bits % 8 || format_bits == 0) {
-				ERR_FAIL_V_MSG(ERR_INVALID_DATA, "Invalid amount of bits in the sample (should be one of 8, 16, 24 or 32).");
-			}
-
-			if (compression_code == 3 && format_bits % 32) {
-				ERR_FAIL_V_MSG(ERR_INVALID_DATA, "Invalid amount of bits in the IEEE float sample (should be 32 or 64).");
-			}
-
-			/* Don't need anything else, continue */
-			format_found = true;
+			break;
 		}
 
-		if (chunkID[0] == 'd' && chunkID[1] == 'a' && chunkID[2] == 't' && chunkID[3] == 'a' && !data_found) {
-			/* IS DATA CHUNK */
-			data_found = true;
-
-			if (!format_found) {
-				ERR_PRINT("'data' chunk before 'format' chunk found.");
-				break;
-			}
-
-			frames = chunksize;
-
-			if (format_channels == 0) {
-				ERR_FAIL_COND_V(format_channels == 0, ERR_INVALID_DATA);
-			}
-			frames /= format_channels;
-			frames /= (format_bits >> 3);
-
-			/*print_line("chunksize: "+itos(chunksize));
-			print_line("channels: "+itos(format_channels));
-			print_line("bits: "+itos(format_bits));
-			*/
-
-			data.resize(frames * format_channels);
-
-			if (compression_code == 1) {
-				if (format_bits == 8) {
-					for (int i = 0; i < frames * format_channels; i++) {
-						// 8 bit samples are UNSIGNED
-
-						data.write[i] = int8_t(file->get_8() - 128) / 128.f;
-					}
-				} else if (format_bits == 16) {
-					for (int i = 0; i < frames * format_channels; i++) {
-						//16 bit SIGNED
-
-						data.write[i] = int16_t(file->get_16()) / 32768.f;
-					}
-				} else {
-					for (int i = 0; i < frames * format_channels; i++) {
-						//16+ bits samples are SIGNED
-						// if sample is > 16 bits, just read extra bytes
-
-						uint32_t s = 0;
-						for (int b = 0; b < (format_bits >> 3); b++) {
-							s |= ((uint32_t)file->get_8()) << (b * 8);
-						}
-						s <<= (32 - format_bits);
-
-						data.write[i] = (int32_t(s) >> 16) / 32768.f;
-					}
+		case 49: // GSM 6.10
+		case 80: // MPEG
+		case 85: // MPEG Layer 3
+		{
+			WARN_PRINT("Warning: This format (" + String(get_format_name(wav.translatedFormatTag)) + ") may not be fully supported");
+			// Try raw reading
+			Vector<uint8_t> temp_data;
+			temp_data.resize(wav.dataChunkDataSize);
+			size_t bytesRead = drwav_read_raw(&wav, wav.dataChunkDataSize, temp_data.ptrw());
+			if (bytesRead > 0) {
+				// Convert raw data to float format
+				for (int i = 0; i < bytesRead; i++) {
+					data.write[i] = temp_data[i] / 128.f;
 				}
-			} else if (compression_code == 3) {
-				if (format_bits == 32) {
-					for (int i = 0; i < frames * format_channels; i++) {
-						//32 bit IEEE Float
-
-						data.write[i] = file->get_float();
-					}
-				} else if (format_bits == 64) {
-					for (int i = 0; i < frames * format_channels; i++) {
-						//64 bit IEEE Float
-
-						data.write[i] = file->get_double();
-					}
-				}
+				framesRead = bytesRead / format_channels;
 			}
-
-			if (file->eof_reached()) {
-				ERR_FAIL_V_MSG(ERR_FILE_CORRUPT, "Premature end of file.");
-			}
+			break;
 		}
 
-		if (import_loop_mode == 0 && chunkID[0] == 's' && chunkID[1] == 'm' && chunkID[2] == 'p' && chunkID[3] == 'l') {
-			// Loop point info!
-
-			/**
-			 *	Consider exploring next document:
-			 *		http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/Docs/RIFFNEW.pdf
-			 *	Especially on page:
-			 *		16 - 17
-			 *	Timestamp:
-			 *		22:38 06.07.2017 GMT
-			 **/
-
-			for (int i = 0; i < 10; i++) {
-				file->get_32(); // i wish to know why should i do this... no doc!
-			}
-
-			// only read 0x00 (loop forward), 0x01 (loop ping-pong) and 0x02 (loop backward)
-			// Skip anything else because it's not supported, reserved for future uses or sampler specific
-			// from https://sites.google.com/site/musicgapi/technical-documents/wav-file-format#smpl (loop type values table)
-			int loop_type = file->get_32();
-			if (loop_type == 0x00 || loop_type == 0x01 || loop_type == 0x02) {
-				if (loop_type == 0x00) {
-					loop_mode = AudioStreamWAV::LOOP_FORWARD;
-				} else if (loop_type == 0x01) {
-					loop_mode = AudioStreamWAV::LOOP_PINGPONG;
-				} else if (loop_type == 0x02) {
-					loop_mode = AudioStreamWAV::LOOP_BACKWARD;
-				}
-				loop_begin = file->get_32();
-				loop_end = file->get_32();
-			}
-		}
-		// Move to the start of the next chunk. Note that RIFF requires a padding byte for odd
-		// chunk sizes.
-		file->seek(file_pos + chunksize + (chunksize & 1));
+		default:
+			ERR_FAIL_V_MSG(ERR_INVALID_DATA, "Unsupported format: " + String(get_format_name(wav.translatedFormatTag)));
 	}
 
-	// STEP 2, APPLY CONVERSIONS
+	// Release dr_wav resources
+	drwav_uninit(&wav);
 
-	bool is16 = format_bits != 8;
-	int rate = format_freq;
+	// if (framesRead == 0) {
+	// 	ERR_FAIL_V_MSG(ERR_INVALID_DATA, "No data read, format may be unsupported or file may be corrupted");
+	// }
 
-	/*
-	print_line("Input Sample: ");
-	print_line("\tframes: " + itos(frames));
-	print_line("\tformat_channels: " + itos(format_channels));
-	print_line("\t16bits: " + itos(is16));
-	print_line("\trate: " + itos(rate));
-	print_line("\tloop: " + itos(loop));
-	print_line("\tloop begin: " + itos(loop_begin));
-	print_line("\tloop end: " + itos(loop_end));
-	*/
-
-	//apply frequency limit
-
+	// Apply conversion options
 	bool limit_rate = p_options["force/max_rate"];
 	int limit_rate_hz = p_options["force/max_rate_hz"];
-	if (limit_rate && rate > limit_rate_hz && rate > 0 && frames > 0) {
-		// resample!
-		int new_data_frames = (int)(frames * (float)limit_rate_hz / (float)rate);
-
+	if (limit_rate && format_freq > limit_rate_hz && format_freq > 0 && framesRead > 0) {
+		// Resampling code remains unchanged
+		int new_data_frames = (int)(framesRead * (float)limit_rate_hz / (float)format_freq);
 		Vector<float> new_data;
 		new_data.resize(new_data_frames * format_channels);
 		for (int c = 0; c < format_channels; c++) {
@@ -327,14 +222,11 @@ Error ResourceImporterWAV::import_asset(Ref<AudioStreamWAV>& sample,const String
 			int ipos = 0;
 
 			for (int i = 0; i < new_data_frames; i++) {
-				//simple cubic interpolation should be enough.
-
 				float mu = frac;
-
 				float y0 = data[MAX(0, ipos - 1) * format_channels + c];
 				float y1 = data[ipos * format_channels + c];
-				float y2 = data[MIN(frames - 1, ipos + 1) * format_channels + c];
-				float y3 = data[MIN(frames - 1, ipos + 2) * format_channels + c];
+				float y2 = data[MIN(framesRead - 1, ipos + 1) * format_channels + c];
+				float y3 = data[MIN(framesRead - 1, ipos + 2) * format_channels + c];
 
 				float mu2 = mu * mu;
 				float a0 = y3 - y2 - y0 + y1;
@@ -343,31 +235,22 @@ Error ResourceImporterWAV::import_asset(Ref<AudioStreamWAV>& sample,const String
 				float a3 = y1;
 
 				float res = (a0 * mu * mu2 + a1 * mu2 + a2 * mu + a3);
-
 				new_data.write[i * format_channels + c] = res;
 
-				// update position and always keep fractional part within ]0...1]
-				// in order to avoid 32bit floating point precision errors
-
-				frac += (float)rate / (float)limit_rate_hz;
+				frac += (float)format_freq / (float)limit_rate_hz;
 				int tpos = (int)Math::floor(frac);
 				ipos += tpos;
 				frac -= tpos;
 			}
 		}
 
-		if (loop_mode) {
-			loop_begin = (int)(loop_begin * (float)new_data_frames / (float)frames);
-			loop_end = (int)(loop_end * (float)new_data_frames / (float)frames);
-		}
-
 		data = new_data;
-		rate = limit_rate_hz;
-		frames = new_data_frames;
+		format_freq = limit_rate_hz;
+		framesRead = new_data_frames;
 	}
 
+	// Apply other conversion options
 	bool normalize = p_options["edit/normalize"];
-
 	if (normalize) {
 		float max = 0;
 		for (int i = 0; i < data.size(); i++) {
@@ -386,10 +269,9 @@ Error ResourceImporterWAV::import_asset(Ref<AudioStreamWAV>& sample,const String
 	}
 
 	bool trim = p_options["edit/trim"];
-
-	if (trim && (loop_mode == AudioStreamWAV::LOOP_DISABLED) && format_channels > 0) {
+	if (trim && format_channels > 0) {
 		int first = 0;
-		int last = (frames / format_channels) - 1;
+		int last = (framesRead / format_channels) - 1;
 		bool found = false;
 		float limit = Math::db_to_linear(TRIM_DB_LIMIT);
 
@@ -427,42 +309,48 @@ Error ResourceImporterWAV::import_asset(Ref<AudioStreamWAV>& sample,const String
 			}
 
 			data = new_data;
-			frames = data.size() / format_channels;
+			framesRead = data.size() / format_channels;
 		}
 	}
 
+	// Handle loop mode
+	AudioStreamWAV::LoopMode loop_mode = AudioStreamWAV::LOOP_DISABLED;
+	int loop_begin = 0;
+	int loop_end = 0;
+
+	int import_loop_mode = p_options["edit/loop_mode"];
 	if (import_loop_mode >= 2) {
 		loop_mode = (AudioStreamWAV::LoopMode)(import_loop_mode - 1);
 		loop_begin = p_options["edit/loop_begin"];
 		loop_end = p_options["edit/loop_end"];
-		// Wrap around to max frames, so `-1` can be used to select the end, etc.
 		if (loop_begin < 0) {
-			loop_begin = CLAMP(loop_begin + frames + 1, 0, frames);
+			loop_begin = CLAMP(loop_begin + framesRead + 1, 0, framesRead);
 		}
 		if (loop_end < 0) {
-			loop_end = CLAMP(loop_end + frames + 1, 0, frames);
+			loop_end = CLAMP(loop_end + framesRead + 1, 0, framesRead);
 		}
 	}
 
+	// Handle compression and channel options
 	int compression = p_options["compress/mode"];
 	bool force_mono = p_options["force/mono"];
+	bool force_8_bit = p_options["force/8_bit"];
 
 	if (force_mono && format_channels == 2) {
 		Vector<float> new_data;
 		new_data.resize(data.size() / 2);
-		for (int i = 0; i < frames; i++) {
+		for (int i = 0; i < framesRead; i++) {
 			new_data.write[i] = (data[i * 2 + 0] + data[i * 2 + 1]) / 2.0;
 		}
-
 		data = new_data;
 		format_channels = 1;
 	}
 
-	bool force_8_bit = p_options["force/8_bit"];
 	if (force_8_bit) {
 		is16 = false;
 	}
 
+	// Prepare output data
 	Vector<uint8_t> dst_data;
 	AudioStreamWAV::Format dst_format;
 
@@ -471,10 +359,8 @@ Error ResourceImporterWAV::import_asset(Ref<AudioStreamWAV>& sample,const String
 		if (format_channels == 1) {
 			_compress_ima_adpcm(data, dst_data);
 		} else {
-			//byte interleave
 			Vector<float> left;
 			Vector<float> right;
-
 			int tframes = data.size() / 2;
 			left.resize(tframes);
 			right.resize(tframes);
@@ -486,13 +372,11 @@ Error ResourceImporterWAV::import_asset(Ref<AudioStreamWAV>& sample,const String
 
 			Vector<uint8_t> bleft;
 			Vector<uint8_t> bright;
-
 			_compress_ima_adpcm(left, bleft);
 			_compress_ima_adpcm(right, bright);
 
 			int dl = bleft.size();
 			dst_data.resize(dl * 2);
-
 			uint8_t *w = dst_data.ptrw();
 			const uint8_t *rl = bleft.ptr();
 			const uint8_t *rr = bright.ptr();
@@ -502,30 +386,28 @@ Error ResourceImporterWAV::import_asset(Ref<AudioStreamWAV>& sample,const String
 				w[i * 2 + 1] = rr[i];
 			}
 		}
-
 	} else {
 		dst_format = is16 ? AudioStreamWAV::FORMAT_16_BITS : AudioStreamWAV::FORMAT_8_BITS;
 		dst_data.resize(data.size() * (is16 ? 2 : 1));
-		{
-			uint8_t *w = dst_data.ptrw();
+		uint8_t *w = dst_data.ptrw();
 
-			int ds = data.size();
-			for (int i = 0; i < ds; i++) {
-				if (is16) {
-					int16_t v = CLAMP(data[i] * 32768, -32768, 32767);
-					encode_uint16(v, &w[i * 2]);
-				} else {
-					int8_t v = CLAMP(data[i] * 128, -128, 127);
-					w[i] = v;
-				}
+		int ds = data.size();
+		for (int i = 0; i < ds; i++) {
+			if (is16) {
+				int16_t v = CLAMP(data[i] * 32768, -32768, 32767);
+				encode_uint16(v, &w[i * 2]);
+			} else {
+				int8_t v = CLAMP(data[i] * 128, -128, 127);
+				w[i] = v;
 			}
 		}
 	}
 
+	// Set output samples
 	sample.instantiate();
 	sample->set_data(dst_data);
 	sample->set_format(dst_format);
-	sample->set_mix_rate(rate);
+	sample->set_mix_rate(format_freq);
 	sample->set_loop_mode(loop_mode);
 	sample->set_loop_begin(loop_begin);
 	sample->set_loop_end(loop_end);
@@ -533,9 +415,46 @@ Error ResourceImporterWAV::import_asset(Ref<AudioStreamWAV>& sample,const String
 
 	return OK;
 }
+
+// Helper function to get format name
+const char *ResourceImporterWAV::get_format_name(drwav_uint16 formatTag) {
+	switch (formatTag) {
+		case 1:
+			return "PCM";
+		case 2:
+			return "Microsoft ADPCM";
+		case 3:
+			return "IEEE Float";
+		case 6:
+			return "A-Law";
+		case 7:
+			return "μ-Law";
+		case 17:
+			return "IMA ADPCM";
+		case 20:
+			return "Yamaha ADPCM";
+		case 49:
+			return "GSM 6.10";
+		case 50:
+			return "G.721 ADPCM";
+		case 64:
+			return "G.722 ADPCM";
+		case 65:
+			return "G.723 ADPCM";
+		case 80:
+			return "MPEG";
+		case 85:
+			return "MPEG Layer 3";
+		case 65534:
+			return "Extensible";
+		default:
+			return "Unknown";
+	}
+}
+
 Error ResourceImporterWAV::import(const String &p_source_file, const String &p_save_path, const HashMap<StringName, Variant> &p_options, List<String> *r_platform_variants, List<String> *r_gen_files, Variant *r_metadata) {
 	Ref<AudioStreamWAV> sample;
-	auto err = import_asset(sample,p_source_file,p_options,r_platform_variants,r_gen_files,r_metadata);
+	auto err = import_asset(sample, p_source_file, p_options, r_platform_variants, r_gen_files, r_metadata);
 	ResourceSaver::save(sample, p_save_path + ".sample");
 	return err;
 }
