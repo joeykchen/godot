@@ -733,6 +733,68 @@ Vector2 SpxSpriteMgr::_to_image_coord(const Transform2D &trans, Vector2 image_si
 	return Vector2(xpos.x + half_size.x,  xpos.y + half_size.y);
 }
 
+GdBool SpxSpriteMgr::check_collision_with_sprite_by_alpha(GdObj obj,GdObj obj_b, GdFloat alpha_threshold){
+	check_and_get_sprite_r(false) // Ensure sprite exists
+
+	AnimatedSprite2D *anim1 = sprite->anim2d;
+	if (!anim1) {
+		return false;
+	}
+	Ref<Image> image1 = _get_current_frame_image(anim1);
+	if (image1.is_null()) {
+		return false;
+	}
+	// Calculate the sprite's AABB
+	Rect2 rect1 = _get_sprite_aabb(anim1);
+	Transform2D transform1 = anim1->get_global_transform();
+	Vector2i size1 = image1->get_size();
+	auto trans1 = transform1.affine_inverse();
+
+	auto sp2 = get_sprite(obj_b);
+	if (sp2 == nullptr) {
+		print_error("try to get property of a null sprite gid=" + itos(obj)); 
+		return false; 
+	}
+
+	AnimatedSprite2D *anim2 = sp2->anim2d;
+	if (!anim2) {
+		return false;
+	}
+	Ref<Image> image2 = _get_current_frame_image(anim2);
+	if (image2.is_null()) {
+		return false;
+	}
+	Rect2 rect2 = _get_sprite_aabb(anim2);
+	if (!rect1.intersects(rect2)) {
+		return false; // Skip if AABBs do not intersect
+	}
+
+	// Compute the overlapping region
+	Rect2 overlap = rect1.intersection(rect2);
+	Transform2D transform2 = anim2->get_global_transform();
+	Vector2i size2 = image2->get_size();
+	auto trans2 = transform2.affine_inverse();
+
+	// Iterate through the overlapping area for pixel-perfect collision detection
+	for (int x = overlap.position.x; x < overlap.position.x + overlap.size.x; x++) {
+		for (int y = overlap.position.y; y < overlap.position.y + overlap.size.y; y++) {
+			Vector2 local_pos1 = _to_image_coord(trans1, size1, Vector2(x, y));
+			Vector2 local_pos2 = _to_image_coord(trans2, size2, Vector2(x, y));
+
+			if (local_pos1.x >= 0 && local_pos1.x <= size1.x-1 && local_pos1.y >= 0 && local_pos1.y <= size1.y-1 &&
+					local_pos2.x >= 0 && local_pos2.x <= size2.x-1 && local_pos2.y >= 0 && local_pos2.y <= size2.y-1) {
+				Color color1 = image1->get_pixel((int)local_pos1.x,  (int)local_pos1.y);
+				Color color2 = image2->get_pixel((int)local_pos2.x,  (int)local_pos2.y);
+				 
+				if (color1.a > alpha_threshold && color2.a > alpha_threshold) {
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
 GdBool SpxSpriteMgr::check_collision_by_color(GdObj obj, GdColor color, GdFloat color_threshold) {
 	return _check_collision(obj, [=](GdColor a, GdColor b) -> bool {
 		auto diff = color - b;
