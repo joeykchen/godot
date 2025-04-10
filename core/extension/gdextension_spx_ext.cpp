@@ -202,6 +202,9 @@ static void gdextension_spx_physic_check_collision(GdVec2 from,GdVec2 to,GdInt c
 static void gdextension_spx_physic_check_touched_camera_boundary(GdObj obj,GdInt board_type,GdBool* ret_val) {
 	*ret_val = physicMgr->check_touched_camera_boundary(obj, board_type);
 }
+static void gdextension_spx_physic_set_collision_system_type(GdBool is_collision_by_alpha) {
+	 physicMgr->set_collision_system_type(is_collision_by_alpha);
+}
 static void gdextension_spx_platform_set_window_position(GdVec2 pos) {
 	 platformMgr->set_window_position(pos);
 }
@@ -274,6 +277,9 @@ static void gdextension_spx_res_reload_texture(GdString path) {
 static void gdextension_spx_scene_change_scene_to_file(GdString path) {
 	 sceneMgr->change_scene_to_file(path);
 }
+static void gdextension_spx_scene_destroy_all_sprites() {
+	 sceneMgr->destroy_all_sprites();
+}
 static void gdextension_spx_scene_reload_current_scene(GdInt* ret_val) {
 	*ret_val = sceneMgr->reload_current_scene();
 }
@@ -315,6 +321,9 @@ static void gdextension_spx_sprite_check_collision(GdObj obj,GdObj target,GdBool
 }
 static void gdextension_spx_sprite_check_collision_with_point(GdObj obj,GdVec2 point,GdBool is_trigger,GdBool* ret_val) {
 	*ret_val = spriteMgr->check_collision_with_point(obj, point, is_trigger);
+}
+static void gdextension_spx_sprite_create_backdrop(GdString path,GdObj* ret_val) {
+	*ret_val = spriteMgr->create_backdrop(path);
 }
 static void gdextension_spx_sprite_create_sprite(GdString path,GdObj* ret_val) {
 	*ret_val = spriteMgr->create_sprite(path);
@@ -577,6 +586,9 @@ static void gdextension_spx_sprite_check_collision_by_color(GdObj obj,GdColor co
 static void gdextension_spx_sprite_check_collision_by_alpha(GdObj obj,GdFloat alpha_threshold,GdBool* ret_val) {
 	*ret_val = spriteMgr->check_collision_by_alpha(obj, alpha_threshold);
 }
+static void gdextension_spx_sprite_check_collision_with_sprite_by_alpha(GdObj obj,GdObj obj_b,GdFloat alpha_threshold,GdBool* ret_val) {
+	*ret_val = spriteMgr->check_collision_with_sprite_by_alpha(obj, obj_b, alpha_threshold);
+}
 static void gdextension_spx_ui_bind_node(GdObj obj,GdString rel_path,GdObj* ret_val) {
 	*ret_val = uiMgr->bind_node(obj, rel_path);
 }
@@ -756,6 +768,7 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_physic_raycast);
 	REGISTER_SPX_INTERFACE_FUNC(spx_physic_check_collision);
 	REGISTER_SPX_INTERFACE_FUNC(spx_physic_check_touched_camera_boundary);
+	REGISTER_SPX_INTERFACE_FUNC(spx_physic_set_collision_system_type);
 	REGISTER_SPX_INTERFACE_FUNC(spx_platform_set_window_position);
 	REGISTER_SPX_INTERFACE_FUNC(spx_platform_get_window_position);
 	REGISTER_SPX_INTERFACE_FUNC(spx_platform_set_window_size);
@@ -780,6 +793,7 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_res_has_file);
 	REGISTER_SPX_INTERFACE_FUNC(spx_res_reload_texture);
 	REGISTER_SPX_INTERFACE_FUNC(spx_scene_change_scene_to_file);
+	REGISTER_SPX_INTERFACE_FUNC(spx_scene_destroy_all_sprites);
 	REGISTER_SPX_INTERFACE_FUNC(spx_scene_reload_current_scene);
 	REGISTER_SPX_INTERFACE_FUNC(spx_scene_unload_current_scene);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_dont_destroy_on_load);
@@ -794,6 +808,7 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_get_child_scale);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_check_collision);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_check_collision_with_point);
+	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_create_backdrop);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_create_sprite);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_clone_sprite);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_destroy_sprite);
@@ -881,6 +896,7 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_is_trigger_enabled);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_check_collision_by_color);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_check_collision_by_alpha);
+	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_check_collision_with_sprite_by_alpha);
 	REGISTER_SPX_INTERFACE_FUNC(spx_ui_bind_node);
 	REGISTER_SPX_INTERFACE_FUNC(spx_ui_create_node);
 	REGISTER_SPX_INTERFACE_FUNC(spx_ui_create_button);

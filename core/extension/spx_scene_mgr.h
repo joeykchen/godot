@@ -40,6 +40,7 @@ public:
 	virtual ~SpxSceneMgr() = default; // Added virtual destructor to fix -Werror=non-virtual-dtor
 
 	void change_scene_to_file(GdString path);
+	void destroy_all_sprites();
 	GdInt reload_current_scene();
 	void unload_current_scene();
 };
