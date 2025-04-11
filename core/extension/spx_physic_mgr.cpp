@@ -45,6 +45,10 @@
 
 #define spriteMgr SpxEngine::get_singleton()->get_sprite()
 
+void SpxPhysicMgr::on_awake() {
+	SpxBaseMgr::on_awake();
+	is_collision_by_pixel = true;
+}
 GdObj SpxPhysicMgr::raycast(GdVec2 from, GdVec2 to, GdInt collision_mask) {
 	auto node = (Node2D *)get_root();
 	PhysicsDirectSpaceState2D *space_state = node->get_world_2d()->get_direct_space_state();
@@ -88,7 +92,6 @@ const GdInt BOUND_CAM_LEFT = 1 << 0;
 const GdInt BOUND_CAM_TOP = 1 << 1;
 const GdInt BOUND_CAM_RIGHT = 1 << 2;
 const GdInt BOUND_CAM_BOTTOM = 1 << 3;
-const GdInt BOUND_CAM_ALL = BOUND_CAM_LEFT | BOUND_CAM_TOP | BOUND_CAM_TOP | BOUND_CAM_BOTTOM;
 
 GdInt SpxPhysicMgr::check_touched_camera_boundaries(GdObj obj) {
 	auto sprite = spriteMgr->get_sprite(obj);
@@ -145,4 +148,9 @@ GdInt SpxPhysicMgr::check_touched_camera_boundaries(GdObj obj) {
 GdBool SpxPhysicMgr::check_touched_camera_boundary(GdObj obj, GdInt board_type) {
 	auto result = check_touched_camera_boundaries(obj);
 	return (result & board_type) != 0;
+}
+
+//
+void SpxPhysicMgr::set_collision_system_type(GdBool is_collision_by_alpha) {
+	this->is_collision_by_pixel = is_collision_by_alpha;
 }

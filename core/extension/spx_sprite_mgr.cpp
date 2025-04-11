@@ -41,7 +41,14 @@
 #include "scene/resources/packed_scene.h"
 #include "spx_engine.h"
 #include "spx_res_mgr.h"
+#include "spx_physic_mgr.h"
 #include "spx_sprite.h"
+#include "core/typedefs.h"
+
+#define physicMgr SpxEngine::get_singleton()->get_physic()
+#define SPX_CALLBACK SpxEngine::get_singleton()->get_callbacks()
+
+#define DEFAULT_COLLISION_ALPHA_THRESHOLD 0.05
 
 StringName SpxSpriteMgr::default_texture_anim = "";
 #define check_and_get_sprite_r(VALUE) \
@@ -79,6 +86,10 @@ void SpxSpriteMgr::on_awake() {
 	dont_destroy_root = memnew(Node2D);
 	dont_destroy_root->set_name("dont_destroy_root");
 	get_spx_root()->add_child(dont_destroy_root);
+
+	sprite_root = memnew(Node2D);
+	sprite_root->set_name("sprite_root");
+	get_spx_root()->add_child(sprite_root);
 }
 
 void SpxSpriteMgr::on_start() {
@@ -105,6 +116,7 @@ void SpxSpriteMgr::on_destroy() {
 
 void SpxSpriteMgr::on_update(float delta) {
 	SpxBaseMgr::on_update(delta);
+	_check_pixel_collision_events();
 }
 
 SpxSprite *SpxSpriteMgr::get_sprite(GdObj obj) {
@@ -204,8 +216,16 @@ GdBool SpxSpriteMgr::check_collision_with_point(GdObj obj, GdVec2 point, GdBool 
 	return sprite->check_collision_with_point(point, is_trigger);
 }
 
-// sprite
+GdInt SpxSpriteMgr::create_backdrop(GdString path) {
+	return _create_sprite(path,true);
+}
+
 GdInt SpxSpriteMgr::create_sprite(GdString path) {
+	return _create_sprite(path,false);
+}
+
+// sprite
+GdInt SpxSpriteMgr::_create_sprite(GdString path, GdBool is_backdrop) {
 	const String path_str = String(*(const String *)path);
 	SpxSprite *sprite = nullptr;
 	if (path_str == "") {
@@ -240,12 +260,25 @@ GdInt SpxSpriteMgr::create_sprite(GdString path) {
 			}
 		}
 	}
+
+	sprite->is_backdrop = is_backdrop;
 	sprite->set_gid(get_unique_id());
-	get_spx_root()->add_child(sprite);
+	sprite_root->add_child(sprite);
 	sprite->on_start();
-	spriteMgr->id_objects[sprite->get_gid()] = sprite;
+	id_objects[sprite->get_gid()] = sprite;
 	SPX_CALLBACK->func_on_sprite_ready(sprite->get_gid());
 	return sprite->get_gid();
+}
+
+void SpxSpriteMgr::destroy_all_sprites() {
+	sprite_root->queue_free();
+	sprite_root = memnew(Node2D);
+	sprite_root->set_name("sprite_root");
+	get_spx_root()->add_child(sprite_root);
+
+	id_objects.clear();
+	bounding_collision_pairs.clear();
+	pixel_collision_pairs.clear();
 }
 
 GdInt SpxSpriteMgr::clone_sprite(GdObj obj) {
@@ -752,8 +785,8 @@ GdBool SpxSpriteMgr::check_collision_with_sprite_by_alpha(GdObj obj,GdObj obj_b,
 
 	auto sp2 = get_sprite(obj_b);
 	if (sp2 == nullptr) {
-		print_error("try to get property of a null sprite gid=" + itos(obj)); 
-		return false; 
+		print_error("try to get property of a null sprite gid=" + itos(obj));
+		return false;
 	}
 
 	AnimatedSprite2D *anim2 = sp2->anim2d;
@@ -785,7 +818,7 @@ GdBool SpxSpriteMgr::check_collision_with_sprite_by_alpha(GdObj obj,GdObj obj_b,
 					local_pos2.x >= 0 && local_pos2.x <= size2.x-1 && local_pos2.y >= 0 && local_pos2.y <= size2.y-1) {
 				Color color1 = image1->get_pixel((int)local_pos1.x,  (int)local_pos1.y);
 				Color color2 = image2->get_pixel((int)local_pos2.x,  (int)local_pos2.y);
-				 
+
 				if (color1.a > alpha_threshold && color2.a > alpha_threshold) {
 					return true;
 				}
@@ -812,7 +845,7 @@ GdBool SpxSpriteMgr::check_collision_by_alpha(GdObj obj, GdFloat alpha_threshold
 GdBool SpxSpriteMgr::_check_collision(GdObj obj, ColorCheckFunc check_func) {
 	check_and_get_sprite_r(false) // Ensure sprite exists
 
-	AnimatedSprite2D *anim1 = sprite->anim2d;
+			AnimatedSprite2D *anim1 = sprite->anim2d;
 	if (!anim1) {
 		return false;
 	}
@@ -858,10 +891,10 @@ GdBool SpxSpriteMgr::_check_collision(GdObj obj, ColorCheckFunc check_func) {
 				Vector2 local_pos1 = _to_image_coord(trans1, size1, Vector2(x, y));
 				Vector2 local_pos2 = _to_image_coord(trans2, size2, Vector2(x, y));
 
-				if (local_pos1.x >= 0 && local_pos1.x <= size1.x-1 && local_pos1.y >= 0 && local_pos1.y <= size1.y-1 &&
-						local_pos2.x >= 0 && local_pos2.x <= size2.x-1 && local_pos2.y >= 0 && local_pos2.y <= size2.y-1) {
-					Color color1 = image1->get_pixel((int)local_pos1.x,  (int)local_pos1.y);
-					Color color2 = image2->get_pixel((int)local_pos2.x,  (int)local_pos2.y);
+				if (local_pos1.x >= 0 && local_pos1.x <= size1.x - 1 && local_pos1.y >= 0 && local_pos1.y <= size1.y - 1 &&
+						local_pos2.x >= 0 && local_pos2.x <= size2.x - 1 && local_pos2.y >= 0 && local_pos2.y <= size2.y - 1) {
+					Color color1 = image1->get_pixel((int)local_pos1.x, (int)local_pos1.y);
+					Color color2 = image2->get_pixel((int)local_pos2.x, (int)local_pos2.y);
 					if (check_func(color1, color2)) {
 						return true;
 					}
@@ -870,4 +903,63 @@ GdBool SpxSpriteMgr::_check_collision(GdObj obj, ColorCheckFunc check_func) {
 		}
 	}
 	return false;
+}
+
+
+void SpxSpriteMgr::on_trigger_enter(GdInt self_id, GdInt other_id){
+	if(physicMgr->is_collision_by_pixel){
+		bounding_collision_pairs.insert(TriggerPair(self_id, other_id));
+	}else{
+		SPX_CALLBACK->func_on_trigger_enter(self_id, other_id);
+	}
+}
+void SpxSpriteMgr::on_trigger_exit(GdInt self_id, GdInt other_id){
+	if(physicMgr->is_collision_by_pixel){
+		bounding_collision_pairs.erase(TriggerPair(self_id, other_id));
+	}else{
+		SPX_CALLBACK->func_on_trigger_exit(self_id, other_id);
+	}
+}
+
+void SpxSpriteMgr::_check_pixel_collision_events() {
+	// trigger pixel collision events
+	if(physicMgr->is_collision_by_pixel){
+		Vector<TriggerPair> triggers;
+		Vector<TriggerPair> delete_triggers;
+		for(auto &trigger : bounding_collision_pairs){
+			auto sprite1 = get_sprite(trigger.id1);
+			if(sprite1 == nullptr) {
+				delete_triggers.push_back(trigger);
+				continue;
+			}
+			auto sprite2 = get_sprite(trigger.id2);
+			if(sprite2 == nullptr) {
+				delete_triggers.push_back(trigger);
+				continue;
+			}
+		}
+
+		for(auto &trigger : delete_triggers) {
+			pixel_collision_pairs.erase(trigger);
+			bounding_collision_pairs.erase(trigger);
+		}
+		// check collision by pixel
+		for(auto &trigger : bounding_collision_pairs){
+			auto is_collide = check_collision_with_sprite_by_alpha(trigger.id1, trigger.id2, DEFAULT_COLLISION_ALPHA_THRESHOLD);
+			if(is_collide) {
+				if(pixel_collision_pairs.find(trigger) == pixel_collision_pairs.end()) {
+					pixel_collision_pairs.insert(trigger);
+					triggers.push_back(trigger);
+				}
+			}else{
+				pixel_collision_pairs.erase(trigger);
+			}
+		}
+
+		// trigger pixel collision enter events
+		for(auto &trigger : triggers){
+			SPX_CALLBACK->func_on_trigger_enter(trigger.id1, trigger.id2);
+			SPX_CALLBACK->func_on_trigger_enter(trigger.id2, trigger.id1);
+		}
+	}
 }

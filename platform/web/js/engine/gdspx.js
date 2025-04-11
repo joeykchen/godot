@@ -461,6 +461,14 @@ function gdspx_physic_check_touched_camera_boundary(obj,board_type) {
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
+function gdspx_physic_set_collision_system_type(is_collision_by_alpha) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_physic_set_collision_system_type']; 
+	
+	_arg0 = ToGdBool(is_collision_by_alpha);
+	_gdFuncPtr(_arg0);
+	FreeGdBool(_arg0); 
+
+}
 function gdspx_platform_set_window_position(pos) {
 	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_set_window_position']; 
 	
@@ -673,6 +681,12 @@ function gdspx_scene_change_scene_to_file(path) {
 	FreeGdString(_arg0); 
 
 }
+function gdspx_scene_destroy_all_sprites() {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_scene_destroy_all_sprites']; 
+	
+	_gdFuncPtr();
+
+}
 function gdspx_scene_reload_current_scene() {
 	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_scene_reload_current_scene']; 
 	_retValue = AllocGdInt();
@@ -825,6 +839,16 @@ function gdspx_sprite_check_collision_with_point(obj,point,is_trigger) {
 	FreeGdBool(_arg2); 
 	_finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
+	return _finalRetValue
+}
+function gdspx_sprite_create_backdrop(path) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_create_backdrop']; 
+	_retValue = AllocGdObj();
+	_arg0 = ToGdString(path);
+	_gdFuncPtr(_arg0, _retValue);
+	FreeGdString(_arg0); 
+	_finalRetValue = ToJsObj(_retValue);
+	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_create_sprite(path) {
@@ -1719,6 +1743,20 @@ function gdspx_sprite_check_collision_by_alpha(obj,alpha_threshold) {
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
+	_finalRetValue = ToJsBool(_retValue);
+	FreeGdBool(_retValue); 
+	return _finalRetValue
+}
+function gdspx_sprite_check_collision_with_sprite_by_alpha(obj,obj_b,alpha_threshold) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_check_collision_with_sprite_by_alpha']; 
+	_retValue = AllocGdBool();
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdObj(obj_b);
+	_arg2 = ToGdFloat(alpha_threshold);
+	_gdFuncPtr(_arg0, _arg1, _arg2, _retValue);
+	FreeGdObj(_arg0); 
+	FreeGdObj(_arg1); 
+	FreeGdFloat(_arg2); 
 	_finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue

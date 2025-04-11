@@ -69,7 +69,7 @@ protected:
 public:
 	AnimatedSprite2D *anim2d;
 	CollisionShape2D *get_trigger() { return trigger2d; }
-
+	bool is_backdrop;
 public:
 	template <typename T>
 	T *get_component(GdBool recursive = false);

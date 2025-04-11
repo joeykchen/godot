@@ -83,7 +83,7 @@ public:
 
 public:
 	void set_gid(GdObj id);
-	GdObj get_gid();
+	GdObj get_gid() override;
 
 	GdInt get_type();
 	void queue_free();

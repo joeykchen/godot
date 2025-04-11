@@ -34,11 +34,59 @@
 #include "gdextension_spx_ext.h"
 #include "scene/2d/animated_sprite_2d.h"
 #include "spx_base_mgr.h"
+#include "core/templates/hash_map.h"
 #include <functional>
+#include <unordered_set>
 
 class SpxSprite;
 
 typedef std::function<bool(GdColor, GdColor)> ColorCheckFunc;
+#include <functional>
+#include <unordered_set>
+
+class TriggerPair {
+public:
+	GdObj id1;
+	GdObj id2;
+
+public:
+	TriggerPair() :
+			id1(0), id2(0) {}
+
+	TriggerPair(GdObj id1, GdObj id2) {
+		this->id1 = id1;
+		this->id2 = id2;
+		if (id1 > id2) {
+			this->id1 = id2;
+			this->id2 = id1;
+		}
+	}
+	bool operator<(const TriggerPair &p_other) const {
+		return id1 < p_other.id1 || (id1 == p_other.id1 && id2 < p_other.id2);
+	}
+
+	bool operator==(const TriggerPair &p_other) const {
+		return id1 == p_other.id1 && id2 == p_other.id2;
+	}
+
+	bool operator!=(const TriggerPair &p_other) const {
+		return !(*this == p_other);
+	}
+
+	size_t std_hash() const {
+		return static_cast<size_t>(id1) ^ static_cast<size_t>(id2);
+	}
+};
+
+namespace std {
+template <>
+struct hash<TriggerPair> {
+	size_t operator()(const TriggerPair &pair) const {
+		return pair.std_hash();
+	}
+};
+}
+
 
 class SpxSpriteMgr : SpxBaseMgr {
 	SPXCLASS(SpxSpriteMgr, SpxBaseMgr)
@@ -47,12 +95,17 @@ public:
 
 private:
 	RBMap<GdObj, SpxSprite *> id_objects;
+	std::unordered_set<TriggerPair> bounding_collision_pairs;
+	std::unordered_set<TriggerPair> pixel_collision_pairs;
+
 	Node* dont_destroy_root;
+	Node* sprite_root;
 
 	Ref<Image> _get_current_frame_image(AnimatedSprite2D *sprite);
 	Rect2 _get_sprite_aabb(AnimatedSprite2D *anim2d);
 	Vector2 _to_image_coord(const Transform2D &trans, Vector2 image_size, Vector2 pos);
 	GdBool _check_collision(GdObj obj, ColorCheckFunc check_func);
+	void _check_pixel_collision_events();
 
 public:
 	static StringName default_texture_anim;
@@ -63,7 +116,10 @@ public:
 
 	SpxSprite *get_sprite(GdObj obj);
 	void on_sprite_destroy(SpxSprite *sprite);
-
+	void on_trigger_enter(GdInt self_id, GdInt other_id);
+	void on_trigger_exit(GdInt self_id, GdInt other_id);
+	GdObj _create_sprite(GdString path, GdBool is_backdrop);
+	void destroy_all_sprites();
 public:
 	void set_dont_destroy_on_load(GdObj obj);
 	// process
@@ -83,6 +139,7 @@ public:
 	GdBool check_collision(GdObj obj,GdObj target, GdBool is_src_trigger,GdBool is_dst_trigger);
 	GdBool check_collision_with_point(GdObj obj,GdVec2 point, GdBool is_trigger);
 	//
+	GdObj create_backdrop(GdString path);
 	GdObj create_sprite(GdString path);
 	GdObj clone_sprite(GdObj obj);
 	GdBool destroy_sprite(GdObj obj);
@@ -184,7 +241,8 @@ public:
 	// misc
 	GdBool check_collision_by_color(GdObj obj, GdColor color,GdFloat color_threshold);
 	GdBool check_collision_by_alpha(GdObj obj, GdFloat alpha_threshold);
-	GdBool check_collision_with_sprite_by_alpha(GdObj obj_a, GdObj obj_b, GdFloat alpha_threshold);
+	GdBool check_collision_with_sprite_by_alpha(GdObj obj, GdObj obj_b, GdFloat alpha_threshold);
+
 };
 
 #endif // SPX_SPRITE_MGR_H

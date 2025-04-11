@@ -43,6 +43,7 @@
 #include "spx_res_mgr.h"
 #include "spx_sprite_mgr.h"
 #define SPX_CALLBACK SpxEngine::get_singleton()->get_callbacks()
+#define spriteMgr SpxEngine::get_singleton()->get_sprite()
 
 Node *SpxSprite::get_component(Node *node, StringName name, GdBool recursive) {
 	for (int i = 0; i < node->get_child_count(); ++i) {
@@ -197,10 +198,14 @@ void SpxSprite::on_area_entered(Node *node) {
 	if (!Spx::initialed) {
 		return;
 	}
+	// backdrop would not collision with other
+	if(is_backdrop) {
+		return ;
+	}
 	Node *parent_node = node->get_parent();
 	const SpxSprite *other = Object::cast_to<SpxSprite>(parent_node);
 	if (other != nullptr) {
-		SPX_CALLBACK->func_on_trigger_enter(this->gid, other->gid);
+		spriteMgr->on_trigger_enter(this->gid, other->gid);
 	}
 }
 
@@ -208,10 +213,14 @@ void SpxSprite::on_area_exited(Node *node) {
 	if (!Spx::initialed) {
 		return;
 	}
+	// backdrop would not collision with other
+	if(is_backdrop) {
+		return ;
+	}
 	Node *parent_node = node->get_parent();
 	const SpxSprite *other = Object::cast_to<SpxSprite>(parent_node);
 	if (other != nullptr) {
-		SPX_CALLBACK->func_on_trigger_exit(this->gid, other->gid);
+		spriteMgr->on_trigger_exit(this->gid, other->gid);
 	}
 }
 

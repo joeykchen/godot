@@ -96,7 +96,7 @@ public:
 	GdInt get_unique_id() override;
 	Node *get_spx_root() override;
 	SceneTree *get_tree() override;
-	Window *get_root();
+	Window *get_root() override;
 	void set_root_node(SceneTree *p_tree, Node *p_node);
 
 	void on_awake() override;

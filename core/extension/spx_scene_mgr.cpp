@@ -29,6 +29,14 @@
 /**************************************************************************/
 
 #include "spx_scene_mgr.h"
+#include "spx_engine.h"
+#include "spx_sprite_mgr.h"
+
+#define spriteMgr SpxEngine::get_singleton()->get_sprite()
+
+void SpxSceneMgr::destroy_all_sprites() {
+	spriteMgr->destroy_all_sprites();
+}
 
 void SpxSceneMgr::change_scene_to_file(GdString path) {
 	get_tree()->change_scene_to_file(SpxStr(path));
