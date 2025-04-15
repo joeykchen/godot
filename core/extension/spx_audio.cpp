@@ -52,6 +52,13 @@ void SpxAudio::stop_all() {
 		item = item->next();
 	}
 	audios.clear();
+
+	for (List<AudioStreamPlayer2D *>::Element *item = loop_audios.front(); item;) {
+		item->get()->queue_free();
+		item = item->next();
+	}
+	loop_audios.clear();
+
 	if (cur_audio) {
 		pause();
 	}
@@ -69,10 +76,7 @@ void SpxAudio::on_destroy() {
 	}
 }
 void SpxAudio::on_update(float delta) {
-	// Check for cur_audio looping - if cur_audio exists and has a valid stream but isn't playing, restart it
-	//if (cur_audio && cur_audio->get_stream().is_valid() && !cur_audio->is_playing() && !cur_audio->get_stream_paused()) {
-	//	cur_audio->play();
-	//}
+
 	// check the audio is done
 	for (auto item = audios.front(); item;) {
 		const auto audio = item->get();
@@ -83,6 +87,15 @@ void SpxAudio::on_update(float delta) {
 			if (cur_audio == audio) {
 				cur_audio = nullptr;
 			}
+		}
+		item = next;
+	}
+
+	for (auto item = loop_audios.front(); item;) {
+		const auto audio = item->get();
+		auto *next = item->next();
+		if (audio->get_stream().is_valid()&& !audio->is_playing()  && !audio->get_stream_paused()) {
+			audio->play();
 		}
 		item = next;
 	}
@@ -134,14 +147,24 @@ void SpxAudio::set_loop(GdBool loop) {
 	if (!cur_audio) {
 		return;
 	}
-	// TODO impl loop
+	if (loop) {
+		auto succ = audios.erase(cur_audio);
+		if (succ) {
+			loop_audios.push_back(cur_audio);
+		}
+	} else {
+		auto succ = loop_audios.erase(cur_audio);
+		if (succ) {
+			audios.push_back(cur_audio);
+		}
+	}
 }
 
 GdBool SpxAudio::get_loop() {
 	if (!cur_audio) {
 		return false;
 	}
-	return false;
+	return loop_audios.find(cur_audio) != nullptr;
 }
 
 GdFloat SpxAudio::get_timer() {
