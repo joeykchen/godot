@@ -40,6 +40,7 @@ class AudioStreamPlayer2D;
 class SpxAudio {
 private:
 	List<AudioStreamPlayer2D *> audios;
+	List<AudioStreamPlayer2D *> loop_audios;
 	AudioStreamPlayer2D *cur_audio = nullptr;
 	Node *root;
 	GdObj id;
