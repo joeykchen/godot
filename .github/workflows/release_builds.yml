@@ -28,7 +28,7 @@ env:
 jobs:
   setup:
     name: 📋 Prepare Build Environment
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     outputs:
       version: ${{ steps.set-version.outputs.version }}
       platforms: ${{ steps.set-platforms.outputs.platforms }}
@@ -70,7 +70,7 @@ jobs:
     name: 🤖 Android Release
     needs: setup
     if: contains(needs.setup.outputs.platforms, 'android') || contains(needs.setup.outputs.platforms, 'all')
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -388,7 +388,7 @@ jobs:
     name: 🐧 Linux ${{ matrix.arch }} Editor Build
     needs: setup
     if: contains(needs.setup.outputs.platforms, 'linux') || contains(needs.setup.outputs.platforms, 'all')
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         arch: [x86_64, arm64]
@@ -453,7 +453,7 @@ jobs:
     name: 🐧 Linux ${{ matrix.arch }} Template Build
     needs: setup
     if: contains(needs.setup.outputs.platforms, 'linux') || contains(needs.setup.outputs.platforms, 'all')
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         arch: [x86_64, arm64]
