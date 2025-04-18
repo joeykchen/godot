@@ -118,7 +118,7 @@ GdInt SpxPhysicMgr::check_touched_camera_boundaries(GdObj obj) {
 
 	Vector2 viewport_size = camera->get_viewport_rect().size;
 	Vector2 zoom = camera->get_zoom();
-	Vector2 half_size = (viewport_size * zoom) * 0.5;
+	Vector2 half_size = (viewport_size / zoom) * 0.5;
 	Vector2 camera_position = camera_transform.get_origin();
 
 	Ref<RectangleShape2D> vertical_edge_shape;
