@@ -58,6 +58,7 @@ private:
 	static Ref<AudioStreamMP3> _load_mp3(const String &path);
 	Ref<Texture2D> _load_texture_direct(const String &p_path);
 	Ref<AudioStream> _load_audio_direct(const String &p_path);
+	String _to_engine_path(const String &p_path);
 
 public:
 	void on_awake() override;

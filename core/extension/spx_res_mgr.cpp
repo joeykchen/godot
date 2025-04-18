@@ -58,6 +58,17 @@ bool SpxResMgr::is_dynamic_anim_mode() const {
 	return is_dynamic_anim;
 }
 
+String SpxResMgr::_to_engine_path(const String &p_path){
+	String path = p_path;
+	if (!path.begins_with(platformMgr->_get_persistant_data_dir()) && game_data_root != "res://") {
+		if (path.begins_with("../")) {
+			path = path.substr(3, -1);
+		}
+		path = game_data_root + "/" + path;
+	}
+	return path;
+}
+
 Ref<AudioStreamWAV> SpxResMgr::_load_wav(const String &path) {
 	Ref<AudioStreamWAV> sample;
 #ifdef TOOLS_ENABLED
@@ -82,13 +93,7 @@ Ref<AudioStreamMP3> SpxResMgr::_load_mp3(const String &path) {
 }
 
 Ref<AudioStream> SpxResMgr::_load_audio_direct(const String &p_path) {
-	String path = p_path;
-	if (!path.begins_with(platformMgr->_get_persistant_data_dir()) && game_data_root != "res://") {
-		if (path.begins_with("../")) {
-			path = path.substr(3, -1);
-		}
-		path = game_data_root + "/" + path;
-	}
+	String path = _to_engine_path(p_path);
 	if (cached_audio.has(path)) {
 		return cached_audio[path];
 	}
@@ -111,13 +116,7 @@ Ref<AudioStream> SpxResMgr::_load_audio_direct(const String &p_path) {
 }
 
 Ref<Texture2D> SpxResMgr::_load_texture_direct(const String &p_path) {
-	String path = p_path;
-	if (!path.begins_with(platformMgr->_get_persistant_data_dir()) && game_data_root != "res://") {
-		if (path.begins_with("../")) {
-			path = path.substr(3, -1);
-		}
-		path = game_data_root + "/" + path;
-	}
+	String path = _to_engine_path(p_path);
 	// data in tmp dir would not keep in cache 
 	if (cached_texture.has(path)) {
 		return cached_texture[path];
@@ -315,6 +314,7 @@ GdVec2 SpxResMgr::get_image_size(GdString path) {
 
 GdString SpxResMgr::read_all_text(GdString p_path) {
 	auto path = SpxStr(p_path);
+	path = _to_engine_path(path);
 	Ref<FileAccess> file = FileAccess::open(path, FileAccess::READ);
 	SpxBaseMgr::temp_return_str = "";
 	if (file.is_null()) {
@@ -333,6 +333,7 @@ GdString SpxResMgr::read_all_text(GdString p_path) {
 
 GdBool SpxResMgr::has_file(GdString p_path) {
 	auto path = SpxStr(p_path);
+	path = _to_engine_path(path);
 	Ref<FileAccess> file = FileAccess::open(path, FileAccess::READ);
 	return !file.is_null();
 }
