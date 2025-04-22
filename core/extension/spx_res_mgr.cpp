@@ -207,7 +207,6 @@ void SpxResMgr::create_animation(GdString p_sprite_type_name, GdString p_anim_na
 	auto anim_key = get_anim_key_name(sprite_type_name, clip_name);
 	auto frames = anim_frames;
 	if (frames->has_animation(anim_key)) {
-		print_error("animation is already exist " + sprite_type_name + " " + clip_name);
 		return ;
 	}
 	frames->add_animation(anim_key);
