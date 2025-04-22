@@ -212,7 +212,9 @@ GdString* gdspx_alloc_string() {
 EMSCRIPTEN_KEEPALIVE
 GdString* gdspx_new_string(const char* str) {
     GdString* ptr = gdspx_alloc_string();
-    *ptr = new String(str);
+    auto tmp_str = new String();
+    tmp_str->parse_utf8(str);
+    *ptr = tmp_str;
     return ptr;
 }
 
