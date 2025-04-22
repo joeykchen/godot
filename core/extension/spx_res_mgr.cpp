@@ -324,7 +324,7 @@ GdString SpxResMgr::read_all_text(GdString p_path) {
 			String line = file->get_line();
 			file_content += line + "\n";
 		}
-		SpxBaseMgr::temp_return_str = file_content.utf8();
+		SpxBaseMgr::temp_return_str = file_content;
 	}
 	file->close();
 	return &SpxBaseMgr::temp_return_str;
