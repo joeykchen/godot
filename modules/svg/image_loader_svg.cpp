@@ -87,7 +87,10 @@ Error ImageLoaderSVG::create_image_from_utf8_buffer(Ref<Image> p_image, const ui
 		return ERR_INVALID_DATA;
 	}
 	uint32_t width = document->width(), height = document->height();
-
+	// check the invalid svg file
+	if(width ==0 || height ==0) {
+		return ERR_INVALID_DATA;
+	}
 	width *= p_scale;
 	height *= p_scale;
 

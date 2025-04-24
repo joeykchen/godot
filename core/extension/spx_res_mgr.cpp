@@ -115,36 +115,44 @@ Ref<AudioStream> SpxResMgr::_load_audio_direct(const String &p_path) {
 	return res;
 }
 
+static void _load_image(String path, Ref<Image> p_image){
+	Error err = ImageLoader::load_image(path, p_image);
+	if (err != OK) {
+		// Failed to load image , so give a pink image
+		// pink color
+		PackedByteArray data;
+		for (int i = 0; i < 4 * 4; i++) {
+			data.append(255); // R
+			data.append(0); // G
+			data.append(255); // B
+			data.append(128); // A
+		}
+		p_image->set_data(4, 4, false, Image::FORMAT_RGBA8, data);
+	}
+}
+
 Ref<Texture2D> SpxResMgr::_load_texture_direct(const String &p_path) {
 	String path = _to_engine_path(p_path);
-	// data in tmp dir would not keep in cache 
+	// data in tmp dir would not keep in cache
 	if (cached_texture.has(path)) {
 		return cached_texture[path];
 	}
 
 	Ref<Image> image;
 	image.instantiate();
-	Error err = ImageLoader::load_image(path, image);
-	if (err != OK) {
-		print_line("Failed to load image: " + String::num_int64(err), path);
-		return Ref<Texture2D>();
-	}
+
+	_load_image(path, image);
 
 	Ref<ImageTexture> texture = ImageTexture::create_from_image(image);
 	cached_texture.insert(path, texture);
 	return texture;
 }
-
 Ref<Texture2D> SpxResMgr::_reload_texture(String path) {
 	if (cached_texture.has(path)) {
 		auto tex = (Ref<ImageTexture>)cached_texture[path];
 		Ref<Image> image;
 		image.instantiate();
-		Error err = ImageLoader::load_image(path, image);
-		if (err != OK) {
-			print_line("Failed to load image: " + String::num_int64(err), path);
-			return Ref<Texture2D>();
-		}
+		_load_image(path, image);
 		tex->set_image(image);
 		cached_texture.erase(path);
 		cached_texture.insert(path, tex);
@@ -269,7 +277,10 @@ GdRect2 SpxResMgr::get_bound_from_alpha(GdString path) {
 	auto path_str = SpxStr(path);
 
 	Ref<Texture2D> image = load_texture(path_str);
-
+	if (image == nullptr) {
+		print_line("Load texture failed ", path_str);
+		return GdRect2(Vector2(0,0),Size2(4,4));
+	}
 	int width = image->get_width();
 	int height = image->get_height();
 
