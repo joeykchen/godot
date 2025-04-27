@@ -243,6 +243,15 @@ void SpxSprite::on_sprite_frame_changed() {
 		return;
 	}
 	SPX_CALLBACK->func_on_sprite_frame_changed(this->gid);
+
+	// update effect shader's atlas's uv rect
+	if (anim2d != nullptr) {
+		auto uv_rect = anim2d->get_uv_rect();
+		if (default_material.is_null()) {
+			return;
+		}
+		default_material->set_shader_parameter("atlas_uv_rect2", uv_rect);
+	}
 }
 
 void SpxSprite::on_sprite_animation_looped() {
