@@ -160,6 +160,12 @@ public:
 	void set_material_params(GdObj obj, GdString effect, GdFloat amount);
 	GdFloat get_material_params(GdObj obj, GdString effect);
 
+	void set_material_params_vec4(GdObj obj, GdString effect, GdVec4 vec4);
+	GdVec4 get_material_params_vec4(GdObj obj, GdString effect);
+
+	void set_material_params_color(GdObj obj, GdString effect, GdColor color);
+	GdColor get_material_params_color(GdObj obj, GdString effect);
+
 	void set_texture_altas(GdObj obj, GdString path, GdRect2 rect2);
 	void set_texture(GdObj obj, GdString path);
 	void set_texture_altas_direct(GdObj obj, GdString path, GdRect2 rect2);

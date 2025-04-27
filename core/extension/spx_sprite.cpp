@@ -335,6 +335,42 @@ GdFloat SpxSprite::get_material_params(GdString effect) {
 	return default_material->get_shader_parameter(SpxStr(effect));
 }
 
+void SpxSprite::set_material_params_vec4(GdString effect, GdVec4 vec4) {
+	if (default_material.is_null())
+	{
+		print_line("set_material_params_vec4 failed, the material and shader have not been set, please initialize the shader first!");
+		return;
+	}
+	default_material->set_shader_parameter(SpxStr(effect), vec4);
+}
+
+GdVec4 SpxSprite::get_material_params_vec4(GdString effect) {
+	if (default_material.is_null())
+	{
+		print_line("get_material_params_vec4 failed, the material and shader have not been set, please initialize the shader first!");
+		return GdVec4();
+	}
+	return default_material->get_shader_parameter(SpxStr(effect));
+}
+
+void SpxSprite::set_material_params_color(GdString effect, GdColor color) {
+	if (default_material.is_null())
+	{
+		print_line("set_material_params_color failed, the material and shader have not been set, please initialize the shader first!");
+		return;
+	}
+	default_material->set_shader_parameter(SpxStr(effect), color);
+}
+
+GdColor SpxSprite::get_material_params_color(GdString effect) {
+	if (default_material.is_null())
+	{
+		print_line("get_material_params_color failed, the material and shader have not been set, please initialize the shader first!");
+		return GdColor();
+	}
+	return default_material->get_shader_parameter(SpxStr(effect));
+}
+
 void SpxSprite::set_texture_altas_direct(GdString path, GdRect2 rect2, GdBool direct) {
 	auto path_str = SpxStr(path);
 	Ref<Texture2D> texture = resMgr->load_texture(path_str, direct);
