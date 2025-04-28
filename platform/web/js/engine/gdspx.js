@@ -1037,6 +1037,54 @@ function gdspx_sprite_get_material_params(obj,effect) {
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
+function gdspx_sprite_set_material_params_vec_4(obj,effect,vec4) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_material_params_vec_4']; 
+	
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdString(effect);
+	_arg2 = ToGdVec4(vec4);
+	_gdFuncPtr(_arg0, _arg1, _arg2);
+	FreeGdObj(_arg0); 
+	FreeGdString(_arg1); 
+	FreeGdVec4(_arg2); 
+
+}
+function gdspx_sprite_get_material_params_vec_4(obj,effect) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_material_params_vec_4']; 
+	_retValue = AllocGdVec4();
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdString(effect);
+	_gdFuncPtr(_arg0, _arg1, _retValue);
+	FreeGdObj(_arg0); 
+	FreeGdString(_arg1); 
+	_finalRetValue = ToJsVec4(_retValue);
+	FreeGdVec4(_retValue); 
+	return _finalRetValue
+}
+function gdspx_sprite_set_material_params_color(obj,effect,color) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_material_params_color']; 
+	
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdString(effect);
+	_arg2 = ToGdColor(color);
+	_gdFuncPtr(_arg0, _arg1, _arg2);
+	FreeGdObj(_arg0); 
+	FreeGdString(_arg1); 
+	FreeGdColor(_arg2); 
+
+}
+function gdspx_sprite_get_material_params_color(obj,effect) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_material_params_color']; 
+	_retValue = AllocGdColor();
+	_arg0 = ToGdObj(obj);
+	_arg1 = ToGdString(effect);
+	_gdFuncPtr(_arg0, _arg1, _retValue);
+	FreeGdObj(_arg0); 
+	FreeGdString(_arg1); 
+	_finalRetValue = ToJsColor(_retValue);
+	FreeGdColor(_retValue); 
+	return _finalRetValue
+}
 function gdspx_sprite_set_texture_altas(obj,path,rect2) {
 	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_texture_altas']; 
 	

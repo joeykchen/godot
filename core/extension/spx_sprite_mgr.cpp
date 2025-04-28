@@ -367,7 +367,28 @@ void SpxSpriteMgr::set_material_params(GdObj obj, GdString effect, GdFloat amoun
 }
 
 GdFloat SpxSpriteMgr::get_material_params(GdObj obj, GdString effect) {
-	check_and_get_sprite_r(GdFloat()) return sprite->get_material_params(effect);
+	check_and_get_sprite_r(GdFloat()) 
+	return sprite->get_material_params(effect);
+}
+
+void SpxSpriteMgr::set_material_params_vec4(GdObj obj, GdString effect, GdVec4 vec4) {
+	check_and_get_sprite_v()
+	sprite->set_material_params_vec4(effect, vec4);
+}
+
+GdVec4 SpxSpriteMgr::get_material_params_vec4(GdObj obj, GdString effect) {
+	check_and_get_sprite_r(GdVec4()) 
+	return sprite->get_material_params_vec4(effect);
+}
+
+void SpxSpriteMgr::set_material_params_color(GdObj obj, GdString effect, GdColor color) {
+	check_and_get_sprite_v()
+	sprite->set_material_params_color(effect, color);
+}
+
+GdColor SpxSpriteMgr::get_material_params_color(GdObj obj, GdString effect) {
+	check_and_get_sprite_r(GdColor()) 
+	return sprite->get_material_params_color(effect);
 }
 
 void SpxSpriteMgr::set_texture_altas(GdObj obj, GdString path, GdRect2 rect2) {

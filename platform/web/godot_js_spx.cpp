@@ -485,6 +485,22 @@ void gdspx_sprite_get_material_params(GdObj* obj,GdString* effect,GdFloat* ret_v
 	*ret_val = spriteMgr->get_material_params(*obj, *effect);
 }
 EMSCRIPTEN_KEEPALIVE
+void gdspx_sprite_set_material_params_vec4(GdObj* obj,GdString* effect,GdVec4* vec4) {
+	 spriteMgr->set_material_params_vec4(*obj, *effect, *vec4);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_sprite_get_material_params_vec4(GdObj* obj,GdString* effect,GdVec4* ret_val) {
+	*ret_val = spriteMgr->get_material_params_vec4(*obj, *effect);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_sprite_set_material_params_color(GdObj* obj,GdString* effect,GdColor* color) {
+	 spriteMgr->set_material_params_color(*obj, *effect, *color);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_sprite_get_material_params_color(GdObj* obj,GdString* effect,GdColor* ret_val) {
+	*ret_val = spriteMgr->get_material_params_color(*obj, *effect);
+}
+EMSCRIPTEN_KEEPALIVE
 void gdspx_sprite_set_texture_altas(GdObj* obj,GdString* path,GdRect2* rect2) {
 	 spriteMgr->set_texture_altas(*obj, *path, *rect2);
 }
