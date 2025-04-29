@@ -225,6 +225,7 @@ void SpxSprite::on_area_exited(Node *node) {
 }
 
 void SpxSprite::on_sprite_frames_set_changed() {
+	return;
 	if (!Spx::initialed) {
 		return;
 	}
@@ -232,6 +233,7 @@ void SpxSprite::on_sprite_frames_set_changed() {
 }
 
 void SpxSprite::on_sprite_animation_changed() {
+	return;
 	if (!Spx::initialed) {
 		return;
 	}
@@ -239,6 +241,7 @@ void SpxSprite::on_sprite_animation_changed() {
 }
 
 void SpxSprite::on_sprite_frame_changed() {
+	return;
 	if (!Spx::initialed) {
 		return;
 	}
@@ -255,6 +258,7 @@ void SpxSprite::on_sprite_frame_changed() {
 }
 
 void SpxSprite::on_sprite_animation_looped() {
+	return;
 	if (!Spx::initialed) {
 		return;
 	}
@@ -262,6 +266,7 @@ void SpxSprite::on_sprite_animation_looped() {
 }
 
 void SpxSprite::on_sprite_animation_finished() {
+	return;
 	if (!Spx::initialed) {
 		return;
 	}
@@ -321,8 +326,8 @@ GdString SpxSprite::get_material_shader() {
 	{
 		return nullptr;
 	}
-	SpxBaseMgr::temp_return_str = default_material.ptr()->get_shader()->get_path();
-	return &SpxBaseMgr::temp_return_str;
+	auto path = default_material.ptr()->get_shader()->get_path();
+	return SpxReturnStr(path);
 }
 
 void SpxSprite::set_material_params(GdString effect, GdFloat amount) {
@@ -428,12 +433,11 @@ GdString SpxSprite::get_texture() {
 	auto tex = anim2d->get_sprite_frames()->get_frame_texture(SpxSpriteMgr::default_texture_anim, 0);
 	if (tex == nullptr)
 		return nullptr;
-	SpxBaseMgr::temp_return_str = tex->get_name();
-	return &SpxBaseMgr::temp_return_str;
+	return SpxReturnStr(tex->get_name());
 }
 
 void SpxSprite::play_anim(GdString p_name, GdFloat p_speed, GdBool isLoop, GdBool p_from_end) {
-	String anim_name = SpxStrName(p_name);
+	String anim_name = SpxStr(p_name);
 	if (resMgr->is_dynamic_anim_mode()) {
 		anim_name = resMgr->get_anim_key_name(get_spx_type_name(), anim_name);
 		auto frames = resMgr->get_anim_frames(anim_name);
@@ -444,7 +448,7 @@ void SpxSprite::play_anim(GdString p_name, GdFloat p_speed, GdBool isLoop, GdBoo
 }
 
 void SpxSprite::play_backwards_anim(GdString p_name) {
-	String anim_name = SpxStrName(p_name);
+	auto anim_name = SpxStr(p_name);
 	if (resMgr->is_dynamic_anim_mode()) {
 		anim_name = resMgr->get_anim_key_name(get_spx_type_name(), anim_name);
 		anim2d->set_sprite_frames(resMgr->get_anim_frames(anim_name));
@@ -465,12 +469,13 @@ GdBool SpxSprite::is_playing_anim() const {
 }
 
 void SpxSprite::set_anim(GdString p_name) {
-	anim2d->set_animation(SpxStrName(p_name));
+	auto anim_name = SpxStr(p_name);
+	anim2d->set_animation(StringName(anim_name));
 }
 
 GdString SpxSprite::get_anim() const {
 	auto name = anim2d->get_animation();
-	return name;
+	return SpxReturnStr(String(name));
 }
 
 void SpxSprite::set_anim_frame(GdInt p_frame) {

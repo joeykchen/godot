@@ -675,6 +675,14 @@ function gdspx_res_reload_texture(path) {
 	FreeGdString(_arg0); 
 
 }
+function gdspx_res_free_str(str) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_res_free_str']; 
+	
+	_arg0 = ToGdString(str);
+	_gdFuncPtr(_arg0);
+	FreeGdString(_arg0); 
+
+}
 function gdspx_scene_change_scene_to_file(path) {
 	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_scene_change_scene_to_file']; 
 	
@@ -1037,8 +1045,8 @@ function gdspx_sprite_get_material_params(obj,effect) {
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
-function gdspx_sprite_set_material_params_vec_4(obj,effect,vec4) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_material_params_vec_4']; 
+function gdspx_sprite_set_material_params_vec4(obj,effect,vec4) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_material_params_vec4']; 
 	
 	_arg0 = ToGdObj(obj);
 	_arg1 = ToGdString(effect);
@@ -1049,8 +1057,8 @@ function gdspx_sprite_set_material_params_vec_4(obj,effect,vec4) {
 	FreeGdVec4(_arg2); 
 
 }
-function gdspx_sprite_get_material_params_vec_4(obj,effect) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_material_params_vec_4']; 
+function gdspx_sprite_get_material_params_vec4(obj,effect) {
+	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_material_params_vec4']; 
 	_retValue = AllocGdVec4();
 	_arg0 = ToGdObj(obj);
 	_arg1 = ToGdString(effect);

@@ -103,9 +103,9 @@ void SpxSpriteMgr::on_start() {
 			//get_spx_root()->add_child(sprite);
 			sprite->on_start();
 			spriteMgr->id_objects[sprite->get_gid()] = sprite;
-			SpxBaseMgr::temp_return_str = sprite->get_spx_type_name();
-			// TODO(jiepengtan) fixed it
-			SPX_CALLBACK->func_on_scene_sprite_instantiated(sprite->get_gid(), SpxBaseMgr::temp_return_str.ascii().get_data());
+			auto value = sprite->get_spx_type_name();
+			auto data = SpxReturnStr(value);
+			SPX_CALLBACK->func_on_scene_sprite_instantiated(sprite->get_gid(), data);
 		}
 	}
 }
@@ -226,7 +226,7 @@ GdInt SpxSpriteMgr::create_sprite(GdString path) {
 
 // sprite
 GdInt SpxSpriteMgr::_create_sprite(GdString path, GdBool is_backdrop) {
-	const String path_str = String(*(const String *)path);
+	const String path_str = SpxStr(path);
 	SpxSprite *sprite = nullptr;
 	if (path_str == "") {
 		sprite = memnew(SpxSprite);
@@ -358,7 +358,8 @@ void SpxSpriteMgr::set_material_shader(GdObj obj, GdString path) {
 }
 
 GdString SpxSpriteMgr::get_material_shader(GdObj obj) {
-	check_and_get_sprite_r(GdString()) return sprite->get_material_shader();
+	check_and_get_sprite_r(GdString()) 
+	return sprite->get_material_shader();
 }
 
 void SpxSpriteMgr::set_material_params(GdObj obj, GdString effect, GdFloat amount) {
@@ -367,7 +368,7 @@ void SpxSpriteMgr::set_material_params(GdObj obj, GdString effect, GdFloat amoun
 }
 
 GdFloat SpxSpriteMgr::get_material_params(GdObj obj, GdString effect) {
-	check_and_get_sprite_r(GdFloat()) 
+	check_and_get_sprite_r(GdFloat())
 	return sprite->get_material_params(effect);
 }
 
@@ -377,7 +378,7 @@ void SpxSpriteMgr::set_material_params_vec4(GdObj obj, GdString effect, GdVec4 v
 }
 
 GdVec4 SpxSpriteMgr::get_material_params_vec4(GdObj obj, GdString effect) {
-	check_and_get_sprite_r(GdVec4()) 
+	check_and_get_sprite_r(GdVec4())
 	return sprite->get_material_params_vec4(effect);
 }
 
@@ -387,7 +388,7 @@ void SpxSpriteMgr::set_material_params_color(GdObj obj, GdString effect, GdColor
 }
 
 GdColor SpxSpriteMgr::get_material_params_color(GdObj obj, GdString effect) {
-	check_and_get_sprite_r(GdColor()) 
+	check_and_get_sprite_r(GdColor())
 	return sprite->get_material_params_color(effect);
 }
 
