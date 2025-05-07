@@ -79,6 +79,7 @@ GdInt* gdspx_new_int(uint32_t high,uint32_t low) {
 
 EMSCRIPTEN_KEEPALIVE
 void gdspx_free_int(GdInt* i) {
+    *i = 0;
     intPool.release(i);
 }
 
@@ -98,6 +99,7 @@ GdObj* gdspx_new_obj(uint32_t high,uint32_t low) {
 
 EMSCRIPTEN_KEEPALIVE
 void gdspx_free_obj(GdObj* obj) {
+    *obj = 0;
     objPool.release(obj);
 }
 
@@ -210,15 +212,17 @@ GdString* gdspx_alloc_string() {
 }
 
 EMSCRIPTEN_KEEPALIVE
-GdString* gdspx_new_string(const char* str) {
+GdString* gdspx_new_string(const char* str, uint32_t len) {
     GdString* ptr = gdspx_alloc_string();
-    (*(const char **)ptr) = str;
+    char* result = (char*)malloc(len + 1);
+	strcpy(result, str);
+    *ptr = result;
     return ptr;
 }
 
 EMSCRIPTEN_KEEPALIVE
 const char* gdspx_get_string(GdString* ptr) {
-    return (*(const char **)ptr);
+    return (const char *)(*ptr);
 }
 
 EMSCRIPTEN_KEEPALIVE
