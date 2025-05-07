@@ -38,7 +38,7 @@
 public:                               \
 	String get_class_name() const override { return #m_class; }
 
-#define SpxStr(str) (String((const char *)str))
+#define SpxStr(str) (String::utf8((const char *)str))
 #define SpxReturnStr(str) (SpxBaseMgr::to_return_cstr(str))
 
 #define inputMgr SpxEngine::get_singleton()->get_input()
