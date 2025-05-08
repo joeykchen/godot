@@ -1309,6 +1309,12 @@ Size2i DisplayServerWeb::window_get_size_with_decorations(WindowID p_window) con
 	return window_get_size(p_window);
 }
 
+Size2i DisplayServerWeb::window_get_size_ext(WindowID p_window) const {
+	int size[2];
+	godot_js_display_window_size_get_ext(size, size + 1);
+	return Size2i(size[0], size[1]);
+}
+
 void DisplayServerWeb::window_set_mode(WindowMode p_mode, WindowID p_window) {
 	if (window_mode == p_mode) {
 		return;

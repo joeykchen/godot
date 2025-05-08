@@ -51,7 +51,7 @@ void SpxPlatformMgr::set_window_size(GdInt width, GdInt height) {
 }
 
 GdVec2 SpxPlatformMgr::get_window_size() {
-	auto size = DisplayServer::get_singleton()->window_get_size();
+	auto size = DisplayServer::get_singleton()->window_get_size_ext();
 	return GdVec2(size.x, size.y);
 }
 
