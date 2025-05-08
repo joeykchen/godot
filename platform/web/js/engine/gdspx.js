@@ -10,287 +10,287 @@ function test_go_call_cpp(val) {
 	return GodotEngine.rtenv['_test_go_call_cpp'](val); 
 }
 function gdspx_audio_stop_all() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_stop_all']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_stop_all']; 
 	
 	_gdFuncPtr();
 
 }
 function gdspx_audio_create_audio() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_create_audio']; 
-	_retValue = AllocGdObj();
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_create_audio']; 
+	var _retValue = AllocGdObj();
 	_gdFuncPtr(_retValue);
-	_finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = ToJsObj(_retValue);
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
 function gdspx_audio_destroy_audio(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_destroy_audio']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_destroy_audio']; 
 	
-	_arg0 = ToGdObj(obj);
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0);
 	FreeGdObj(_arg0); 
 
 }
 function gdspx_audio_set_pitch(obj,pitch) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_set_pitch']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_set_pitch']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdFloat(pitch);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdFloat(pitch);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
 function gdspx_audio_get_pitch(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_get_pitch']; 
-	_retValue = AllocGdFloat();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_get_pitch']; 
+	var _retValue = AllocGdFloat();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsFloat(_retValue);
+	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
 function gdspx_audio_set_pan(obj,pan) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_set_pan']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_set_pan']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdFloat(pan);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdFloat(pan);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
 function gdspx_audio_get_pan(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_get_pan']; 
-	_retValue = AllocGdFloat();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_get_pan']; 
+	var _retValue = AllocGdFloat();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsFloat(_retValue);
+	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
 function gdspx_audio_set_volume(obj,volume) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_set_volume']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_set_volume']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdFloat(volume);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdFloat(volume);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
 function gdspx_audio_get_volume(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_get_volume']; 
-	_retValue = AllocGdFloat();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_get_volume']; 
+	var _retValue = AllocGdFloat();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsFloat(_retValue);
+	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
 function gdspx_audio_play(obj,path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_play']; 
-	_retValue = AllocGdInt();
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(path);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_play']; 
+	var _retValue = AllocGdInt();
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(path);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
-	_finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = ToJsInt(_retValue);
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
 function gdspx_audio_pause(aid) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_pause']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_pause']; 
 	
-	_arg0 = ToGdInt(aid);
+	var _arg0 = ToGdInt(aid);
 	_gdFuncPtr(_arg0);
 	FreeGdInt(_arg0); 
 
 }
 function gdspx_audio_resume(aid) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_resume']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_resume']; 
 	
-	_arg0 = ToGdInt(aid);
+	var _arg0 = ToGdInt(aid);
 	_gdFuncPtr(_arg0);
 	FreeGdInt(_arg0); 
 
 }
 function gdspx_audio_stop(aid) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_stop']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_stop']; 
 	
-	_arg0 = ToGdInt(aid);
+	var _arg0 = ToGdInt(aid);
 	_gdFuncPtr(_arg0);
 	FreeGdInt(_arg0); 
 
 }
 function gdspx_audio_set_loop(aid,loop) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_set_loop']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_set_loop']; 
 	
-	_arg0 = ToGdInt(aid);
-	_arg1 = ToGdBool(loop);
+	var _arg0 = ToGdInt(aid);
+	var _arg1 = ToGdBool(loop);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdInt(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
 function gdspx_audio_get_loop(aid) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_get_loop']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdInt(aid);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_get_loop']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdInt(aid);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdInt(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_audio_get_timer(aid) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_get_timer']; 
-	_retValue = AllocGdFloat();
-	_arg0 = ToGdInt(aid);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_get_timer']; 
+	var _retValue = AllocGdFloat();
+	var _arg0 = ToGdInt(aid);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdInt(_arg0); 
-	_finalRetValue = ToJsFloat(_retValue);
+	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
 function gdspx_audio_set_timer(aid,time) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_set_timer']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_set_timer']; 
 	
-	_arg0 = ToGdInt(aid);
-	_arg1 = ToGdFloat(time);
+	var _arg0 = ToGdInt(aid);
+	var _arg1 = ToGdFloat(time);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdInt(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
 function gdspx_audio_is_playing(aid) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_is_playing']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdInt(aid);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_audio_is_playing']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdInt(aid);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdInt(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_camera_get_camera_position() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_camera_get_camera_position']; 
-	_retValue = AllocGdVec2();
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_camera_get_camera_position']; 
+	var _retValue = AllocGdVec2();
 	_gdFuncPtr(_retValue);
-	_finalRetValue = ToJsVec2(_retValue);
+	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_camera_set_camera_position(position) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_camera_set_camera_position']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_camera_set_camera_position']; 
 	
-	_arg0 = ToGdVec2(position);
+	var _arg0 = ToGdVec2(position);
 	_gdFuncPtr(_arg0);
 	FreeGdVec2(_arg0); 
 
 }
 function gdspx_camera_get_camera_zoom() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_camera_get_camera_zoom']; 
-	_retValue = AllocGdVec2();
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_camera_get_camera_zoom']; 
+	var _retValue = AllocGdVec2();
 	_gdFuncPtr(_retValue);
-	_finalRetValue = ToJsVec2(_retValue);
+	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_camera_set_camera_zoom(size) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_camera_set_camera_zoom']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_camera_set_camera_zoom']; 
 	
-	_arg0 = ToGdVec2(size);
+	var _arg0 = ToGdVec2(size);
 	_gdFuncPtr(_arg0);
 	FreeGdVec2(_arg0); 
 
 }
 function gdspx_camera_get_viewport_rect() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_camera_get_viewport_rect']; 
-	_retValue = AllocGdRect2();
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_camera_get_viewport_rect']; 
+	var _retValue = AllocGdRect2();
 	_gdFuncPtr(_retValue);
-	_finalRetValue = ToJsRect2(_retValue);
+	var _finalRetValue = ToJsRect2(_retValue);
 	FreeGdRect2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ext_destroy_all_pens() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_destroy_all_pens']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_destroy_all_pens']; 
 	
 	_gdFuncPtr();
 
 }
 function gdspx_ext_create_pen() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_create_pen']; 
-	_retValue = AllocGdObj();
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_create_pen']; 
+	var _retValue = AllocGdObj();
 	_gdFuncPtr(_retValue);
-	_finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = ToJsObj(_retValue);
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ext_destroy_pen(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_destroy_pen']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_destroy_pen']; 
 	
-	_arg0 = ToGdObj(obj);
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0);
 	FreeGdObj(_arg0); 
 
 }
 function gdspx_ext_pen_stamp(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_pen_stamp']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_pen_stamp']; 
 	
-	_arg0 = ToGdObj(obj);
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0);
 	FreeGdObj(_arg0); 
 
 }
 function gdspx_ext_move_pen_to(obj,position) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_move_pen_to']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_move_pen_to']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdVec2(position);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdVec2(position);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
 function gdspx_ext_pen_down(obj,move_by_mouse) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_pen_down']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_pen_down']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdBool(move_by_mouse);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdBool(move_by_mouse);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
 function gdspx_ext_pen_up(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_pen_up']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_pen_up']; 
 	
-	_arg0 = ToGdObj(obj);
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0);
 	FreeGdObj(_arg0); 
 
 }
 function gdspx_ext_set_pen_color_to(obj,color) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_set_pen_color_to']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_set_pen_color_to']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdColor(color);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdColor(color);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdColor(_arg1); 
 
 }
 function gdspx_ext_change_pen_by(obj,property,amount) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_change_pen_by']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_change_pen_by']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdInt(property);
-	_arg2 = ToGdFloat(amount);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdInt(property);
+	var _arg2 = ToGdFloat(amount);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
@@ -298,11 +298,11 @@ function gdspx_ext_change_pen_by(obj,property,amount) {
 
 }
 function gdspx_ext_set_pen_to(obj,property,value) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_set_pen_to']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_set_pen_to']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdInt(property);
-	_arg2 = ToGdFloat(value);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdInt(property);
+	var _arg2 = ToGdFloat(value);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
@@ -310,299 +310,299 @@ function gdspx_ext_set_pen_to(obj,property,value) {
 
 }
 function gdspx_ext_change_pen_size_by(obj,amount) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_change_pen_size_by']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_change_pen_size_by']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdFloat(amount);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdFloat(amount);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
 function gdspx_ext_set_pen_size_to(obj,size) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_set_pen_size_to']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_set_pen_size_to']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdFloat(size);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdFloat(size);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
 function gdspx_ext_set_pen_stamp_texture(obj,texture_path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_set_pen_stamp_texture']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_set_pen_stamp_texture']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(texture_path);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(texture_path);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
 
 }
 function gdspx_input_get_mouse_pos() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_input_get_mouse_pos']; 
-	_retValue = AllocGdVec2();
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_input_get_mouse_pos']; 
+	var _retValue = AllocGdVec2();
 	_gdFuncPtr(_retValue);
-	_finalRetValue = ToJsVec2(_retValue);
+	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_input_get_key(key) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_input_get_key']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdInt(key);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_input_get_key']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdInt(key);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdInt(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_input_get_mouse_state(mouse_id) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_input_get_mouse_state']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdInt(mouse_id);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_input_get_mouse_state']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdInt(mouse_id);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdInt(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_input_get_key_state(key) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_input_get_key_state']; 
-	_retValue = AllocGdInt();
-	_arg0 = ToGdInt(key);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_input_get_key_state']; 
+	var _retValue = AllocGdInt();
+	var _arg0 = ToGdInt(key);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdInt(_arg0); 
-	_finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = ToJsInt(_retValue);
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
 function gdspx_input_get_axis(neg_action,pos_action) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_input_get_axis']; 
-	_retValue = AllocGdFloat();
-	_arg0 = ToGdString(neg_action);
-	_arg1 = ToGdString(pos_action);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_input_get_axis']; 
+	var _retValue = AllocGdFloat();
+	var _arg0 = ToGdString(neg_action);
+	var _arg1 = ToGdString(pos_action);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdString(_arg0); 
 	FreeGdString(_arg1); 
-	_finalRetValue = ToJsFloat(_retValue);
+	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
 function gdspx_input_is_action_pressed(action) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_input_is_action_pressed']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdString(action);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_input_is_action_pressed']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdString(action);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdString(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_input_is_action_just_pressed(action) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_input_is_action_just_pressed']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdString(action);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_input_is_action_just_pressed']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdString(action);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdString(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_input_is_action_just_released(action) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_input_is_action_just_released']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdString(action);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_input_is_action_just_released']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdString(action);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdString(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_physic_raycast(from,to,collision_mask) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_physic_raycast']; 
-	_retValue = AllocGdObj();
-	_arg0 = ToGdVec2(from);
-	_arg1 = ToGdVec2(to);
-	_arg2 = ToGdInt(collision_mask);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_physic_raycast']; 
+	var _retValue = AllocGdObj();
+	var _arg0 = ToGdVec2(from);
+	var _arg1 = ToGdVec2(to);
+	var _arg2 = ToGdInt(collision_mask);
 	_gdFuncPtr(_arg0, _arg1, _arg2, _retValue);
 	FreeGdVec2(_arg0); 
 	FreeGdVec2(_arg1); 
 	FreeGdInt(_arg2); 
-	_finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = ToJsObj(_retValue);
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
 function gdspx_physic_check_collision(from,to,collision_mask,collide_with_areas,collide_with_bodies) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_physic_check_collision']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdVec2(from);
-	_arg1 = ToGdVec2(to);
-	_arg2 = ToGdInt(collision_mask);
-	_arg3 = ToGdBool(collide_with_areas);
-	_arg4 = ToGdBool(collide_with_bodies);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_physic_check_collision']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdVec2(from);
+	var _arg1 = ToGdVec2(to);
+	var _arg2 = ToGdInt(collision_mask);
+	var _arg3 = ToGdBool(collide_with_areas);
+	var _arg4 = ToGdBool(collide_with_bodies);
 	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _arg4, _retValue);
 	FreeGdVec2(_arg0); 
 	FreeGdVec2(_arg1); 
 	FreeGdInt(_arg2); 
 	FreeGdBool(_arg3); 
 	FreeGdBool(_arg4); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_physic_check_touched_camera_boundary(obj,board_type) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_physic_check_touched_camera_boundary']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdInt(board_type);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_physic_check_touched_camera_boundary']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdInt(board_type);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_physic_set_collision_system_type(is_collision_by_alpha) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_physic_set_collision_system_type']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_physic_set_collision_system_type']; 
 	
-	_arg0 = ToGdBool(is_collision_by_alpha);
+	var _arg0 = ToGdBool(is_collision_by_alpha);
 	_gdFuncPtr(_arg0);
 	FreeGdBool(_arg0); 
 
 }
 function gdspx_platform_set_window_position(pos) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_set_window_position']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_set_window_position']; 
 	
-	_arg0 = ToGdVec2(pos);
+	var _arg0 = ToGdVec2(pos);
 	_gdFuncPtr(_arg0);
 	FreeGdVec2(_arg0); 
 
 }
 function gdspx_platform_get_window_position() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_get_window_position']; 
-	_retValue = AllocGdVec2();
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_get_window_position']; 
+	var _retValue = AllocGdVec2();
 	_gdFuncPtr(_retValue);
-	_finalRetValue = ToJsVec2(_retValue);
+	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_platform_set_window_size(width,height) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_set_window_size']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_set_window_size']; 
 	
-	_arg0 = ToGdInt(width);
-	_arg1 = ToGdInt(height);
+	var _arg0 = ToGdInt(width);
+	var _arg1 = ToGdInt(height);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdInt(_arg0); 
 	FreeGdInt(_arg1); 
 
 }
 function gdspx_platform_get_window_size() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_get_window_size']; 
-	_retValue = AllocGdVec2();
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_get_window_size']; 
+	var _retValue = AllocGdVec2();
 	_gdFuncPtr(_retValue);
-	_finalRetValue = ToJsVec2(_retValue);
+	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_platform_set_window_title(title) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_set_window_title']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_set_window_title']; 
 	
-	_arg0 = ToGdString(title);
+	var _arg0 = ToGdString(title);
 	_gdFuncPtr(_arg0);
 	FreeGdString(_arg0); 
 
 }
 function gdspx_platform_get_window_title() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_get_window_title']; 
-	_retValue = AllocGdString();
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_get_window_title']; 
+	var _retValue = AllocGdString();
 	_gdFuncPtr(_retValue);
-	_finalRetValue = ToJsString(_retValue);
+	var _finalRetValue = ToJsString(_retValue);
 	FreeGdString(_retValue); 
 	return _finalRetValue
 }
 function gdspx_platform_set_window_fullscreen(enable) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_set_window_fullscreen']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_set_window_fullscreen']; 
 	
-	_arg0 = ToGdBool(enable);
+	var _arg0 = ToGdBool(enable);
 	_gdFuncPtr(_arg0);
 	FreeGdBool(_arg0); 
 
 }
 function gdspx_platform_is_window_fullscreen() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_is_window_fullscreen']; 
-	_retValue = AllocGdBool();
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_is_window_fullscreen']; 
+	var _retValue = AllocGdBool();
 	_gdFuncPtr(_retValue);
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_platform_set_debug_mode(enable) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_set_debug_mode']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_set_debug_mode']; 
 	
-	_arg0 = ToGdBool(enable);
+	var _arg0 = ToGdBool(enable);
 	_gdFuncPtr(_arg0);
 	FreeGdBool(_arg0); 
 
 }
 function gdspx_platform_is_debug_mode() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_is_debug_mode']; 
-	_retValue = AllocGdBool();
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_is_debug_mode']; 
+	var _retValue = AllocGdBool();
 	_gdFuncPtr(_retValue);
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_platform_get_time_scale() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_get_time_scale']; 
-	_retValue = AllocGdFloat();
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_get_time_scale']; 
+	var _retValue = AllocGdFloat();
 	_gdFuncPtr(_retValue);
-	_finalRetValue = ToJsFloat(_retValue);
+	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
 function gdspx_platform_set_time_scale(time_scale) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_set_time_scale']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_set_time_scale']; 
 	
-	_arg0 = ToGdFloat(time_scale);
+	var _arg0 = ToGdFloat(time_scale);
 	_gdFuncPtr(_arg0);
 	FreeGdFloat(_arg0); 
 
 }
 function gdspx_platform_get_persistant_data_dir() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_get_persistant_data_dir']; 
-	_retValue = AllocGdString();
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_get_persistant_data_dir']; 
+	var _retValue = AllocGdString();
 	_gdFuncPtr(_retValue);
-	_finalRetValue = ToJsString(_retValue);
+	var _finalRetValue = ToJsString(_retValue);
 	FreeGdString(_retValue); 
 	return _finalRetValue
 }
 function gdspx_platform_set_persistant_data_dir(path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_set_persistant_data_dir']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_set_persistant_data_dir']; 
 	
-	_arg0 = ToGdString(path);
+	var _arg0 = ToGdString(path);
 	_gdFuncPtr(_arg0);
 	FreeGdString(_arg0); 
 
 }
 function gdspx_platform_is_in_persistant_data_dir(path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_is_in_persistant_data_dir']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdString(path);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_platform_is_in_persistant_data_dir']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdString(path);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdString(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_res_create_animation(sprite_type_name,anim_name,context,fps,is_altas) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_res_create_animation']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_res_create_animation']; 
 	
-	_arg0 = ToGdString(sprite_type_name);
-	_arg1 = ToGdString(anim_name);
-	_arg2 = ToGdString(context);
-	_arg3 = ToGdInt(fps);
-	_arg4 = ToGdBool(is_altas);
+	var _arg0 = ToGdString(sprite_type_name);
+	var _arg1 = ToGdString(anim_name);
+	var _arg2 = ToGdString(context);
+	var _arg3 = ToGdInt(fps);
+	var _arg4 = ToGdBool(is_altas);
 	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _arg4);
 	FreeGdString(_arg0); 
 	FreeGdString(_arg1); 
@@ -612,149 +612,149 @@ function gdspx_res_create_animation(sprite_type_name,anim_name,context,fps,is_al
 
 }
 function gdspx_res_set_load_mode(is_direct_mode) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_res_set_load_mode']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_res_set_load_mode']; 
 	
-	_arg0 = ToGdBool(is_direct_mode);
+	var _arg0 = ToGdBool(is_direct_mode);
 	_gdFuncPtr(_arg0);
 	FreeGdBool(_arg0); 
 
 }
 function gdspx_res_get_load_mode() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_res_get_load_mode']; 
-	_retValue = AllocGdBool();
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_res_get_load_mode']; 
+	var _retValue = AllocGdBool();
 	_gdFuncPtr(_retValue);
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_res_get_bound_from_alpha(p_path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_res_get_bound_from_alpha']; 
-	_retValue = AllocGdRect2();
-	_arg0 = ToGdString(p_path);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_res_get_bound_from_alpha']; 
+	var _retValue = AllocGdRect2();
+	var _arg0 = ToGdString(p_path);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdString(_arg0); 
-	_finalRetValue = ToJsRect2(_retValue);
+	var _finalRetValue = ToJsRect2(_retValue);
 	FreeGdRect2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_res_get_image_size(p_path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_res_get_image_size']; 
-	_retValue = AllocGdVec2();
-	_arg0 = ToGdString(p_path);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_res_get_image_size']; 
+	var _retValue = AllocGdVec2();
+	var _arg0 = ToGdString(p_path);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdString(_arg0); 
-	_finalRetValue = ToJsVec2(_retValue);
+	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_res_read_all_text(p_path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_res_read_all_text']; 
-	_retValue = AllocGdString();
-	_arg0 = ToGdString(p_path);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_res_read_all_text']; 
+	var _retValue = AllocGdString();
+	var _arg0 = ToGdString(p_path);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdString(_arg0); 
-	_finalRetValue = ToJsString(_retValue);
+	var _finalRetValue = ToJsString(_retValue);
 	FreeGdString(_retValue); 
 	return _finalRetValue
 }
 function gdspx_res_has_file(p_path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_res_has_file']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdString(p_path);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_res_has_file']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdString(p_path);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdString(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_res_reload_texture(path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_res_reload_texture']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_res_reload_texture']; 
 	
-	_arg0 = ToGdString(path);
+	var _arg0 = ToGdString(path);
 	_gdFuncPtr(_arg0);
 	FreeGdString(_arg0); 
 
 }
 function gdspx_res_free_str(str) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_res_free_str']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_res_free_str']; 
 	
-	_arg0 = ToGdString(str);
+	var _arg0 = ToGdString(str);
 	_gdFuncPtr(_arg0);
 	FreeGdString(_arg0); 
 
 }
 function gdspx_scene_change_scene_to_file(path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_scene_change_scene_to_file']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_scene_change_scene_to_file']; 
 	
-	_arg0 = ToGdString(path);
+	var _arg0 = ToGdString(path);
 	_gdFuncPtr(_arg0);
 	FreeGdString(_arg0); 
 
 }
 function gdspx_scene_destroy_all_sprites() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_scene_destroy_all_sprites']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_scene_destroy_all_sprites']; 
 	
 	_gdFuncPtr();
 
 }
 function gdspx_scene_reload_current_scene() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_scene_reload_current_scene']; 
-	_retValue = AllocGdInt();
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_scene_reload_current_scene']; 
+	var _retValue = AllocGdInt();
 	_gdFuncPtr(_retValue);
-	_finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = ToJsInt(_retValue);
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
 function gdspx_scene_unload_current_scene() {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_scene_unload_current_scene']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_scene_unload_current_scene']; 
 	
 	_gdFuncPtr();
 
 }
 function gdspx_sprite_set_dont_destroy_on_load(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_dont_destroy_on_load']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_dont_destroy_on_load']; 
 	
-	_arg0 = ToGdObj(obj);
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0);
 	FreeGdObj(_arg0); 
 
 }
 function gdspx_sprite_set_process(obj,is_on) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_process']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_process']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdBool(is_on);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdBool(is_on);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
 function gdspx_sprite_set_physic_process(obj,is_on) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_physic_process']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_physic_process']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdBool(is_on);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdBool(is_on);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
 function gdspx_sprite_set_type_name(obj,type_name) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_type_name']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_type_name']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(type_name);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(type_name);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
 
 }
 function gdspx_sprite_set_child_position(obj,path,pos) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_child_position']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_child_position']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(path);
-	_arg2 = ToGdVec2(pos);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(path);
+	var _arg2 = ToGdVec2(pos);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
@@ -762,23 +762,23 @@ function gdspx_sprite_set_child_position(obj,path,pos) {
 
 }
 function gdspx_sprite_get_child_position(obj,path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_child_position']; 
-	_retValue = AllocGdVec2();
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(path);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_child_position']; 
+	var _retValue = AllocGdVec2();
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(path);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
-	_finalRetValue = ToJsVec2(_retValue);
+	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_child_rotation(obj,path,rot) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_child_rotation']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_child_rotation']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(path);
-	_arg2 = ToGdFloat(rot);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(path);
+	var _arg2 = ToGdFloat(rot);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
@@ -786,23 +786,23 @@ function gdspx_sprite_set_child_rotation(obj,path,rot) {
 
 }
 function gdspx_sprite_get_child_rotation(obj,path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_child_rotation']; 
-	_retValue = AllocGdFloat();
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(path);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_child_rotation']; 
+	var _retValue = AllocGdFloat();
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(path);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
-	_finalRetValue = ToJsFloat(_retValue);
+	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_child_scale(obj,path,scale) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_child_scale']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_child_scale']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(path);
-	_arg2 = ToGdVec2(scale);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(path);
+	var _arg2 = ToGdVec2(scale);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
@@ -810,223 +810,223 @@ function gdspx_sprite_set_child_scale(obj,path,scale) {
 
 }
 function gdspx_sprite_get_child_scale(obj,path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_child_scale']; 
-	_retValue = AllocGdVec2();
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(path);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_child_scale']; 
+	var _retValue = AllocGdVec2();
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(path);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
-	_finalRetValue = ToJsVec2(_retValue);
+	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_check_collision(obj,target,is_src_trigger,is_dst_trigger) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_check_collision']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdObj(target);
-	_arg2 = ToGdBool(is_src_trigger);
-	_arg3 = ToGdBool(is_dst_trigger);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_check_collision']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdObj(target);
+	var _arg2 = ToGdBool(is_src_trigger);
+	var _arg3 = ToGdBool(is_dst_trigger);
 	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _retValue);
 	FreeGdObj(_arg0); 
 	FreeGdObj(_arg1); 
 	FreeGdBool(_arg2); 
 	FreeGdBool(_arg3); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_check_collision_with_point(obj,point,is_trigger) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_check_collision_with_point']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdVec2(point);
-	_arg2 = ToGdBool(is_trigger);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_check_collision_with_point']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdVec2(point);
+	var _arg2 = ToGdBool(is_trigger);
 	_gdFuncPtr(_arg0, _arg1, _arg2, _retValue);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 	FreeGdBool(_arg2); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_create_backdrop(path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_create_backdrop']; 
-	_retValue = AllocGdObj();
-	_arg0 = ToGdString(path);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_create_backdrop']; 
+	var _retValue = AllocGdObj();
+	var _arg0 = ToGdString(path);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdString(_arg0); 
-	_finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = ToJsObj(_retValue);
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_create_sprite(path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_create_sprite']; 
-	_retValue = AllocGdObj();
-	_arg0 = ToGdString(path);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_create_sprite']; 
+	var _retValue = AllocGdObj();
+	var _arg0 = ToGdString(path);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdString(_arg0); 
-	_finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = ToJsObj(_retValue);
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_clone_sprite(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_clone_sprite']; 
-	_retValue = AllocGdObj();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_clone_sprite']; 
+	var _retValue = AllocGdObj();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = ToJsObj(_retValue);
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_destroy_sprite(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_destroy_sprite']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_destroy_sprite']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_is_sprite_alive(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_sprite_alive']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_sprite_alive']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_position(obj,pos) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_position']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_position']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdVec2(pos);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdVec2(pos);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
 function gdspx_sprite_get_position(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_position']; 
-	_retValue = AllocGdVec2();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_position']; 
+	var _retValue = AllocGdVec2();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsVec2(_retValue);
+	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_rotation(obj,rot) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_rotation']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_rotation']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdFloat(rot);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdFloat(rot);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
 function gdspx_sprite_get_rotation(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_rotation']; 
-	_retValue = AllocGdFloat();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_rotation']; 
+	var _retValue = AllocGdFloat();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsFloat(_retValue);
+	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_scale(obj,scale) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_scale']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_scale']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdVec2(scale);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdVec2(scale);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
 function gdspx_sprite_get_scale(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_scale']; 
-	_retValue = AllocGdVec2();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_scale']; 
+	var _retValue = AllocGdVec2();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsVec2(_retValue);
+	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_render_scale(obj,scale) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_render_scale']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_render_scale']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdVec2(scale);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdVec2(scale);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
 function gdspx_sprite_get_render_scale(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_render_scale']; 
-	_retValue = AllocGdVec2();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_render_scale']; 
+	var _retValue = AllocGdVec2();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsVec2(_retValue);
+	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_color(obj,color) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_color']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_color']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdColor(color);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdColor(color);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdColor(_arg1); 
 
 }
 function gdspx_sprite_get_color(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_color']; 
-	_retValue = AllocGdColor();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_color']; 
+	var _retValue = AllocGdColor();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsColor(_retValue);
+	var _finalRetValue = ToJsColor(_retValue);
 	FreeGdColor(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_material_shader(obj,path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_material_shader']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_material_shader']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(path);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(path);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
 
 }
 function gdspx_sprite_get_material_shader(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_material_shader']; 
-	_retValue = AllocGdString();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_material_shader']; 
+	var _retValue = AllocGdString();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsString(_retValue);
+	var _finalRetValue = ToJsString(_retValue);
 	FreeGdString(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_material_params(obj,effect,amount) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_material_params']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_material_params']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(effect);
-	_arg2 = ToGdFloat(amount);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(effect);
+	var _arg2 = ToGdFloat(amount);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
@@ -1034,23 +1034,23 @@ function gdspx_sprite_set_material_params(obj,effect,amount) {
 
 }
 function gdspx_sprite_get_material_params(obj,effect) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_material_params']; 
-	_retValue = AllocGdFloat();
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(effect);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_material_params']; 
+	var _retValue = AllocGdFloat();
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(effect);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
-	_finalRetValue = ToJsFloat(_retValue);
+	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_material_params_vec4(obj,effect,vec4) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_material_params_vec4']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_material_params_vec4']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(effect);
-	_arg2 = ToGdVec4(vec4);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(effect);
+	var _arg2 = ToGdVec4(vec4);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
@@ -1058,23 +1058,23 @@ function gdspx_sprite_set_material_params_vec4(obj,effect,vec4) {
 
 }
 function gdspx_sprite_get_material_params_vec4(obj,effect) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_material_params_vec4']; 
-	_retValue = AllocGdVec4();
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(effect);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_material_params_vec4']; 
+	var _retValue = AllocGdVec4();
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(effect);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
-	_finalRetValue = ToJsVec4(_retValue);
+	var _finalRetValue = ToJsVec4(_retValue);
 	FreeGdVec4(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_material_params_color(obj,effect,color) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_material_params_color']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_material_params_color']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(effect);
-	_arg2 = ToGdColor(color);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(effect);
+	var _arg2 = ToGdColor(color);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
@@ -1082,23 +1082,23 @@ function gdspx_sprite_set_material_params_color(obj,effect,color) {
 
 }
 function gdspx_sprite_get_material_params_color(obj,effect) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_material_params_color']; 
-	_retValue = AllocGdColor();
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(effect);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_material_params_color']; 
+	var _retValue = AllocGdColor();
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(effect);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
-	_finalRetValue = ToJsColor(_retValue);
+	var _finalRetValue = ToJsColor(_retValue);
 	FreeGdColor(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_texture_altas(obj,path,rect2) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_texture_altas']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_texture_altas']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(path);
-	_arg2 = ToGdRect2(rect2);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(path);
+	var _arg2 = ToGdRect2(rect2);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
@@ -1106,21 +1106,21 @@ function gdspx_sprite_set_texture_altas(obj,path,rect2) {
 
 }
 function gdspx_sprite_set_texture(obj,path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_texture']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_texture']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(path);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(path);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
 
 }
 function gdspx_sprite_set_texture_altas_direct(obj,path,rect2) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_texture_altas_direct']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_texture_altas_direct']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(path);
-	_arg2 = ToGdRect2(rect2);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(path);
+	var _arg2 = ToGdRect2(rect2);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
@@ -1128,73 +1128,73 @@ function gdspx_sprite_set_texture_altas_direct(obj,path,rect2) {
 
 }
 function gdspx_sprite_set_texture_direct(obj,path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_texture_direct']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_texture_direct']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(path);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(path);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
 
 }
 function gdspx_sprite_get_texture(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_texture']; 
-	_retValue = AllocGdString();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_texture']; 
+	var _retValue = AllocGdString();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsString(_retValue);
+	var _finalRetValue = ToJsString(_retValue);
 	FreeGdString(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_visible(obj,visible) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_visible']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_visible']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdBool(visible);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdBool(visible);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
 function gdspx_sprite_get_visible(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_visible']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_visible']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_get_z_index(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_z_index']; 
-	_retValue = AllocGdInt();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_z_index']; 
+	var _retValue = AllocGdInt();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = ToJsInt(_retValue);
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_z_index(obj,z) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_z_index']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_z_index']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdInt(z);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdInt(z);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
 
 }
 function gdspx_sprite_play_anim(obj,p_name,p_speed,isLoop,p_revert) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_play_anim']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_play_anim']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(p_name);
-	_arg2 = ToGdFloat(p_speed);
-	_arg3 = ToGdBool(isLoop);
-	_arg4 = ToGdBool(p_revert);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(p_name);
+	var _arg2 = ToGdFloat(p_speed);
+	var _arg3 = ToGdBool(isLoop);
+	var _arg4 = ToGdBool(p_revert);
 	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _arg4);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
@@ -1204,475 +1204,475 @@ function gdspx_sprite_play_anim(obj,p_name,p_speed,isLoop,p_revert) {
 
 }
 function gdspx_sprite_play_backwards_anim(obj,p_name) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_play_backwards_anim']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_play_backwards_anim']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(p_name);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(p_name);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
 
 }
 function gdspx_sprite_pause_anim(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_pause_anim']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_pause_anim']; 
 	
-	_arg0 = ToGdObj(obj);
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0);
 	FreeGdObj(_arg0); 
 
 }
 function gdspx_sprite_stop_anim(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_stop_anim']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_stop_anim']; 
 	
-	_arg0 = ToGdObj(obj);
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0);
 	FreeGdObj(_arg0); 
 
 }
 function gdspx_sprite_is_playing_anim(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_playing_anim']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_playing_anim']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_anim(obj,p_name) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_anim']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_anim']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(p_name);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(p_name);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
 
 }
 function gdspx_sprite_get_anim(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_anim']; 
-	_retValue = AllocGdString();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_anim']; 
+	var _retValue = AllocGdString();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsString(_retValue);
+	var _finalRetValue = ToJsString(_retValue);
 	FreeGdString(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_anim_frame(obj,p_frame) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_anim_frame']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_anim_frame']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdInt(p_frame);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdInt(p_frame);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
 
 }
 function gdspx_sprite_get_anim_frame(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_anim_frame']; 
-	_retValue = AllocGdInt();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_anim_frame']; 
+	var _retValue = AllocGdInt();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = ToJsInt(_retValue);
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_anim_speed_scale(obj,p_speed_scale) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_anim_speed_scale']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_anim_speed_scale']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdFloat(p_speed_scale);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdFloat(p_speed_scale);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
 function gdspx_sprite_get_anim_speed_scale(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_anim_speed_scale']; 
-	_retValue = AllocGdFloat();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_anim_speed_scale']; 
+	var _retValue = AllocGdFloat();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsFloat(_retValue);
+	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_get_anim_playing_speed(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_anim_playing_speed']; 
-	_retValue = AllocGdFloat();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_anim_playing_speed']; 
+	var _retValue = AllocGdFloat();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsFloat(_retValue);
+	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_anim_centered(obj,p_center) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_anim_centered']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_anim_centered']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdBool(p_center);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdBool(p_center);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
 function gdspx_sprite_is_anim_centered(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_anim_centered']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_anim_centered']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_anim_offset(obj,p_offset) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_anim_offset']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_anim_offset']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdVec2(p_offset);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdVec2(p_offset);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
 function gdspx_sprite_get_anim_offset(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_anim_offset']; 
-	_retValue = AllocGdVec2();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_anim_offset']; 
+	var _retValue = AllocGdVec2();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsVec2(_retValue);
+	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_anim_flip_h(obj,p_flip) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_anim_flip_h']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_anim_flip_h']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdBool(p_flip);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdBool(p_flip);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
 function gdspx_sprite_is_anim_flipped_h(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_anim_flipped_h']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_anim_flipped_h']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_anim_flip_v(obj,p_flip) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_anim_flip_v']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_anim_flip_v']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdBool(p_flip);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdBool(p_flip);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
 function gdspx_sprite_is_anim_flipped_v(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_anim_flipped_v']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_anim_flipped_v']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_velocity(obj,velocity) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_velocity']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_velocity']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdVec2(velocity);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdVec2(velocity);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
 function gdspx_sprite_get_velocity(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_velocity']; 
-	_retValue = AllocGdVec2();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_velocity']; 
+	var _retValue = AllocGdVec2();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsVec2(_retValue);
+	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_is_on_floor(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_on_floor']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_on_floor']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_is_on_floor_only(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_on_floor_only']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_on_floor_only']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_is_on_wall(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_on_wall']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_on_wall']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_is_on_wall_only(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_on_wall_only']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_on_wall_only']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_is_on_ceiling(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_on_ceiling']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_on_ceiling']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_is_on_ceiling_only(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_on_ceiling_only']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_on_ceiling_only']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_get_last_motion(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_last_motion']; 
-	_retValue = AllocGdVec2();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_last_motion']; 
+	var _retValue = AllocGdVec2();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsVec2(_retValue);
+	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_get_position_delta(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_position_delta']; 
-	_retValue = AllocGdVec2();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_position_delta']; 
+	var _retValue = AllocGdVec2();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsVec2(_retValue);
+	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_get_floor_normal(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_floor_normal']; 
-	_retValue = AllocGdVec2();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_floor_normal']; 
+	var _retValue = AllocGdVec2();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsVec2(_retValue);
+	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_get_wall_normal(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_wall_normal']; 
-	_retValue = AllocGdVec2();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_wall_normal']; 
+	var _retValue = AllocGdVec2();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsVec2(_retValue);
+	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_get_real_velocity(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_real_velocity']; 
-	_retValue = AllocGdVec2();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_real_velocity']; 
+	var _retValue = AllocGdVec2();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsVec2(_retValue);
+	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_move_and_slide(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_move_and_slide']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_move_and_slide']; 
 	
-	_arg0 = ToGdObj(obj);
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0);
 	FreeGdObj(_arg0); 
 
 }
 function gdspx_sprite_set_gravity(obj,gravity) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_gravity']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_gravity']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdFloat(gravity);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdFloat(gravity);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
 function gdspx_sprite_get_gravity(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_gravity']; 
-	_retValue = AllocGdFloat();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_gravity']; 
+	var _retValue = AllocGdFloat();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsFloat(_retValue);
+	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_mass(obj,mass) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_mass']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_mass']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdFloat(mass);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdFloat(mass);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
 function gdspx_sprite_get_mass(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_mass']; 
-	_retValue = AllocGdFloat();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_mass']; 
+	var _retValue = AllocGdFloat();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsFloat(_retValue);
+	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_add_force(obj,force) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_add_force']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_add_force']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdVec2(force);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdVec2(force);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
 function gdspx_sprite_add_impulse(obj,impulse) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_add_impulse']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_add_impulse']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdVec2(impulse);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdVec2(impulse);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
 function gdspx_sprite_set_collision_layer(obj,layer) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_collision_layer']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_collision_layer']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdInt(layer);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdInt(layer);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
 
 }
 function gdspx_sprite_get_collision_layer(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_collision_layer']; 
-	_retValue = AllocGdInt();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_collision_layer']; 
+	var _retValue = AllocGdInt();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = ToJsInt(_retValue);
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_collision_mask(obj,mask) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_collision_mask']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_collision_mask']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdInt(mask);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdInt(mask);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
 
 }
 function gdspx_sprite_get_collision_mask(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_collision_mask']; 
-	_retValue = AllocGdInt();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_collision_mask']; 
+	var _retValue = AllocGdInt();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = ToJsInt(_retValue);
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_trigger_layer(obj,layer) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_trigger_layer']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_trigger_layer']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdInt(layer);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdInt(layer);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
 
 }
 function gdspx_sprite_get_trigger_layer(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_trigger_layer']; 
-	_retValue = AllocGdInt();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_trigger_layer']; 
+	var _retValue = AllocGdInt();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = ToJsInt(_retValue);
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_trigger_mask(obj,mask) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_trigger_mask']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_trigger_mask']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdInt(mask);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdInt(mask);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
 
 }
 function gdspx_sprite_get_trigger_mask(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_trigger_mask']; 
-	_retValue = AllocGdInt();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_get_trigger_mask']; 
+	var _retValue = AllocGdInt();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = ToJsInt(_retValue);
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_collider_rect(obj,center,size) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_collider_rect']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_collider_rect']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdVec2(center);
-	_arg2 = ToGdVec2(size);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdVec2(center);
+	var _arg2 = ToGdVec2(size);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
@@ -1680,11 +1680,11 @@ function gdspx_sprite_set_collider_rect(obj,center,size) {
 
 }
 function gdspx_sprite_set_collider_circle(obj,center,radius) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_collider_circle']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_collider_circle']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdVec2(center);
-	_arg2 = ToGdFloat(radius);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdVec2(center);
+	var _arg2 = ToGdFloat(radius);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
@@ -1692,11 +1692,11 @@ function gdspx_sprite_set_collider_circle(obj,center,radius) {
 
 }
 function gdspx_sprite_set_collider_capsule(obj,center,size) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_collider_capsule']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_collider_capsule']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdVec2(center);
-	_arg2 = ToGdVec2(size);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdVec2(center);
+	var _arg2 = ToGdVec2(size);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
@@ -1704,31 +1704,31 @@ function gdspx_sprite_set_collider_capsule(obj,center,size) {
 
 }
 function gdspx_sprite_set_collision_enabled(obj,enabled) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_collision_enabled']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_collision_enabled']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdBool(enabled);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdBool(enabled);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
 function gdspx_sprite_is_collision_enabled(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_collision_enabled']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_collision_enabled']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_set_trigger_rect(obj,center,size) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_trigger_rect']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_trigger_rect']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdVec2(center);
-	_arg2 = ToGdVec2(size);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdVec2(center);
+	var _arg2 = ToGdVec2(size);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
@@ -1736,11 +1736,11 @@ function gdspx_sprite_set_trigger_rect(obj,center,size) {
 
 }
 function gdspx_sprite_set_trigger_circle(obj,center,radius) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_trigger_circle']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_trigger_circle']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdVec2(center);
-	_arg2 = ToGdFloat(radius);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdVec2(center);
+	var _arg2 = ToGdFloat(radius);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
@@ -1748,11 +1748,11 @@ function gdspx_sprite_set_trigger_circle(obj,center,radius) {
 
 }
 function gdspx_sprite_set_trigger_capsule(obj,center,size) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_trigger_capsule']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_trigger_capsule']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdVec2(center);
-	_arg2 = ToGdVec2(size);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdVec2(center);
+	var _arg2 = ToGdVec2(size);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
@@ -1760,495 +1760,495 @@ function gdspx_sprite_set_trigger_capsule(obj,center,size) {
 
 }
 function gdspx_sprite_set_trigger_enabled(obj,trigger) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_trigger_enabled']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_set_trigger_enabled']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdBool(trigger);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdBool(trigger);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
 function gdspx_sprite_is_trigger_enabled(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_trigger_enabled']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_is_trigger_enabled']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_check_collision_by_color(obj,color,color_threshold) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_check_collision_by_color']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdColor(color);
-	_arg2 = ToGdFloat(color_threshold);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_check_collision_by_color']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdColor(color);
+	var _arg2 = ToGdFloat(color_threshold);
 	_gdFuncPtr(_arg0, _arg1, _arg2, _retValue);
 	FreeGdObj(_arg0); 
 	FreeGdColor(_arg1); 
 	FreeGdFloat(_arg2); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_check_collision_by_alpha(obj,alpha_threshold) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_check_collision_by_alpha']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdFloat(alpha_threshold);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_check_collision_by_alpha']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdFloat(alpha_threshold);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_sprite_check_collision_with_sprite_by_alpha(obj,obj_b,alpha_threshold) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_check_collision_with_sprite_by_alpha']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdObj(obj_b);
-	_arg2 = ToGdFloat(alpha_threshold);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_check_collision_with_sprite_by_alpha']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdObj(obj_b);
+	var _arg2 = ToGdFloat(alpha_threshold);
 	_gdFuncPtr(_arg0, _arg1, _arg2, _retValue);
 	FreeGdObj(_arg0); 
 	FreeGdObj(_arg1); 
 	FreeGdFloat(_arg2); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_bind_node(obj,rel_path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_bind_node']; 
-	_retValue = AllocGdObj();
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(rel_path);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_bind_node']; 
+	var _retValue = AllocGdObj();
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(rel_path);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
-	_finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = ToJsObj(_retValue);
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_create_node(path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_create_node']; 
-	_retValue = AllocGdObj();
-	_arg0 = ToGdString(path);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_create_node']; 
+	var _retValue = AllocGdObj();
+	var _arg0 = ToGdString(path);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdString(_arg0); 
-	_finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = ToJsObj(_retValue);
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_create_button(path,text) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_create_button']; 
-	_retValue = AllocGdObj();
-	_arg0 = ToGdString(path);
-	_arg1 = ToGdString(text);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_create_button']; 
+	var _retValue = AllocGdObj();
+	var _arg0 = ToGdString(path);
+	var _arg1 = ToGdString(text);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdString(_arg0); 
 	FreeGdString(_arg1); 
-	_finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = ToJsObj(_retValue);
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_create_label(path,text) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_create_label']; 
-	_retValue = AllocGdObj();
-	_arg0 = ToGdString(path);
-	_arg1 = ToGdString(text);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_create_label']; 
+	var _retValue = AllocGdObj();
+	var _arg0 = ToGdString(path);
+	var _arg1 = ToGdString(text);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdString(_arg0); 
 	FreeGdString(_arg1); 
-	_finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = ToJsObj(_retValue);
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_create_image(path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_create_image']; 
-	_retValue = AllocGdObj();
-	_arg0 = ToGdString(path);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_create_image']; 
+	var _retValue = AllocGdObj();
+	var _arg0 = ToGdString(path);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdString(_arg0); 
-	_finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = ToJsObj(_retValue);
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_create_toggle(path,value) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_create_toggle']; 
-	_retValue = AllocGdObj();
-	_arg0 = ToGdString(path);
-	_arg1 = ToGdBool(value);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_create_toggle']; 
+	var _retValue = AllocGdObj();
+	var _arg0 = ToGdString(path);
+	var _arg1 = ToGdBool(value);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdString(_arg0); 
 	FreeGdBool(_arg1); 
-	_finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = ToJsObj(_retValue);
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_create_slider(path,value) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_create_slider']; 
-	_retValue = AllocGdObj();
-	_arg0 = ToGdString(path);
-	_arg1 = ToGdFloat(value);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_create_slider']; 
+	var _retValue = AllocGdObj();
+	var _arg0 = ToGdString(path);
+	var _arg1 = ToGdFloat(value);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdString(_arg0); 
 	FreeGdFloat(_arg1); 
-	_finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = ToJsObj(_retValue);
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_create_input(path,text) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_create_input']; 
-	_retValue = AllocGdObj();
-	_arg0 = ToGdString(path);
-	_arg1 = ToGdString(text);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_create_input']; 
+	var _retValue = AllocGdObj();
+	var _arg0 = ToGdString(path);
+	var _arg1 = ToGdString(text);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdString(_arg0); 
 	FreeGdString(_arg1); 
-	_finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = ToJsObj(_retValue);
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_destroy_node(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_destroy_node']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_destroy_node']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_get_type(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_type']; 
-	_retValue = AllocGdInt();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_type']; 
+	var _retValue = AllocGdInt();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = ToJsInt(_retValue);
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_set_text(obj,text) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_text']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_text']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(text);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(text);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
 
 }
 function gdspx_ui_get_text(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_text']; 
-	_retValue = AllocGdString();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_text']; 
+	var _retValue = AllocGdString();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsString(_retValue);
+	var _finalRetValue = ToJsString(_retValue);
 	FreeGdString(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_set_texture(obj,path) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_texture']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_texture']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdString(path);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(path);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
 
 }
 function gdspx_ui_get_texture(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_texture']; 
-	_retValue = AllocGdString();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_texture']; 
+	var _retValue = AllocGdString();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsString(_retValue);
+	var _finalRetValue = ToJsString(_retValue);
 	FreeGdString(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_set_color(obj,color) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_color']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_color']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdColor(color);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdColor(color);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdColor(_arg1); 
 
 }
 function gdspx_ui_get_color(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_color']; 
-	_retValue = AllocGdColor();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_color']; 
+	var _retValue = AllocGdColor();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsColor(_retValue);
+	var _finalRetValue = ToJsColor(_retValue);
 	FreeGdColor(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_set_font_size(obj,size) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_font_size']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_font_size']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdInt(size);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdInt(size);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
 
 }
 function gdspx_ui_get_font_size(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_font_size']; 
-	_retValue = AllocGdInt();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_font_size']; 
+	var _retValue = AllocGdInt();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = ToJsInt(_retValue);
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_set_visible(obj,visible) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_visible']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_visible']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdBool(visible);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdBool(visible);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
 function gdspx_ui_get_visible(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_visible']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_visible']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_set_interactable(obj,interactable) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_interactable']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_interactable']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdBool(interactable);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdBool(interactable);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
 function gdspx_ui_get_interactable(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_interactable']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_interactable']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_set_rect(obj,rect) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_rect']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_rect']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdRect2(rect);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdRect2(rect);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdRect2(_arg1); 
 
 }
 function gdspx_ui_get_rect(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_rect']; 
-	_retValue = AllocGdRect2();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_rect']; 
+	var _retValue = AllocGdRect2();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsRect2(_retValue);
+	var _finalRetValue = ToJsRect2(_retValue);
 	FreeGdRect2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_get_layout_direction(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_layout_direction']; 
-	_retValue = AllocGdInt();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_layout_direction']; 
+	var _retValue = AllocGdInt();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = ToJsInt(_retValue);
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_set_layout_direction(obj,value) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_layout_direction']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_layout_direction']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdInt(value);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdInt(value);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
 
 }
 function gdspx_ui_get_layout_mode(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_layout_mode']; 
-	_retValue = AllocGdInt();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_layout_mode']; 
+	var _retValue = AllocGdInt();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = ToJsInt(_retValue);
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_set_layout_mode(obj,value) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_layout_mode']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_layout_mode']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdInt(value);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdInt(value);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
 
 }
 function gdspx_ui_get_anchors_preset(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_anchors_preset']; 
-	_retValue = AllocGdInt();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_anchors_preset']; 
+	var _retValue = AllocGdInt();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = ToJsInt(_retValue);
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_set_anchors_preset(obj,value) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_anchors_preset']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_anchors_preset']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdInt(value);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdInt(value);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
 
 }
 function gdspx_ui_get_scale(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_scale']; 
-	_retValue = AllocGdVec2();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_scale']; 
+	var _retValue = AllocGdVec2();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsVec2(_retValue);
+	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_set_scale(obj,value) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_scale']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_scale']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdVec2(value);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdVec2(value);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
 function gdspx_ui_get_position(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_position']; 
-	_retValue = AllocGdVec2();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_position']; 
+	var _retValue = AllocGdVec2();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsVec2(_retValue);
+	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_set_position(obj,value) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_position']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_position']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdVec2(value);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdVec2(value);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
 function gdspx_ui_get_size(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_size']; 
-	_retValue = AllocGdVec2();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_size']; 
+	var _retValue = AllocGdVec2();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsVec2(_retValue);
+	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_set_size(obj,value) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_size']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_size']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdVec2(value);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdVec2(value);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
 function gdspx_ui_get_global_position(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_global_position']; 
-	_retValue = AllocGdVec2();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_global_position']; 
+	var _retValue = AllocGdVec2();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsVec2(_retValue);
+	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_set_global_position(obj,value) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_global_position']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_global_position']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdVec2(value);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdVec2(value);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
 function gdspx_ui_get_rotation(obj) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_rotation']; 
-	_retValue = AllocGdFloat();
-	_arg0 = ToGdObj(obj);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_rotation']; 
+	var _retValue = AllocGdFloat();
+	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	_finalRetValue = ToJsFloat(_retValue);
+	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_set_rotation(obj,value) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_rotation']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_rotation']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdFloat(value);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdFloat(value);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
 function gdspx_ui_get_flip(obj,horizontal) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_flip']; 
-	_retValue = AllocGdBool();
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdBool(horizontal);
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_get_flip']; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdBool(horizontal);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
-	_finalRetValue = ToJsBool(_retValue);
+	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 function gdspx_ui_set_flip(obj,horizontal,is_flip) {
-	_gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_flip']; 
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ui_set_flip']; 
 	
-	_arg0 = ToGdObj(obj);
-	_arg1 = ToGdBool(horizontal);
-	_arg2 = ToGdBool(is_flip);
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdBool(horizontal);
+	var _arg2 = ToGdBool(is_flip);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
