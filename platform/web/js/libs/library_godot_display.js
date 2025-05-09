@@ -535,6 +535,13 @@ const GodotDisplay = {
 		GodotRuntime.setHeapValue(p_height, GodotConfig.canvas.height, 'i32');
 	},
 
+	godot_js_display_window_size_get_ext__proxy: 'sync',
+	godot_js_display_window_size_get_ext__sig: 'vii',
+	godot_js_display_window_size_get_ext: function (p_width, p_height) {
+		GodotRuntime.setHeapValue(p_width, window.innerWidth, 'i32');
+		GodotRuntime.setHeapValue(p_height, window.innerHeight, 'i32');
+	},
+	
 	godot_js_display_has_webgl__proxy: 'sync',
 	godot_js_display_has_webgl__sig: 'ii',
 	godot_js_display_has_webgl: function (p_version) {
