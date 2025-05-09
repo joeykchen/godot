@@ -36,7 +36,6 @@
 void SpxPlatformMgr::on_awake() {
 	SpxBaseMgr::on_awake();
 	persistant_data_dir = ::OS::get_singleton()->get_user_data_dir();
-	print_line("SpxPlatformMgr::persistant_data_dir ", persistant_data_dir);
 }
 
 void SpxPlatformMgr::set_window_position(GdVec2 pos) {
@@ -65,7 +64,6 @@ GdString SpxPlatformMgr::get_window_title() {
 }
 
 void SpxPlatformMgr::set_window_fullscreen(GdBool enable) {
-	print_line("SpxPlatformMgr::set_window_fullscreen", enable);
 	auto mode = enable ? DisplayServer::WINDOW_MODE_FULLSCREEN : DisplayServer::WINDOW_MODE_WINDOWED;
 	DisplayServer::get_singleton()->window_set_mode(mode);
 }
