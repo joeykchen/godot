@@ -304,14 +304,14 @@ const GodotDisplayScreen = {
 				}
 				return 0;
 			}
-			const scale = GodotDisplayScreen.getPixelRatio();
+			
 			if (isFullscreen || wantsFullWindow) {
 				// We need to match screen size.
-				width = window.innerWidth * scale;
-				height = window.innerHeight * scale;
+				width = window.innerWidth ;
+				height = window.innerHeight ;
 			}
-			let csw = `${width / scale}px`;
-			let csh = `${height / scale}px`;
+			let csw = `${width}px`;
+			let csh = `${height}px`;
 
 			if (!(isFullscreen || wantsFullWindow)) {
 				const radio = dWidth / dHeight;
@@ -320,11 +320,11 @@ const GodotDisplayScreen = {
 				const winRadio = displayWidth / displayHeight;
 
 				if (winRadio > radio) {
-					csh = Math.round(displayHeight / scale) + 'px';
-					csw = Math.round(displayHeight * radio / scale) + 'px';
+					csh = Math.round(displayHeight) + 'px';
+					csw = Math.round(displayHeight * radio) + 'px';
 				} else {
-					csw = Math.round(displayWidth / scale) + 'px';
-					csh = Math.round(displayWidth / radio / scale) + 'px';
+					csw = Math.round(displayWidth) + 'px';
+					csh = Math.round(displayWidth / radio) + 'px';
 				}
 			}
 			this.wait_resize_frame_time--;
@@ -538,8 +538,9 @@ const GodotDisplay = {
 	godot_js_display_window_size_get_ext__proxy: 'sync',
 	godot_js_display_window_size_get_ext__sig: 'vii',
 	godot_js_display_window_size_get_ext: function (p_width, p_height) {
-		GodotRuntime.setHeapValue(p_width, window.innerWidth, 'i32');
-		GodotRuntime.setHeapValue(p_height, window.innerHeight, 'i32');
+		const scale = GodotDisplayScreen.getPixelRatio();
+		GodotRuntime.setHeapValue(p_width, window.innerWidth * scale, 'i32');
+		GodotRuntime.setHeapValue(p_height, window.innerHeight * scale , 'i32');
 	},
 	
 	godot_js_display_has_webgl__proxy: 'sync',
