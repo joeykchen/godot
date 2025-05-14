@@ -33,6 +33,7 @@
 #include "core/io/image.h"
 #include "core/io/image_loader.h"
 #include "modules/minimp3/audio_stream_mp3.h"
+#include "modules/modules_enabled.gen.h"
 #include "scene/2d/audio_stream_player_2d.h"
 #include "scene/main/window.h"
 #include "scene/resources/atlas_texture.h"

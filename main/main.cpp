@@ -533,6 +533,8 @@ void Main::print_help(const char *p_binary) {
 	OS::get_singleton()->print("  --validate-extension-api <path>   Validate an extension API file dumped (with one of the two previous options) from a previous version of the engine to ensure API compatibility. If incompatibilities or errors are detected, the return code will be non zero.\n");
 	OS::get_singleton()->print("  --benchmark                       Benchmark the run time and print it to console.\n");
 	OS::get_singleton()->print("  --benchmark-file <path>           Benchmark the run time and save it to a given file in JSON format. The path should be absolute.\n");
+	// spx args
+	OS::get_singleton()->print("  --gdextpath <path>                Specify the gdextension path. The path should be absolute.\n");
 #ifdef TESTS_ENABLED
 	OS::get_singleton()->print("  --test [--help]                   Run unit tests. Use --test --help for more information.\n");
 #endif
@@ -1229,7 +1231,7 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 			if (I->next()) {
 				install_project_name = I->next()->get();
 				N = I->next()->next();
-			} 
+			}
 		} else if (I->get() == "--debug-server") {
 			if (I->next()) {
 				debug_server_uri = I->next()->get();
@@ -1578,6 +1580,14 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 #endif // TOOLS_ENABLED && MODULE_GDSCRIPT_ENABLED && !GDSCRIPT_NO_LSP
 		} else if (I->get() == "--" || I->get() == "++") {
 			adding_user_args = true;
+		} else if (I->get() == "--gdextpath") { // set path of project to start or edit
+			if (I->next()) {
+				GDExtension::ext_path = I->next()->get();
+				N = I->next()->next();
+			} else {
+				OS::get_singleton()->print("Missing relative or absolute gdextension path, aborting.\n");
+				goto error;
+			}
 		} else {
 			main_args.push_back(I->get());
 		}
