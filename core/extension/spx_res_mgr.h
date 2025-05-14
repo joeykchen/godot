@@ -55,7 +55,7 @@ private:
 	bool is_dynamic_anim = false;
 private:
 	static Ref<AudioStreamWAV> _load_wav(const String &path);
-	static Ref<AudioStreamMP3> _load_mp3(const String &path);
+	static Ref<AudioStream> _load_mp3(const String &path);
 	Ref<Texture2D> _load_texture_direct(const String &p_path);
 	Ref<AudioStream> _load_audio_direct(const String &p_path);
 	String _to_engine_path(const String &p_path);
