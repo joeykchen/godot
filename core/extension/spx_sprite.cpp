@@ -225,7 +225,6 @@ void SpxSprite::on_area_exited(Node *node) {
 }
 
 void SpxSprite::on_sprite_frames_set_changed() {
-	return;
 	if (!Spx::initialed) {
 		return;
 	}
@@ -233,7 +232,6 @@ void SpxSprite::on_sprite_frames_set_changed() {
 }
 
 void SpxSprite::on_sprite_animation_changed() {
-	return;
 	if (!Spx::initialed) {
 		return;
 	}
@@ -241,7 +239,6 @@ void SpxSprite::on_sprite_animation_changed() {
 }
 
 void SpxSprite::on_sprite_frame_changed() {
-	return;
 	if (!Spx::initialed) {
 		return;
 	}
@@ -258,7 +255,6 @@ void SpxSprite::on_sprite_frame_changed() {
 }
 
 void SpxSprite::on_sprite_animation_looped() {
-	return;
 	if (!Spx::initialed) {
 		return;
 	}
@@ -266,7 +262,6 @@ void SpxSprite::on_sprite_animation_looped() {
 }
 
 void SpxSprite::on_sprite_animation_finished() {
-	return;
 	if (!Spx::initialed) {
 		return;
 	}
