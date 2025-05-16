@@ -42,6 +42,7 @@ extern GDExtensionInterfaceFunctionPtr gdextension_get_proc_address(const char *
 
 typedef GDExtensionBool (*GDExtensionLegacyInitializationFunction)(void *p_interface, GDExtensionClassLibraryPtr p_library, GDExtensionInitialization *r_initialization);
 
+String GDExtension::ext_path = "";
 String GDExtension::get_extension_list_config_file() {
 	return ProjectSettings::get_singleton()->get_project_data_path().path_join("extension_list.cfg");
 }
@@ -729,7 +730,7 @@ Error GDExtension::open_library(const String &p_path, const String &p_entry_symb
 #endif
 
 	void *entry_funcptr = nullptr;
-	
+
 	initialization = GDExtensionInitialization();
 	if (OS::get_singleton()->indirect_call_dynamic_library(p_entry_symbol, (void*)&gdextension_get_proc_address, (void*)this, (void*)&initialization)) {
 		level_initialized = -1;
@@ -859,18 +860,23 @@ void GDExtension::finalize_gdextensions() {
 Error GDExtensionResourceLoader::load_gdextension_resource(const String &p_path, Ref<GDExtension> &p_extension) {
 	ERR_FAIL_COND_V_MSG(p_extension.is_valid() && p_extension->is_library_open(), ERR_ALREADY_IN_USE, "Cannot load GDExtension resource into already opened library.");
 
+	String path = GDExtension::ext_path;
+	if (path == "") {
+		path = p_path;
+	}
+
 	Ref<ConfigFile> config;
 	config.instantiate();
 
-	Error err = config->load(p_path);
+	Error err = config->load(path);
 
 	if (err != OK) {
-		ERR_PRINT("Error loading GDExtension configuration file: " + p_path);
+		ERR_PRINT("Error loading GDExtension configuration file: " + path);
 		return err;
 	}
 
 	if (!config->has_section_key("configuration", "entry_symbol")) {
-		ERR_PRINT("GDExtension configuration file must contain a \"configuration/entry_symbol\" key: " + p_path);
+		ERR_PRINT("GDExtension configuration file must contain a \"configuration/entry_symbol\" key: " + path);
 		return ERR_INVALID_DATA;
 	}
 
@@ -889,12 +895,12 @@ Error GDExtensionResourceLoader::load_gdextension_resource(const String &p_path,
 			}
 		}
 	} else {
-		ERR_PRINT("GDExtension configuration file must contain a \"configuration/compatibility_minimum\" key: " + p_path);
+		ERR_PRINT("GDExtension configuration file must contain a \"configuration/compatibility_minimum\" key: " + path);
 		return ERR_INVALID_DATA;
 	}
 
 	if (compatibility_minimum[0] < 4 || (compatibility_minimum[0] == 4 && compatibility_minimum[1] == 0)) {
-		ERR_PRINT(vformat("GDExtension's compatibility_minimum (%d.%d.%d) must be at least 4.1.0: %s", compatibility_minimum[0], compatibility_minimum[1], compatibility_minimum[2], p_path));
+		ERR_PRINT(vformat("GDExtension's compatibility_minimum (%d.%d.%d) must be at least 4.1.0: %s", compatibility_minimum[0], compatibility_minimum[1], compatibility_minimum[2], path));
 		return ERR_INVALID_DATA;
 	}
 
@@ -908,15 +914,15 @@ Error GDExtensionResourceLoader::load_gdextension_resource(const String &p_path,
 		compatible = VERSION_PATCH >= compatibility_minimum[2];
 	}
 	if (!compatible) {
-		ERR_PRINT(vformat("GDExtension only compatible with Godot version %d.%d.%d or later: %s", compatibility_minimum[0], compatibility_minimum[1], compatibility_minimum[2], p_path));
+		ERR_PRINT(vformat("GDExtension only compatible with Godot version %d.%d.%d or later: %s", compatibility_minimum[0], compatibility_minimum[1], compatibility_minimum[2], path));
 		return ERR_INVALID_DATA;
 	}
 
-	String library_path = GDExtension::find_extension_library(p_path, config, [](String p_feature) { return OS::get_singleton()->has_feature(p_feature); });
+	String library_path = GDExtension::find_extension_library(path, config, [](String p_feature) { return OS::get_singleton()->has_feature(p_feature); });
 
 	if (library_path.is_empty()) {
 		const String os_arch = OS::get_singleton()->get_name().to_lower() + "." + Engine::get_singleton()->get_architecture_name();
-		ERR_PRINT(vformat("No GDExtension library found for current OS and architecture (%s) in configuration file: %s", os_arch, p_path));
+		ERR_PRINT(vformat("No GDExtension library found for current OS and architecture (%s) in configuration file: %s", os_arch, path));
 		return ERR_FILE_NOT_FOUND;
 	}
 
@@ -928,7 +934,7 @@ Error GDExtensionResourceLoader::load_gdextension_resource(const String &p_path,
 	bool is_static_library = library_path.ends_with(".a") || library_path.ends_with(".xcframework");
 
 	if (!library_path.is_resource_file() && !library_path.is_absolute_path()) {
-		library_path = p_path.get_base_dir().path_join(library_path);
+		library_path = path.get_base_dir().path_join(library_path);
 	}
 
 	if (p_extension.is_null()) {
@@ -939,7 +945,7 @@ Error GDExtensionResourceLoader::load_gdextension_resource(const String &p_path,
 	p_extension->set_reloadable(config->get_value("configuration", "reloadable", false) && Engine::get_singleton()->is_extension_reloading_enabled());
 
 	p_extension->update_last_modified_time(
-			FileAccess::get_modified_time(p_path),
+			FileAccess::get_modified_time(path),
 			FileAccess::get_modified_time(library_path));
 #endif
 
@@ -966,7 +972,7 @@ Error GDExtensionResourceLoader::load_gdextension_resource(const String &p_path,
 		for (const String &key : keys) {
 			String icon_path = config->get_value("icons", key);
 			if (icon_path.is_relative_path()) {
-				icon_path = p_path.get_base_dir().path_join(icon_path);
+				icon_path = path.get_base_dir().path_join(icon_path);
 			}
 
 			p_extension->class_icon_paths[key] = icon_path;
