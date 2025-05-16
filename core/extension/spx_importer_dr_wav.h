@@ -135,8 +135,8 @@ Notes
 - dr_wav will try to read the WAV file as best it can, even if it's not strictly conformant to the WAV format.
 */
 
-#ifndef dr_wav_h
-#define dr_wav_h
+#ifndef spx_importer_dr_wav_h
+#define spx_importer_dr_wav_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -1320,7 +1320,7 @@ DRWAV_API drwav_bool32 drwav_fourcc_equal(const drwav_uint8* a, const char* b);
 #ifdef __cplusplus
 }
 #endif
-#endif  /* dr_wav_h */
+#endif  /* spx_importer_dr_wav_h */
 
 
 /************************************************************************************************************************************************************
@@ -3570,7 +3570,7 @@ DRWAV_PRIVATE drwav_bool32 drwav_init__internal(drwav* pWav, drwav_chunk_proc on
                     we'll need to abort because we can't be doing a backwards seek back to the SSND chunk in order to read the
                     data. For this reason, this configuration of AIFF files are not supported with sequential mode.
                     */
-                    return DRWAV_FALSE; 
+                    return DRWAV_FALSE;
                 }
             } else {
                 chunkSize += header.paddingSize;                /* <-- Make sure we seek past the padding. */

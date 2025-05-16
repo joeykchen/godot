@@ -40,6 +40,7 @@
 #include "scene/resources/image_texture.h"
 #include "scene/resources/sprite_frames.h"
 #include "spx_engine.h"
+#include "spx_importer_wav.h"
 #include "spx_platform_mgr.h"
 #ifdef TOOLS_ENABLED
 #include "editor/import/resource_importer_wav.h"
@@ -71,25 +72,37 @@ String SpxResMgr::_to_engine_path(const String &p_path){
 
 Ref<AudioStreamWAV> SpxResMgr::_load_wav(const String &path) {
 	Ref<AudioStreamWAV> sample;
-#ifdef TOOLS_ENABLED
-	Ref<ResourceImporterWAV> importer = memnew(ResourceImporterWAV);
-	List<ResourceImporter::ImportOption> options_list;
-	importer->get_import_options("", &options_list);
-	HashMap<StringName, Variant> options_map;
-	for (const ResourceImporter::ImportOption &E : options_list) {
-		options_map[E.option.name] = E.default_value;
-	}
-	importer->import_asset(sample, path, options_map, nullptr);
-#endif
+	SpxImporterWav::import_asset(sample, path);
 	return sample;
 }
 
-Ref<AudioStreamMP3> SpxResMgr::_load_mp3(const String &path) {
-	Ref<AudioStreamMP3> sample;
-#ifdef TOOLS_ENABLED
-	return ResourceImporterMP3::import_mp3(path);
+static Ref<AudioStream> _import_mp3(const String &p_path) {
+#ifdef MODULE_MINIMP3_ENABLED
+	Ref<FileAccess> f = FileAccess::open(p_path, FileAccess::READ);
+	ERR_FAIL_COND_V(f.is_null(), Ref<AudioStreamMP3>());
+
+	uint64_t len = f->get_length();
+
+	Vector<uint8_t> data;
+	data.resize(len);
+	uint8_t *w = data.ptrw();
+
+	f->get_buffer(w, len);
+
+	Ref<AudioStreamMP3> mp3_stream;
+	mp3_stream.instantiate();
+
+	mp3_stream->set_data(data);
+	ERR_FAIL_COND_V(!mp3_stream->get_data().size(), Ref<AudioStreamMP3>());
+	return mp3_stream;
+#else
+	Ref<AudioStream> mp3_stream;
+	return mp3_stream;
 #endif
-	return sample;
+}
+
+Ref<AudioStream> SpxResMgr::_load_mp3(const String &path) {
+	return _import_mp3(path);
 }
 
 Ref<AudioStream> SpxResMgr::_load_audio_direct(const String &p_path) {
