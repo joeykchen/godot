@@ -377,6 +377,12 @@ void SpxSpriteMgr::set_material_params_vec4(GdObj obj, GdString effect, GdVec4 v
 	sprite->set_material_params_vec4(effect, vec4);
 }
 
+void SpxSpriteMgr::set_material_params_vec(GdObj obj, GdString effect,  GdFloat x, GdFloat y, GdFloat z, GdFloat w){
+	check_and_get_sprite_v()
+	sprite->set_material_params_vec4(effect, GdVec4(x,y,z,w));
+}
+
+
 GdVec4 SpxSpriteMgr::get_material_params_vec4(GdObj obj, GdString effect) {
 	check_and_get_sprite_r(GdVec4())
 	return sprite->get_material_params_vec4(effect);

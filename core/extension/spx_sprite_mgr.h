@@ -160,6 +160,8 @@ public:
 	void set_material_params(GdObj obj, GdString effect, GdFloat amount);
 	GdFloat get_material_params(GdObj obj, GdString effect);
 
+	void set_material_params_vec(GdObj obj, GdString effect, GdFloat x, GdFloat y, GdFloat z, GdFloat w);
+
 	void set_material_params_vec4(GdObj obj, GdString effect, GdVec4 vec4);
 	GdVec4 get_material_params_vec4(GdObj obj, GdString effect);
 
