@@ -139,7 +139,6 @@ const InternalConfig = function (initConfig) { // eslint-disable-line no-unused-
 		 * @type {Array.<string>}
 		 */
 		fileSizes: [],
-		wasmGdspx: null,
 		wasmEngine: null,
 		/**
 		 * A callback function for handling Godot's ``OS.execute`` calls.
@@ -278,7 +277,6 @@ const InternalConfig = function (initConfig) { // eslint-disable-line no-unused-
 		this.onExit = parse('onExit', this.onExit);
 
 		// Wasm data
-		this.wasmGdspx = parse('wasmGdspx', this.wasmGdspx);
 		this.wasmEngine = parse('wasmEngine', this.wasmEngine);
 		engineLogLevel = parse('logLevel', engineLogLevel);
 	};
