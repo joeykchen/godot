@@ -205,14 +205,9 @@ const Engine = (function () {
 					}
 					return Promise.all(libs).then(function () {
 						if (libs.length === 0) {
-							const go = new Go();
 							return new Promise(function (resolve, reject) {
-								WebAssembly.instantiate(me.config.wasmGdspx, go.importObject).then(function (result) {
-									const goWasmInstance = result.instance;
-									go.run(goWasmInstance);
-									window.goWasmInit();
-									resolve();
-								})
+								window.goWasmInit();
+								resolve();
 							}).then(function () {
 								return executeMainLogic();
 							}); 
