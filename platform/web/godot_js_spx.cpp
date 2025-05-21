@@ -489,6 +489,10 @@ void gdspx_sprite_get_material_params(GdObj* obj,GdString* effect,GdFloat* ret_v
 	*ret_val = spriteMgr->get_material_params(*obj, *effect);
 }
 EMSCRIPTEN_KEEPALIVE
+void gdspx_sprite_set_material_params_vec(GdObj* obj,GdString* effect,GdFloat* x,GdFloat* y,GdFloat* z,GdFloat* w) {
+	 spriteMgr->set_material_params_vec(*obj, *effect, *x, *y, *z, *w);
+}
+EMSCRIPTEN_KEEPALIVE
 void gdspx_sprite_set_material_params_vec4(GdObj* obj,GdString* effect,GdVec4* vec4) {
 	 spriteMgr->set_material_params_vec4(*obj, *effect, *vec4);
 }

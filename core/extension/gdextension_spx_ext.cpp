@@ -382,6 +382,9 @@ static void gdextension_spx_sprite_set_material_params(GdObj obj,GdString effect
 static void gdextension_spx_sprite_get_material_params(GdObj obj,GdString effect,GdFloat* ret_val) {
 	*ret_val = spriteMgr->get_material_params(obj, effect);
 }
+static void gdextension_spx_sprite_set_material_params_vec(GdObj obj,GdString effect,GdFloat x,GdFloat y,GdFloat z,GdFloat w) {
+	 spriteMgr->set_material_params_vec(obj, effect, x, y, z, w);
+}
 static void gdextension_spx_sprite_set_material_params_vec4(GdObj obj,GdString effect,GdVec4 vec4) {
 	 spriteMgr->set_material_params_vec4(obj, effect, vec4);
 }
@@ -843,6 +846,7 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_get_material_shader);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_material_params);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_get_material_params);
+	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_material_params_vec);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_material_params_vec4);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_get_material_params_vec4);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_material_params_color);
