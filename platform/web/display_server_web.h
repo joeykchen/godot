@@ -153,6 +153,7 @@ private:
 	static void _on_game_datas_set_callback(const String &p_path,const Vector<String> &p_files);
 
 	void process_joypads();
+	void process_keys();
 
 	static Vector<String> get_rendering_drivers_func();
 	static DisplayServer *create_func(const String &p_rendering_driver, WindowMode p_window_mode, VSyncMode p_vsync_mode, uint32_t p_flags, const Vector2i *p_position, const Vector2i &p_resolution, int p_screen, Error &r_error);
