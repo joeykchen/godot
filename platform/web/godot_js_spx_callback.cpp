@@ -12,6 +12,9 @@
 static void _godot_js_on_load_gdextension(GdString p_text, void* p_get_proc_address, void* p_library, void* r_initialization){
 	godot_js_on_load_gdextension(p_text, p_get_proc_address, p_library, r_initialization);
 }
+static void _godot_js_spx_on_runtime_panic(GdString msg){
+	godot_js_spx_on_runtime_panic(msg);
+}
 static void _godot_js_spx_on_engine_start(){
 	godot_js_spx_on_engine_start();
 }
@@ -27,14 +30,10 @@ static void _godot_js_spx_on_engine_destroy(){
 
 static void _godot_js_spx_on_scene_sprite_instantiated(GdObj obj,GdString type_name){
 	godot_js_spx_on_scene_sprite_instantiated(&obj, type_name);
-	if(obj == 1)
-		return;
 }
 
 static void _godot_js_spx_on_sprite_ready(GdObj obj){
 	godot_js_spx_on_sprite_ready(&obj);
-	if(obj == 1)
-		return;
 }
 static void _godot_js_spx_on_sprite_updated(GdFloat delta){
 	godot_js_spx_on_sprite_updated(delta);
@@ -44,170 +43,106 @@ static void _godot_js_spx_on_sprite_fixed_updated(GdFloat delta){
 }
 static void _godot_js_spx_on_sprite_destroyed(GdObj obj){
 	godot_js_spx_on_sprite_destroyed(&obj);
-	if(obj == 1)
-		return;
 }
 
 static void _godot_js_spx_on_sprite_frames_set_changed(GdObj obj){
 	godot_js_spx_on_sprite_frames_set_changed(&obj);
-	if(obj == 1)
-		return;
 }
 static void _godot_js_spx_on_sprite_animation_changed(GdObj obj){
 	godot_js_spx_on_sprite_animation_changed(&obj);
-	if(obj == 1)
-		return;
 }
 static void _godot_js_spx_on_sprite_frame_changed(GdObj obj){
 	godot_js_spx_on_sprite_frame_changed(&obj);
-	if(obj == 1)
-		return;
 }
 static void _godot_js_spx_on_sprite_animation_looped(GdObj obj){
 	godot_js_spx_on_sprite_animation_looped(&obj);
-	if(obj == 1)
-		return;
 }
 static void _godot_js_spx_on_sprite_animation_finished(GdObj obj){
 	godot_js_spx_on_sprite_animation_finished(&obj);
-	if(obj == 1)
-		return;
 }
 
 static void _godot_js_spx_on_sprite_vfx_finished(GdObj obj){
 	godot_js_spx_on_sprite_vfx_finished(&obj);
-	if(obj == 1)
-		return;
 }
 
 static void _godot_js_spx_on_sprite_screen_exited(GdObj obj){
 	godot_js_spx_on_sprite_screen_exited(&obj);
-	if(obj == 1)
-		return;
 }
 static void _godot_js_spx_on_sprite_screen_entered(GdObj obj){
 	godot_js_spx_on_sprite_screen_entered(&obj);
-	if(obj == 1)
-		return;
 }
 
 static void _godot_js_spx_on_mouse_pressed(GdInt keyid){
 	godot_js_spx_on_mouse_pressed(&keyid);
-	if(keyid == 1)
-		return;
 }
 static void _godot_js_spx_on_mouse_released(GdInt keyid){
 	godot_js_spx_on_mouse_released(&keyid);
-	if(keyid == 1)
-		return;
 }
 static void _godot_js_spx_on_key_pressed(GdInt keyid){
 	godot_js_spx_on_key_pressed(&keyid);
-	if(keyid == 1)
-		return;
 }
 static void _godot_js_spx_on_key_released(GdInt keyid){
 	godot_js_spx_on_key_released(&keyid);
-	if(keyid == 1)
-		return;
 }
 static void _godot_js_spx_on_action_pressed(GdString action_name){
 	godot_js_spx_on_action_pressed(action_name);
-	if (action_name != nullptr)
-		return;
 }
 static void _godot_js_spx_on_action_just_pressed(GdString action_name){
 	godot_js_spx_on_action_just_pressed(action_name);
-	if (action_name != nullptr)
-		return;
 }
 static void _godot_js_spx_on_action_just_released(GdString action_name){
 	godot_js_spx_on_action_just_released(action_name);
-	if (action_name != nullptr)
-		return;
 }
 static void _godot_js_spx_on_axis_changed(GdString action_name, GdFloat value){
 	godot_js_spx_on_axis_changed(action_name, value);
-	if (action_name != nullptr)
-		return;
 }
 
 static void _godot_js_spx_on_collision_enter(GdInt self_id, GdInt other_id){
 	godot_js_spx_on_collision_enter(&self_id, &other_id);
-	if(self_id == 1)
-		return;
 }
 static void _godot_js_spx_on_collision_stay(GdInt self_id, GdInt other_id){
 	godot_js_spx_on_collision_stay(&self_id, &other_id);
-	if(self_id == 1)
-		return;
 }
 static void _godot_js_spx_on_collision_exit(GdInt self_id, GdInt other_id){
 	godot_js_spx_on_collision_exit(&self_id, &other_id);
-	if(self_id == 1)
-		return;
 }
 static void _godot_js_spx_on_trigger_enter(GdInt self_id, GdInt other_id){
 	godot_js_spx_on_trigger_enter(&self_id, &other_id);
-	if(self_id == 1)
-		return;
 }
 static void _godot_js_spx_on_trigger_stay(GdInt self_id, GdInt other_id){
 	godot_js_spx_on_trigger_stay(&self_id, &other_id);
-	if(self_id == 1 || other_id == 1)
-		return;
 }
 static void _godot_js_spx_on_trigger_exit(GdInt self_id, GdInt other_id){
 	godot_js_spx_on_trigger_exit(&self_id, &other_id);
-	if(self_id == 1 || other_id == 1)
-		return;
 }
 
 static void _godot_js_spx_on_ui_ready(GdObj obj){
 	godot_js_spx_on_ui_ready(&obj);
-	if(obj == 1)
-		return;
 }
 static void _godot_js_spx_on_ui_updated(GdObj obj){
 	godot_js_spx_on_ui_updated(&obj);
-	if(obj == 1)
-		return;
 }
 static void _godot_js_spx_on_ui_destroyed(GdObj obj){
 	godot_js_spx_on_ui_destroyed(&obj);
-	if(obj == 1)
-		return;
 }
 
 static void _godot_js_spx_on_ui_pressed(GdObj obj){
 	godot_js_spx_on_ui_pressed(&obj);
-	if(obj == 1)
-		return;
 }
 static void _godot_js_spx_on_ui_released(GdObj obj){
 	godot_js_spx_on_ui_released(&obj);
-	if(obj == 1)
-		return;
 }
 static void _godot_js_spx_on_ui_hovered(GdObj obj){
 	godot_js_spx_on_ui_hovered(&obj);
-	if(obj == 1)
-		return;
 }
 static void _godot_js_spx_on_ui_clicked(GdObj obj){
 	godot_js_spx_on_ui_clicked(&obj);
-	if(obj == 1)
-		return;
 }
 static void _godot_js_spx_on_ui_toggle(GdObj obj, GdBool is_on){
 	godot_js_spx_on_ui_toggle(&obj, is_on);
-	if(obj == 1)
-		return;
 }
 static void _godot_js_spx_on_ui_text_changed(GdObj obj, GdString text){
 	godot_js_spx_on_ui_text_changed(&obj, text);
-	if(obj == 1)
-		return;
 }
 
 
@@ -256,4 +191,5 @@ void OS_Web::register_spx_callbacks() {
 	callback_infos->func_on_ui_text_changed = &_godot_js_spx_on_ui_text_changed;
 	
 	SpxEngine::register_callbacks(callback_infos);
+	SpxEngine::register_runtime_panic_callbacks(_godot_js_spx_on_runtime_panic);
 }

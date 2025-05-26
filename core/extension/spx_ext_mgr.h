@@ -56,6 +56,10 @@ public:
 	void on_update(float delta) override;
 
 public:
+	// engine API
+	void request_exit(GdInt exit_code);
+	void on_runtime_panic(GdString msg);
+
 	// obj APIs
 	void destroy_all_pens();
 	GdObj create_pen();

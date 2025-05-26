@@ -62,6 +62,13 @@ const GodotGdspx = {
 	godot_js_spx_on_scene_sprite_instantiated: function (obj, type_name) {
 		window.gdspx_on_scene_sprite_instantiated(GodotRuntime.ToJsObj(obj), GodotRuntime.parseString(type_name));
 	},
+	
+	godot_js_spx_on_runtime_panic__proxy: 'sync',
+	godot_js_spx_on_runtime_panic__sig: 'vi',
+	godot_js_spx_on_runtime_panic: function (msg) {
+		window.gdspx_on_runtime_panic(GodotRuntime.parseString(msg));
+	},
+	
 
 	godot_js_spx_on_sprite_ready__proxy: 'sync',
 	godot_js_spx_on_sprite_ready__sig: 'vi',

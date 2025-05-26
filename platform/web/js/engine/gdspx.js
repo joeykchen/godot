@@ -217,6 +217,22 @@ function gdspx_camera_get_viewport_rect() {
 	FreeGdRect2(_retValue); 
 	return _finalRetValue
 }
+function gdspx_ext_request_exit(exit_code) {
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_request_exit']; 
+	
+	var _arg0 = ToGdInt(exit_code);
+	_gdFuncPtr(_arg0);
+	FreeGdInt(_arg0); 
+
+}
+function gdspx_ext_on_runtime_panic(msg) {
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_on_runtime_panic']; 
+	
+	var _arg0 = ToGdString(msg);
+	_gdFuncPtr(_arg0);
+	FreeGdString(_arg0); 
+
+}
 function gdspx_ext_destroy_all_pens() {
 	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_ext_destroy_all_pens']; 
 	

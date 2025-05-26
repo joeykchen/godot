@@ -49,13 +49,16 @@ class SpxPlatformMgr;
 class SpxResMgr;
 class SpxExtMgr;
 
+typedef void (*GDExtensionSpxGlobalRuntimePanicCallback)(GdString msg);
+
 class SpxEngine : SpxBaseMgr {
 	static SpxEngine *singleton;
 
 public:
 	static SpxEngine *get_singleton() { return singleton; }
 	static bool has_initialed() { return singleton != nullptr; }
-	static void register_callbacks(GDExtensionSpxCallbackInfoPtr callback_ptr);
+	static void register_callbacks(GDExtensionSpxCallbackInfoPtr callback);
+	static void register_runtime_panic_callbacks(GDExtensionSpxGlobalRuntimePanicCallback callback);
 	virtual ~SpxEngine() = default; 
 
 private:
@@ -88,9 +91,11 @@ private:
 	Node *spx_root;
 	GdInt global_id;
 	SpxCallbackInfo callbacks;
-
+	GDExtensionSpxGlobalRuntimePanicCallback on_runtime_panic;
+	bool has_exit;
 public:
-	SpxCallbackInfo *get_callbacks();
+	SpxCallbackInfo *get_callbacks() ;
+	GDExtensionSpxGlobalRuntimePanicCallback get_on_runtime_panic() { return on_runtime_panic; }
 
 public:
 	GdInt get_unique_id() override;
@@ -103,6 +108,7 @@ public:
 	void on_fixed_update(float delta) override;
 	void on_update(float delta) override;
 	void on_destroy() override;
+	void on_exit(int exit_code) override;
 };
 
 #endif // SPX_ENGINE_H

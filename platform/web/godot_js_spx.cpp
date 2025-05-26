@@ -153,6 +153,14 @@ void gdspx_camera_get_viewport_rect(GdRect2* ret_val) {
 	*ret_val = cameraMgr->get_viewport_rect();
 }
 EMSCRIPTEN_KEEPALIVE
+void gdspx_ext_request_exit(GdInt* exit_code) {
+	 extMgr->request_exit(*exit_code);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_ext_on_runtime_panic(GdString* msg) {
+	 extMgr->on_runtime_panic(*msg);
+}
+EMSCRIPTEN_KEEPALIVE
 void gdspx_ext_destroy_all_pens() {
 	 extMgr->destroy_all_pens();
 }
