@@ -856,11 +856,11 @@ GdBool SpxSpriteMgr::check_collision_with_sprite_by_alpha(GdObj obj,GdObj obj_b,
 	return false;
 }
 
-GdBool SpxSpriteMgr::check_collision_by_color(GdObj obj, GdColor color, GdFloat color_threshold) {
+GdBool SpxSpriteMgr::check_collision_by_color(GdObj obj, GdColor color, GdFloat color_threshold, GdFloat alpha_threshold) {
 	return _check_collision(obj, [=](GdColor a, GdColor b) -> bool {
 		auto diff = color - b;
 		auto dist = Math::sqrt(diff.r * diff.r + diff.g * diff.g + diff.b * diff.b + diff.a * diff.a);
-		return dist < color_threshold;
+		return dist < color_threshold && a.a > alpha_threshold;
 	});
 }
 

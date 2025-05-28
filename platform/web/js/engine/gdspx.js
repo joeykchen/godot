@@ -1823,16 +1823,18 @@ function gdspx_sprite_is_trigger_enabled(obj) {
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-function gdspx_sprite_check_collision_by_color(obj,color,color_threshold) {
+function gdspx_sprite_check_collision_by_color(obj,color,color_threshold,alpha_threshold) {
 	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_sprite_check_collision_by_color']; 
 	var _retValue = AllocGdBool();
 	var _arg0 = ToGdObj(obj);
 	var _arg1 = ToGdColor(color);
 	var _arg2 = ToGdFloat(color_threshold);
-	_gdFuncPtr(_arg0, _arg1, _arg2, _retValue);
+	var _arg3 = ToGdFloat(alpha_threshold);
+	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _retValue);
 	FreeGdObj(_arg0); 
 	FreeGdColor(_arg1); 
 	FreeGdFloat(_arg2); 
+	FreeGdFloat(_arg3); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
