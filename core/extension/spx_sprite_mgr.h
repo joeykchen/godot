@@ -247,7 +247,7 @@ public:
 	GdBool is_trigger_enabled(GdObj obj);
 
 	// misc
-	GdBool check_collision_by_color(GdObj obj, GdColor color,GdFloat color_threshold);
+	GdBool check_collision_by_color(GdObj obj, GdColor color,GdFloat color_threshold, GdFloat alpha_threshold);
 	GdBool check_collision_by_alpha(GdObj obj, GdFloat alpha_threshold);
 	GdBool check_collision_with_sprite_by_alpha(GdObj obj, GdObj obj_b, GdFloat alpha_threshold);
 

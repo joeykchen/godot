@@ -604,8 +604,8 @@ static void gdextension_spx_sprite_set_trigger_enabled(GdObj obj,GdBool trigger)
 static void gdextension_spx_sprite_is_trigger_enabled(GdObj obj,GdBool* ret_val) {
 	*ret_val = spriteMgr->is_trigger_enabled(obj);
 }
-static void gdextension_spx_sprite_check_collision_by_color(GdObj obj,GdColor color,GdFloat color_threshold,GdBool* ret_val) {
-	*ret_val = spriteMgr->check_collision_by_color(obj, color, color_threshold);
+static void gdextension_spx_sprite_check_collision_by_color(GdObj obj,GdColor color,GdFloat color_threshold,GdFloat alpha_threshold,GdBool* ret_val) {
+	*ret_val = spriteMgr->check_collision_by_color(obj, color, color_threshold, alpha_threshold);
 }
 static void gdextension_spx_sprite_check_collision_by_alpha(GdObj obj,GdFloat alpha_threshold,GdBool* ret_val) {
 	*ret_val = spriteMgr->check_collision_by_alpha(obj, alpha_threshold);
