@@ -4,6 +4,7 @@
 #include <cfloat>
 #include <cmath>
 
+#include "embedded_cnfont.h"
 namespace lunasvg {
 
 const Color Color::Black(0xFF000000);
@@ -477,9 +478,22 @@ FontFaceCache::FontFaceCache()
 #endif
     };
 
+#ifndef __EMSCRIPTEN__
     for(const auto& entry : entries) {
         addFontFace(emptyString, entry.bold, entry.italic, FontFace(entry.filename));
     }
+#endif
+
+#ifdef LUNASVG_ENABLE_EMBEDDED_FONTS
+    // load embedded font after system fonts are loaded,
+    // ensure fonts are available in WASM environments
+    FontFace cnFont(embedded_cnfont_data, embedded_cnfont_size, nullptr, nullptr);
+    if (!cnFont.isNull()) {
+        addFontFace("", false, false, cnFont);
+    }
+    printf("=====>Embedded font loaded\n");
+#endif
+
 }
 
 FontFaceCache* fontFaceCache()
