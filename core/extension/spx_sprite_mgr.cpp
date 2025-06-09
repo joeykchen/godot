@@ -50,7 +50,7 @@
 
 #define DEFAULT_COLLISION_ALPHA_THRESHOLD 0.05
 
-StringName SpxSpriteMgr::default_texture_anim = "";
+StringName SpxSpriteMgr::default_texture_anim;
 #define check_and_get_sprite_r(VALUE) \
 	auto sprite = get_sprite(obj);\
 	if (sprite == nullptr) {\
@@ -358,7 +358,7 @@ void SpxSpriteMgr::set_material_shader(GdObj obj, GdString path) {
 }
 
 GdString SpxSpriteMgr::get_material_shader(GdObj obj) {
-	check_and_get_sprite_r(GdString()) 
+	check_and_get_sprite_r(GdString())
 	return sprite->get_material_shader();
 }
 

@@ -39,9 +39,9 @@
 
 // Initialize static members
 SpxAudioBusPool *SpxAudioBusPool::singleton = nullptr;
-const StringName SpxAudioBusPool::STR_BUS_MASTER = "Master";
-const StringName SpxAudioBusPool::STR_BUS_SFX = "Sfx";
-const StringName SpxAudioBusPool::STR_BUS_MUSIC = "Music";
+StringName SpxAudioBusPool::STR_BUS_MASTER;
+StringName SpxAudioBusPool::STR_BUS_SFX;
+StringName SpxAudioBusPool::STR_BUS_MUSIC;
 
 
 SpxAudioBusPool *SpxAudioBusPool::get_singleton() {
@@ -59,6 +59,11 @@ StringName SpxAudioBusPool::get_bus_name(int id) {
 	return String::num_real(id);
 }
 void SpxAudioBusPool::init() {
+
+	SpxAudioBusPool::STR_BUS_MASTER = "Master";
+	SpxAudioBusPool::STR_BUS_SFX = "Sfx";
+	SpxAudioBusPool::STR_BUS_MUSIC = "Music";
+
 	singleton = memnew(SpxAudioBusPool);
 	// Start with DEFAULT_BUS_COUNT buses (includes master)
 	AudioServer::get_singleton()->set_bus_count(DEFAULT_BUS_COUNT);
