@@ -42,9 +42,9 @@ public:
 	static const int BUS_MASTER = 0;
 	static const int BUS_SFX = 1;
 	static const int BUS_MUSIC = 2;
-	static const StringName STR_BUS_MASTER;
-	static const StringName STR_BUS_SFX;
-	static const StringName STR_BUS_MUSIC;
+	static StringName STR_BUS_MASTER;
+	static StringName STR_BUS_SFX;
+	static StringName STR_BUS_MUSIC;
 
 private:
 	static const int DEFAULT_BUS_COUNT = 4; // Default number of buses including master
