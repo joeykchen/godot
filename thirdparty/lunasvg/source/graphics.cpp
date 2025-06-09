@@ -491,7 +491,6 @@ FontFaceCache::FontFaceCache()
     if (!cnFont.isNull()) {
         addFontFace("", false, false, cnFont);
     }
-    printf("=====>Embedded font loaded\n");
 #endif
 
 }

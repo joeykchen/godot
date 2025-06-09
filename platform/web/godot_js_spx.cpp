@@ -361,6 +361,10 @@ void gdspx_res_free_str(GdString* str) {
 	 resMgr->free_str(*str);
 }
 EMSCRIPTEN_KEEPALIVE
+void gdspx_res_set_default_font(GdString* font_path) {
+	 resMgr->set_default_font(*font_path);
+}
+EMSCRIPTEN_KEEPALIVE
 void gdspx_scene_change_scene_to_file(GdString* path) {
 	 sceneMgr->change_scene_to_file(*path);
 }

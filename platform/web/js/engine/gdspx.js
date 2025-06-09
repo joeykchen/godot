@@ -709,6 +709,14 @@ function gdspx_res_free_str(str) {
 	FreeGdString(_arg0); 
 
 }
+function gdspx_res_set_default_font(font_path) {
+	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_res_set_default_font']; 
+	
+	var _arg0 = ToGdString(font_path);
+	_gdFuncPtr(_arg0);
+	FreeGdString(_arg0); 
+
+}
 function gdspx_scene_change_scene_to_file(path) {
 	var _gdFuncPtr =  GodotEngine.rtenv['_gdspx_scene_change_scene_to_file']; 
 	

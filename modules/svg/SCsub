@@ -92,10 +92,9 @@ thirdparty_sources2 = [
     "source/svgrenderstate.cpp",
     "source/svgtextelement.cpp",
 ]
-# enable embedded font for web
-if env_svg['platform'] == 'web':
-    env_svg.Append(CPPDEFINES=["LUNASVG_ENABLE_EMBEDDED_FONTS"])
-    thirdparty_sources2 = thirdparty_sources2 + ["source/embedded_cnfont.cpp"]
+# enable embedded font for all platforms (needed for SVGUtils::set_default_font)
+env_svg.Append(CPPDEFINES=["LUNASVG_ENABLE_EMBEDDED_FONTS"])
+thirdparty_sources2 = thirdparty_sources2 + ["source/embedded_cnfont.cpp"]
 
 thirdparty_sources2 = [thirdparty_dir2 + file for file in thirdparty_sources2]
 
