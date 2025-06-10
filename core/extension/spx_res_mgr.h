@@ -35,6 +35,7 @@
 #include "scene/resources/sprite_frames.h"
 #include "servers/audio/audio_stream.h"
 #include "spx_base_mgr.h"
+#include "scene/resources/font.h"
 
 class AudioStreamMP3;
 class AudioStreamWAV;
@@ -69,7 +70,6 @@ public:
 	Ref<SpriteFrames> get_anim_frames(const String& anim_name);
 	String get_anim_key_name(const String& sprite_type_name,const String& anim_name);
 	bool is_dynamic_anim_mode() const;
-
 public:
 	void create_animation(GdString sprite_type_name,GdString anim_name, GdString context, GdInt fps, GdBool is_altas);
 
@@ -81,6 +81,7 @@ public:
 	GdBool has_file(GdString p_path);
 	void reload_texture(GdString path);
 	void free_str(GdString str);
+	void set_default_font(GdString font_path);
 };
 
 #endif // SPX_RES_MGR_H
