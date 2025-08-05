@@ -15,6 +15,10 @@ static void _godot_js_on_load_gdextension(GdString p_text, void* p_get_proc_addr
 static void _godot_js_spx_on_runtime_panic(GdString msg){
 	godot_js_spx_on_runtime_panic(msg);
 }
+static void _godot_js_spx_on_runtime_exit(GdInt code){
+	godot_js_spx_on_runtime_exit((int)code);
+}
+
 static void _godot_js_spx_on_engine_start(){
 	godot_js_spx_on_engine_start();
 }
@@ -192,4 +196,5 @@ void OS_Web::register_spx_callbacks() {
 	
 	SpxEngine::register_callbacks(callback_infos);
 	SpxEngine::register_runtime_panic_callbacks(_godot_js_spx_on_runtime_panic);
+	SpxEngine::register_runtime_exit_callbacks(_godot_js_spx_on_runtime_exit);
 }

@@ -84,6 +84,11 @@ void SpxExtMgr::on_destroy() {
 }
 
 void SpxExtMgr::request_exit(GdInt exit_code) {
+	auto callback = SpxEngine::get_singleton()->get_on_runtime_exit();
+	if (callback != nullptr) {
+		callback(exit_code);
+	}	
+	
 	SpxEngine::get_singleton()->on_exit(exit_code);
 	get_tree()->quit(exit_code);
 }
@@ -96,7 +101,6 @@ void SpxExtMgr::on_runtime_panic(GdString msg) {
 		callback(str);
 	}
 }
-
 
 SpxPen *SpxExtMgr::_get_pen(GdObj obj) {
 	if (id_pens.has(obj)) {
