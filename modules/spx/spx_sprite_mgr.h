@@ -34,6 +34,7 @@
 #include "gdextension_spx_ext.h"
 #include "scene/2d/animated_sprite_2d.h"
 #include "spx_base_mgr.h"
+#include "spx_layer_sorter.h"
 #include "core/templates/hash_map.h"
 #include <functional>
 #include <unordered_set>
@@ -95,6 +96,7 @@ public:
 
 private:
 	RBMap<GdObj, SpxSprite *> id_objects;
+
 	std::unordered_set<TriggerPair> bounding_collision_pairs;
 	std::unordered_set<TriggerPair> pixel_collision_pairs;
 

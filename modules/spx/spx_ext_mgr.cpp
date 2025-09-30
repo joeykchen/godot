@@ -41,6 +41,7 @@
 #include "spx_res_mgr.h"
 #include "spx_sprite.h"
 #include "spx_draw_tiles.h"
+#include "spx_layer_sorter.h"
 #include <cmath>
 
 #define resMgr SpxEngine::get_singleton()->get_res()
@@ -488,4 +489,8 @@ GdArray SpxExtMgr::find_path(GdVec2 p_from, GdVec2 p_to, GdBool with_jump) {
 	}
 
 	return path_finder->find_path_spx(p_from, p_to);
+}
+
+void SpxExtMgr::set_layer_sorter_mode(GdInt mode) {
+	SpxLayerSorter::instance().set_mode((LayerSortMode)mode);
 }

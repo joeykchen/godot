@@ -161,6 +161,9 @@ public:
 	void setup_path_finder(GdBool with_jump);
 	void set_obstacle(GdObj obj, GdBool enabled);
 	GdArray find_path(GdVec2 p_from, GdVec2 p_to, GdBool with_jump);
+
+	// layer sorter
+	void set_layer_sorter_mode(GdInt mode);
 };
 
 #endif // SPX_EXT_MGR_H
