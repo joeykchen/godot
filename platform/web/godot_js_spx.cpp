@@ -347,6 +347,10 @@ void gdspx_ext_find_path(GdVec2* p_from,GdVec2* p_to,GdBool* with_jump,GdArray* 
 	*ret_val = extMgr->find_path(*p_from, *p_to, *with_jump);
 }
 EMSCRIPTEN_KEEPALIVE
+void gdspx_ext_set_layer_sorter_mode(GdInt* mode) {
+	 extMgr->set_layer_sorter_mode(*mode);
+}
+EMSCRIPTEN_KEEPALIVE
 void gdspx_input_get_mouse_pos(GdVec2* ret_val) {
 	*ret_val = inputMgr->get_mouse_pos();
 }

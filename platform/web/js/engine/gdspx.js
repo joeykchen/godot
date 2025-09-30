@@ -655,6 +655,14 @@ gdspx_ext_find_path(p_from,p_to,with_jump) {
 	FreeGdArray(_retValue); 
 	return _finalRetValue
 }
+gdspx_ext_set_layer_sorter_mode(mode) {
+	var _gdFuncPtr = Module._gdspx_ext_set_layer_sorter_mode; 
+	
+	var _arg0 = ToGdInt(mode);
+	_gdFuncPtr(_arg0);
+	FreeGdInt(_arg0); 
+
+}
 gdspx_input_get_mouse_pos() {
 	var _gdFuncPtr = Module._gdspx_input_get_mouse_pos; 
 	var _retValue = AllocGdVec2();

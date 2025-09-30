@@ -42,6 +42,7 @@
 #include "spx_engine.h"
 #include "spx_res_mgr.h"
 #include "spx_physic_mgr.h"
+#include "spx_layer_sorter.h"
 #include "spx_sprite.h"
 #include "core/typedefs.h"
 
@@ -117,6 +118,7 @@ void SpxSpriteMgr::on_destroy() {
 void SpxSpriteMgr::on_update(float delta) {
 	SpxBaseMgr::on_update(delta);
 	_check_pixel_collision_events();
+	SpxLayerSorter::instance().update(id_objects);
 }
 
 SpxSprite *SpxSpriteMgr::get_sprite(GdObj obj) {
