@@ -128,7 +128,8 @@ void SpxPathFinder::_process_rectangle_shape(Node2D *owner, CollisionShape2D *sh
 }
 
 void SpxPathFinder::_process_static_obstacles(Node2D *body, bool add) {
-
+    if( !body->is_visible_in_tree()) return;
+    
     for (int j = 0; j < body->get_child_count(); j++) {
         Node *child = body->get_child(j);
 
@@ -343,7 +344,7 @@ void SpxPathFinder::add_all_obstacles(Node *root) {
             if (StaticBody2D *body = Object::cast_to<StaticBody2D>(child)) {
                 _process_static_obstacles(body);
             } else if (SpxSprite *sprite = Object::cast_to<SpxSprite>(child)) {
-                if(sprite->get_physics_mode() == SpxSprite::PhysicsMode::STATIC && sprite->is_visible_in_tree())
+                if(sprite->get_physics_mode() == SpxSprite::PhysicsMode::STATIC)
                     _process_static_obstacles(sprite);
             } else if (TileMapLayer *layer = Object::cast_to<TileMapLayer>(child)) {
                 _process_tilemap_obstacles(layer);
