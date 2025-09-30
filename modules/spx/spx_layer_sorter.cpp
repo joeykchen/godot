@@ -29,10 +29,11 @@
 /**************************************************************************/
 #include "spx_layer_sorter.h"
 
-void SpxLayerSorter::update(const RBMap<GdObj, SpxSprite*>& id_objects) {
+// New interface implementation
+void SpxLayerSorter::update(const Vector<ISortableSprite*>& sortables) {
     if(sort_mode == LayerSortMode::NONE) return;
 
-    _collect_sprites(id_objects);
+    _collect_sprites(sortables);
 
     if (dirty.empty()) return;
 
@@ -46,45 +47,66 @@ void SpxLayerSorter::update(const RBMap<GdObj, SpxSprite*>& id_objects) {
     _apply_z_index();
 }
 
-void SpxLayerSorter::_mark_dirty(SpxSprite* sp) {
-    if (!sp) return;
-    if (dirty_ids.find(sp->get_gid()) != dirty_ids.end()) return;
-
-    dirty.push_back({sp->get_gid(), sp->get_position(), sp});
-    dirty_ids.insert(sp->get_gid());
+// Legacy interface: convert RBMap to Vector
+void SpxLayerSorter::update(const RBMap<GdObj, SpxSprite*>& id_objects) {
+    Vector<ISortableSprite*> sortables;
+    for (auto &pair : id_objects) {
+        if (pair.value) {
+            sortables.push_back(pair.value);
+        }
+    }
+    update(sortables);
 }
 
-void SpxLayerSorter::_collect_sprites(const RBMap<GdObj, SpxSprite*>& id_objects) {
+void SpxLayerSorter::_mark_dirty(ISortableSprite* sp) {
+    if (!sp) return;
+    GdObj id = sp->get_sort_id();
+    if (dirty_ids.find(id) != dirty_ids.end()) return;
+
+    dirty.push_back({id, sp->get_sort_position(), sp});
+    dirty_ids.insert(id);
+}
+
+void SpxLayerSorter::_collect_sprites(const Vector<ISortableSprite*>& sortables) {
+    // Remove invalid sprites
     sorted.erase(
         std::remove_if(sorted.begin(), sorted.end(),
-            [&](const SortInfo &s) { return id_objects.find(s.id) == nullptr; }),
+            [](const SortInfo &s) {
+                return !s.sortable || !s.sortable->is_node_valid();
+            }),
         sorted.end()
     );
 
     if (sorted.empty()) {
-        sorted.reserve(id_objects.size());
-        for (auto &[key, sp] : id_objects) {
-            if (!sp) continue;
-            sorted.push_back({sp->get_gid(), sp->get_position(), sp});
+        sorted.reserve(sortables.size());
+        for (auto sp : sortables) {
+            if (!sp || !sp->is_node_valid()) continue;
+            sorted.push_back({sp->get_sort_id(), sp->get_sort_position(), sp});
         }
         std::sort(sorted.begin(), sorted.end(), sprite_cmp);
     } else {
-        for (auto &pair : id_objects) {
+        // Create a set of existing IDs for quick lookup
+        std::unordered_set<GdObj> existing_ids;
+        for (const auto &s : sorted) {
+            existing_ids.insert(s.id);
+        }
 
-            auto &sp  = pair.value;
-            if (!sp) continue;
+        for (auto sp : sortables) {
+            if (!sp || !sp->is_node_valid()) continue;
 
+            GdObj sp_id = sp->get_sort_id();
             auto sorted_it = std::find_if(sorted.begin(), sorted.end(),
-                [&](const SortInfo &s) { return s.id == sp->get_gid(); });
+                [sp_id](const SortInfo &s) { return s.id == sp_id; });
 
             if (sorted_it != sorted.end()) {
-                Point2 cur_pos = sp->get_position();
+                Point2 cur_pos = sp->get_sort_position();
                 if (sorted_it->pos != cur_pos) {
                     sorted_it->pos = cur_pos;
+                    sorted_it->sortable = sp;
                     _mark_dirty(sp);
                 }
             } else {
-                sorted.push_back({sp->get_gid(), sp->get_position(), sp});
+                sorted.push_back({sp_id, sp->get_sort_position(), sp});
                 _mark_dirty(sp);
             }
         }
@@ -108,8 +130,8 @@ void SpxLayerSorter::_incremental_sort() {
 
 void SpxLayerSorter::_full_sort() {
     for (auto &s : sorted) {
-        if (s.sprite) {
-            s.pos = s.sprite->get_position();
+        if (s.sortable && s.sortable->is_node_valid()) {
+            s.pos = s.sortable->get_sort_position();
         }
     }
     std::sort(sorted.begin(), sorted.end(), sprite_cmp);
@@ -120,8 +142,8 @@ void SpxLayerSorter::_full_sort() {
 void SpxLayerSorter::_apply_z_index() {
     int z = 1;
     for (auto &s : sorted) {
-        if (s.sprite && s.sprite->get_z_index() != z){
-            s.sprite->set_z_index(z);
+        if (s.sortable && s.sortable->is_node_valid() && s.sortable->get_sort_z_index() != z){
+            s.sortable->set_sort_z_index(z);
         }
         ++z;
     }

@@ -609,42 +609,58 @@ gdspx_ext_create_pure_sprite(texture_path,pos,zindex) {
 	FreeGdInt(_arg2); 
 
 }
-gdspx_ext_create_render_sprite(texture_path,pos,degree,scale,zindex) {
+gdspx_ext_create_render_sprite(texture_path,pos,degree,scale,zindex,pivot) {
 	var _gdFuncPtr = Module._gdspx_ext_create_render_sprite; 
-	
+	var _retValue = AllocGdObj();
 	var _arg0 = ToGdString(texture_path);
 	var _arg1 = ToGdVec2(pos);
 	var _arg2 = ToGdFloat(degree);
 	var _arg3 = ToGdVec2(scale);
 	var _arg4 = ToGdInt(zindex);
-	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _arg4);
+	var _arg5 = ToGdVec2(pivot);
+	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _retValue);
 	FreeGdString(_arg0); 
 	FreeGdVec2(_arg1); 
 	FreeGdFloat(_arg2); 
 	FreeGdVec2(_arg3); 
 	FreeGdInt(_arg4); 
-
+	FreeGdVec2(_arg5); 
+	var _finalRetValue = ToJsObj(_retValue);
+	FreeGdObj(_retValue); 
+	return _finalRetValue
 }
-gdspx_ext_create_static_sprite(texture_path,pos,degree,scale,zindex,collider_type,collider_pivot,collider_params) {
+gdspx_ext_create_static_sprite(texture_path,pos,degree,scale,zindex,pivot,collider_type,collider_pivot,collider_params) {
 	var _gdFuncPtr = Module._gdspx_ext_create_static_sprite; 
-	
+	var _retValue = AllocGdObj();
 	var _arg0 = ToGdString(texture_path);
 	var _arg1 = ToGdVec2(pos);
 	var _arg2 = ToGdFloat(degree);
 	var _arg3 = ToGdVec2(scale);
 	var _arg4 = ToGdInt(zindex);
-	var _arg5 = ToGdInt(collider_type);
-	var _arg6 = ToGdVec2(collider_pivot);
-	var _arg7 = ToGdArray(collider_params);
-	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
+	var _arg5 = ToGdVec2(pivot);
+	var _arg6 = ToGdInt(collider_type);
+	var _arg7 = ToGdVec2(collider_pivot);
+	var _arg8 = ToGdArray(collider_params);
+	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8, _retValue);
 	FreeGdString(_arg0); 
 	FreeGdVec2(_arg1); 
 	FreeGdFloat(_arg2); 
 	FreeGdVec2(_arg3); 
 	FreeGdInt(_arg4); 
-	FreeGdInt(_arg5); 
-	FreeGdVec2(_arg6); 
-	FreeGdArray(_arg7); 
+	FreeGdVec2(_arg5); 
+	FreeGdInt(_arg6); 
+	FreeGdVec2(_arg7); 
+	FreeGdArray(_arg8); 
+	var _finalRetValue = ToJsObj(_retValue);
+	FreeGdObj(_retValue); 
+	return _finalRetValue
+}
+gdspx_ext_destroy_pure_sprite(id) {
+	var _gdFuncPtr = Module._gdspx_ext_destroy_pure_sprite; 
+	
+	var _arg0 = ToGdObj(id);
+	_gdFuncPtr(_arg0);
+	FreeGdObj(_arg0); 
 
 }
 gdspx_ext_setup_path_finder_with_size(grid_size,cell_size,with_jump,with_debug) {
@@ -1232,6 +1248,26 @@ gdspx_sprite_set_type_name(obj,type_name) {
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
 
+}
+gdspx_sprite_set_pivot(obj,pivot) {
+	var _gdFuncPtr = Module._gdspx_sprite_set_pivot; 
+	
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdVec2(pivot);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdVec2(_arg1); 
+
+}
+gdspx_sprite_get_pivot(obj) {
+	var _gdFuncPtr = Module._gdspx_sprite_get_pivot; 
+	var _retValue = AllocGdVec2();
+	var _arg0 = ToGdObj(obj);
+	_gdFuncPtr(_arg0, _retValue);
+	FreeGdObj(_arg0); 
+	var _finalRetValue = ToJsVec2(_retValue);
+	FreeGdVec2(_retValue); 
+	return _finalRetValue
 }
 gdspx_sprite_set_child_position(obj,path,pos) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_child_position; 

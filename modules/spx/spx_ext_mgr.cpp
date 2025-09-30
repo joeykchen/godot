@@ -448,22 +448,29 @@ void SpxExtMgr::exit_tilemap_editor_mode() {
 }
 
 void SpxExtMgr::clear_pure_sprites(){
-	pure_sprite_root->queue_free();
+	id_pure_sprites.clear();
+	if (pure_sprite_root) {
+		pure_sprite_root->queue_free();
+		pure_sprite_root = memnew(Node2D);
+		pure_sprite_root->set_name("pure_sprite_root");
+		get_spx_root()->add_child(pure_sprite_root);
+	}
 }
 
 void SpxExtMgr::create_pure_sprite(GdString texture_path, GdVec2 pos, GdInt zindex){
 	if (pure_sprite_root == nullptr) {
 		return;
 	}
-	create_render_sprite(texture_path, pos, 0, GdVec2(1, 1), zindex);
+	create_render_sprite(texture_path, pos, 0, GdVec2(1, 1), zindex, GdVec2(0,0));
 }
 
-void SpxExtMgr::create_render_sprite(GdString texture_path, GdVec2 pos, GdFloat degree, GdVec2 scale, GdInt zindex){
+GdObj SpxExtMgr::create_render_sprite(GdString texture_path, GdVec2 pos, GdFloat degree, GdVec2 scale, GdInt zindex, GdVec2 pivot){
 	if (pure_sprite_root == nullptr) {
-		return;
+		return NULL_OBJECT_ID;
 	}
 
-	Sprite2D* sprite = memnew(Sprite2D);
+	SpxRenderSprite* sprite = memnew(SpxRenderSprite);
+	sprite->set_pivot(GdVec2(pivot.x, -pivot.y));
 	auto path_str = SpxStr(texture_path);
 	Ref<Texture2D> texture = resMgr->load_texture(path_str, true);
 	sprite->set_texture(texture);
@@ -471,23 +478,30 @@ void SpxExtMgr::create_render_sprite(GdString texture_path, GdVec2 pos, GdFloat 
 	sprite->set_rotation_degrees(degree);
 	sprite->set_scale(Vector2(scale.x, scale.y));
 	sprite->set_name(path_str.get_file());
-	pure_sprite_root->add_child(sprite);
 	sprite->set_z_index(zindex);
+
+	GdObj id = get_unique_id();
+	sprite->set_sort_id(id);
+	id_pure_sprites[id] = sprite;
+
+	pure_sprite_root->add_child(sprite);
+
+	return id;
 }
 
-void SpxExtMgr::create_static_sprite(GdString texture_path, GdVec2 pos,GdFloat degree,GdVec2 scale, GdInt zindex, GdInt collider_type, GdVec2 collider_pivot, GdArray collider_params){
+GdObj SpxExtMgr::create_static_sprite(GdString texture_path, GdVec2 pos,GdFloat degree,GdVec2 scale, GdInt zindex, GdVec2 pivot, GdInt collider_type, GdVec2 collider_pivot, GdArray collider_params){
 	if (pure_sprite_root == nullptr) {
-		return;
+		return NULL_OBJECT_ID;
 	}
 	auto type = (ColliderType)collider_type;
 	if(type == ColliderType::NONE){
-		create_render_sprite(texture_path, pos, degree, scale, zindex);
-		return;
+		return create_render_sprite(texture_path, pos, degree, scale, zindex, pivot);
 	}
 
 	auto path_str = SpxStr(texture_path);
 	// Create StaticBody2D
 	SpxStaticSprite* static_body = memnew(SpxStaticSprite);
+	static_body->set_pivot(GdVec2(pivot.x, -pivot.y));
 	static_body->set_position(Vector2(pos.x, -pos.y));
 	static_body->set_rotation_degrees(degree);
 	static_body->set_scale(Vector2(scale.x, scale.y));
@@ -531,7 +545,6 @@ void SpxExtMgr::create_static_sprite(GdString texture_path, GdVec2 pos,GdFloat d
 		if (data_len >= 2) {
 			auto width = *(SpxBaseMgr::get_array<real_t>(collider_params, 0));
 			auto height = *(SpxBaseMgr::get_array<real_t>(collider_params, 1));
-			print_error("width: " + itos(width) + " height: " + itos(height));
 			rect->set_size(Vector2(width, height));
 		}
 		collision_shape->set_shape(rect);
@@ -565,8 +578,37 @@ void SpxExtMgr::create_static_sprite(GdString texture_path, GdVec2 pos,GdFloat d
 		print_error("Invalid collider type: " + itos((int)type));
 		break;
 	}
+
+	// Assign unique ID and register
+	GdObj id = get_unique_id();
+	static_body->set_sort_id(id);
+	id_pure_sprites[id] = static_body;
+
 	// Add to scene tree
 	pure_sprite_root->add_child(static_body);
+
+	return id;
+}
+
+void SpxExtMgr::destroy_pure_sprite(GdObj id) {
+	if (id_pure_sprites.has(id)) {
+		auto sprite = id_pure_sprites[id];
+		id_pure_sprites.erase(id);
+
+		// Cast to Node2D to remove from scene tree
+		Node2D* node = dynamic_cast<Node2D*>(sprite);
+		if (node && node->is_inside_tree()) {
+			node->queue_free();
+		}
+	}
+}
+
+void SpxExtMgr::collect_sortable_sprites(Vector<ISortableSprite*>& out) {
+	for (auto& pair : id_pure_sprites) {
+		if (pair.value && pair.value->is_node_valid()) {
+			out.push_back(pair.value);
+		}
+	}
 }
 
 void SpxExtMgr::setup_path_finder_with_size(GdVec2 grid_size, GdVec2 cell_size, GdBool with_jump, GdBool with_debug) {

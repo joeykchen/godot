@@ -36,11 +36,12 @@
 #include <unordered_set>
 #include <algorithm>
 
+class ISortableSprite;
 
 struct SortInfo {
     GdObj id;
     Point2 pos;
-    SpxSprite* sprite;
+    ISortableSprite* sortable;
 };
 
 enum class LayerSortMode {
@@ -61,9 +62,12 @@ public:
     _FORCE_INLINE_ void reset(){
         sorted.clear();
         dirty.clear();
-        dirty.clear();
     }
 
+    // New interface: accept any sortable sprites
+    void update(const Vector<ISortableSprite*>& sortables);
+
+    // Legacy interface: keep compatibility with SpxSprite
     void update(const RBMap<GdObj, SpxSprite*>& id_objects);
 
 private:
@@ -81,8 +85,8 @@ private:
         return a.pos.y < b.pos.y;
     };
 
-    void _mark_dirty(SpxSprite* sp);
-    void _collect_sprites(const RBMap<GdObj, SpxSprite*>& id_objects);
+    void _mark_dirty(ISortableSprite* sp);
+    void _collect_sprites(const Vector<ISortableSprite*>& sortables);
     void _incremental_sort();
     void _full_sort();
     void _apply_z_index();

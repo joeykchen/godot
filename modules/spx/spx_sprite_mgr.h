@@ -40,6 +40,7 @@
 #include <unordered_set>
 
 class SpxSprite;
+class ISortableSprite;
 
 typedef std::function<bool(GdColor, GdColor)> ColorCheckFunc;
 #include <functional>
@@ -122,6 +123,7 @@ public:
 	void on_trigger_exit(GdInt self_id, GdInt other_id);
 	GdObj _create_sprite(GdString path, GdBool is_backdrop);
 	void destroy_all_sprites();
+	void collect_sortable_sprites(Vector<ISortableSprite*>& out);
 public:
 	void set_dont_destroy_on_load(GdObj obj);
 	// process
@@ -130,6 +132,9 @@ public:
 
 	void set_type_name(GdObj obj,GdString type_name);
 
+	void set_pivot(GdObj obj, GdVec2 pivot);
+	GdVec2 get_pivot(GdObj obj);
+	
 	// children
 	void set_child_position(GdObj obj, GdString path, GdVec2 pos);
 	GdVec2 get_child_position(GdObj obj, GdString path);
