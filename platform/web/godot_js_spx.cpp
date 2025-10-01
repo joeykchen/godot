@@ -331,6 +331,14 @@ void gdspx_ext_create_pure_sprite(GdString* texture_path,GdVec2* pos,GdInt* zind
 	 extMgr->create_pure_sprite(*texture_path, *pos, *zindex);
 }
 EMSCRIPTEN_KEEPALIVE
+void gdspx_ext_create_render_sprite(GdString* texture_path,GdVec2* pos,GdFloat* degree,GdVec2* scale,GdInt* zindex) {
+	 extMgr->create_render_sprite(*texture_path, *pos, *degree, *scale, *zindex);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_ext_create_static_sprite(GdString* texture_path,GdVec2* pos,GdFloat* degree,GdVec2* scale,GdInt* zindex,GdInt* collider_type,GdVec2* collider_pivot,GdArray* collider_params) {
+	 extMgr->create_static_sprite(*texture_path, *pos, *degree, *scale, *zindex, *collider_type, *collider_pivot, *collider_params);
+}
+EMSCRIPTEN_KEEPALIVE
 void gdspx_ext_setup_path_finder_with_size(GdVec2* grid_size,GdVec2* cell_size,GdBool* with_jump,GdBool* with_debug) {
 	 extMgr->setup_path_finder_with_size(*grid_size, *cell_size, *with_jump, *with_debug);
 }

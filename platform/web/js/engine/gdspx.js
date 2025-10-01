@@ -609,6 +609,44 @@ gdspx_ext_create_pure_sprite(texture_path,pos,zindex) {
 	FreeGdInt(_arg2); 
 
 }
+gdspx_ext_create_render_sprite(texture_path,pos,degree,scale,zindex) {
+	var _gdFuncPtr = Module._gdspx_ext_create_render_sprite; 
+	
+	var _arg0 = ToGdString(texture_path);
+	var _arg1 = ToGdVec2(pos);
+	var _arg2 = ToGdFloat(degree);
+	var _arg3 = ToGdVec2(scale);
+	var _arg4 = ToGdInt(zindex);
+	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _arg4);
+	FreeGdString(_arg0); 
+	FreeGdVec2(_arg1); 
+	FreeGdFloat(_arg2); 
+	FreeGdVec2(_arg3); 
+	FreeGdInt(_arg4); 
+
+}
+gdspx_ext_create_static_sprite(texture_path,pos,degree,scale,zindex,collider_type,collider_pivot,collider_params) {
+	var _gdFuncPtr = Module._gdspx_ext_create_static_sprite; 
+	
+	var _arg0 = ToGdString(texture_path);
+	var _arg1 = ToGdVec2(pos);
+	var _arg2 = ToGdFloat(degree);
+	var _arg3 = ToGdVec2(scale);
+	var _arg4 = ToGdInt(zindex);
+	var _arg5 = ToGdInt(collider_type);
+	var _arg6 = ToGdVec2(collider_pivot);
+	var _arg7 = ToGdArray(collider_params);
+	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
+	FreeGdString(_arg0); 
+	FreeGdVec2(_arg1); 
+	FreeGdFloat(_arg2); 
+	FreeGdVec2(_arg3); 
+	FreeGdInt(_arg4); 
+	FreeGdInt(_arg5); 
+	FreeGdVec2(_arg6); 
+	FreeGdArray(_arg7); 
+
+}
 gdspx_ext_setup_path_finder_with_size(grid_size,cell_size,with_jump,with_debug) {
 	var _gdFuncPtr = Module._gdspx_ext_setup_path_finder_with_size; 
 	

@@ -35,6 +35,7 @@
 #include "scene/2d/node_2d.h"
 #include "scene/2d/physics/character_body_2d.h"
 #include "scene/2d/physics/physics_body_2d.h"
+#include "scene/2d/physics/static_body_2d.h"
 #include "scene/2d/sprite_2d.h"
 #include "spx.h"
 
@@ -43,6 +44,18 @@ class AnimatedSprite2D;
 class Area2D;
 class CollisionShape2D;
 class VisibleOnScreenNotifier2D;
+
+
+class SpxStaticSprite : public StaticBody2D {
+	GDCLASS(SpxStaticSprite, StaticBody2D);
+public:
+	CollisionShape2D *collider2d;
+
+protected:
+	void _notification(int p_what);
+	void _draw();
+};
+
 class SpxSprite : public CharacterBody2D {
 	GDCLASS(SpxSprite, CharacterBody2D);
 
