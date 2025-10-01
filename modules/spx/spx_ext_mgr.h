@@ -38,6 +38,7 @@
 
 class SpxPen;
 class SpxDrawTiles;
+class ISortableSprite;
 
 struct DebugShape {
 	enum Type {
@@ -69,6 +70,7 @@ private:
 	SpxDrawTiles* draw_tiles = nullptr;
 
 	Node *pure_sprite_root;
+	RBMap<GdObj, ISortableSprite*> id_pure_sprites;
 
 	Ref<SpxPathFinder> path_finder;	
 
@@ -87,6 +89,7 @@ public:
 	void on_destroy() override;
 	void on_update(float delta) override;
 
+	void collect_sortable_sprites(Vector<ISortableSprite*>& out);
 public:
 	// engine API
 	void request_exit(GdInt exit_code);
@@ -155,8 +158,9 @@ public:
 	// create sprites
 	void clear_pure_sprites();
 	void create_pure_sprite(GdString texture_path, GdVec2 pos, GdInt zindex);
-	void create_render_sprite(GdString texture_path, GdVec2 pos, GdFloat degree, GdVec2 scale, GdInt zindex);
-	void create_static_sprite(GdString texture_path, GdVec2 pos, GdFloat degree, GdVec2 scale, GdInt zindex, GdInt collider_type, GdVec2 collider_pivot, GdArray collider_params);
+	GdObj create_render_sprite(GdString texture_path, GdVec2 pos, GdFloat degree, GdVec2 scale, GdInt zindex, GdVec2 pivot);
+	GdObj create_static_sprite(GdString texture_path, GdVec2 pos, GdFloat degree, GdVec2 scale, GdInt zindex, GdVec2 pivot, GdInt collider_type, GdVec2 collider_pivot, GdArray collider_params);
+	void destroy_pure_sprite(GdObj id);
 
 	// path finder
 	void setup_path_finder_with_size(GdVec2 grid_size, GdVec2 cell_size, GdBool with_jump, GdBool with_debug);

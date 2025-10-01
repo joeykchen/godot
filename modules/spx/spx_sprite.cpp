@@ -50,6 +50,7 @@
 #define SPX_CALLBACK SpxEngine::get_singleton()->get_callbacks()
 #define spriteMgr SpxEngine::get_singleton()->get_sprite()
 
+
 void SpxStaticSprite::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_DRAW: {
