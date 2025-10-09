@@ -501,10 +501,8 @@ GdObj SpxExtMgr::create_static_sprite(GdString texture_path, GdVec2 pos,GdFloat 
 	auto path_str = SpxStr(texture_path);
 	// Create StaticBody2D
 	SpxStaticSprite* static_body = memnew(SpxStaticSprite);
-	static_body->set_pivot(GdVec2(pivot.x, -pivot.y));
 	static_body->set_position(Vector2(pos.x, -pos.y));
 	static_body->set_rotation_degrees(degree);
-	static_body->set_scale(Vector2(scale.x, scale.y));
 	static_body->set_name(path_str.get_file());
 
 	// Load and create sprite child
@@ -513,13 +511,14 @@ GdObj SpxExtMgr::create_static_sprite(GdString texture_path, GdVec2 pos,GdFloat 
 	sprite->set_texture(texture);
 	sprite->set_z_index(zindex);
 	static_body->add_child(sprite);   
+	sprite->set_position(Vector2(pivot.x, -pivot.y));
 
 	// Create collision shape (default: rectangle matching texture size)
 	CollisionShape2D* collision_shape = memnew(CollisionShape2D);
 
 	static_body->collider2d = collision_shape;
-	collision_shape->set_position(collider_pivot);
 	static_body->add_child(collision_shape);
+	collision_shape->set_position(Vector2(collider_pivot.x, -collider_pivot.y));
 	auto data_len =  collider_params == nullptr ? 0 : collider_params->size;
 	switch (type)
 	{
@@ -579,6 +578,7 @@ GdObj SpxExtMgr::create_static_sprite(GdString texture_path, GdVec2 pos,GdFloat 
 		break;
 	}
 
+	static_body->set_scale(Vector2(scale.x, scale.y));
 	// Assign unique ID and register
 	GdObj id = get_unique_id();
 	static_body->set_sort_id(id);
