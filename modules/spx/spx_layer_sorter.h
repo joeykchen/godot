@@ -34,6 +34,7 @@
 #include "spx_sprite.h"
 #include <vector>
 #include <unordered_set>
+#include <functional> 
 #include <algorithm>
 
 class ISortableSprite;
@@ -51,6 +52,8 @@ enum class LayerSortMode {
 
 class SpxLayerSorter {
 public:
+    using VisibilityCallback = std::function<void(ISortableSprite*, bool visible)>;
+
     static SpxLayerSorter& instance() {
         static SpxLayerSorter inst;
         return inst;
@@ -60,9 +63,20 @@ public:
         sort_mode = mode;
     }
     _FORCE_INLINE_ void reset(){
-        sorted.clear();
-        dirty.clear();
+        static_sorted.clear();
+        dynamic_sorted.clear();
+        dynamic_dirty.clear();
+        dynamic_dirty_ids.clear();
     }
+    _FORCE_INLINE_ void set_screen_rect(const Rect2& rect) { 
+        screen_rect = rect; 
+    }
+    _FORCE_INLINE_ void set_visibility_callback(VisibilityCallback cb) {
+         visibility_callback = std::move(cb); 
+    }
+
+    void add_static_sprite(ISortableSprite* sp);
+    void remove_static_sprite(ISortableSprite* sp);
 
     // New interface: accept any sortable sprites
     void update(const Vector<ISortableSprite*>& sortables);
@@ -71,13 +85,19 @@ public:
     void update(const RBMap<GdObj, SpxSprite*>& id_objects);
 
 private:
-    std::vector<SortInfo> sorted;
-    std::vector<SortInfo> dirty;
-    std::unordered_set<GdObj> dirty_ids;
+    std::vector<SortInfo> static_sorted; // never frequently re-sorted
+    std::vector<SortInfo> dynamic_sorted; // updated incrementally
+    std::vector<SortInfo> dynamic_dirty;
+    std::unordered_set<GdObj> dynamic_dirty_ids;
+
+    Rect2 screen_rect;
+    std::unordered_set<GdObj> visible_ids;
+    VisibilityCallback visibility_callback;
 
     static inline LayerSortMode sort_mode = LayerSortMode::NONE;
 
     static inline float full_sort_ratio = 0.3f;
+    static inline bool static_initialized = false;
     static inline bool sprite_cmp(const SortInfo &a, const SortInfo &b){
         if (a.pos.y == b.pos.y){
             return a.pos.x > b.pos.x;
@@ -86,10 +106,13 @@ private:
     };
 
     void _mark_dirty(ISortableSprite* sp);
+    void _update_visibility(const Vector<ISortableSprite*>& sortables);
     void _collect_sprites(const Vector<ISortableSprite*>& sortables);
-    void _incremental_sort();
-    void _full_sort();
-    void _apply_z_index();
+    void _incremental_sort_dynamic();
+    void _full_sort_dynamic();
+    void _apply_z_index_merged();
+
+    Rect2 _get_camera_rect(Camera2D* camera);
 
 private:
     SpxLayerSorter(){

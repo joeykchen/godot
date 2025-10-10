@@ -27,24 +27,34 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
+
+#include "scene/2d/camera_2d.h"
 #include "spx_layer_sorter.h"
+#include "spx_camera_mgr.h"
+#include "spx_platform_mgr.h"
+#include "spx_engine.h"
 
 // New interface implementation
 void SpxLayerSorter::update(const Vector<ISortableSprite*>& sortables) {
     if(sort_mode == LayerSortMode::NONE) return;
+    
+    auto camera_mgr = SpxEngine::get_singleton()->get_camera();
+    set_screen_rect(_get_camera_rect(camera_mgr->get_camera()));
 
+    // Uncomment the line below to enable screen visibility callbacks
+    //_update_visibility(sortables);
     _collect_sprites(sortables);
 
-    if (dirty.empty()) return;
+    if (dynamic_dirty.empty()) return;
 
-    float ratio = float(dirty.size()) / float(sorted.size());
+    float ratio = float(dynamic_dirty.size()) / float(dynamic_sorted.size() + 1);
     if (ratio > full_sort_ratio) {
-        _full_sort();
+        _full_sort_dynamic();
     } else {
-        _incremental_sort();
+        _incremental_sort_dynamic();
     }
 
-    _apply_z_index();
+    _apply_z_index_merged();
 }
 
 // Legacy interface: convert RBMap to Vector
@@ -55,96 +65,196 @@ void SpxLayerSorter::update(const RBMap<GdObj, SpxSprite*>& id_objects) {
             sortables.push_back(pair.value);
         }
     }
+    
     update(sortables);
 }
+
+void SpxLayerSorter::add_static_sprite(ISortableSprite* sp) {
+    if (!sp || !sp->is_node_valid())
+        return;
+
+    GdObj id = sp->get_sort_id();
+    auto it = std::find_if(static_sorted.begin(), static_sorted.end(),
+        [id](const SortInfo& s) { return s.id == id; });
+
+    if (it != static_sorted.end())
+        return;
+
+    SortInfo info = { id, sp->get_sort_position(), sp };
+    auto insert_pos = std::lower_bound(static_sorted.begin(), static_sorted.end(), info, sprite_cmp);
+    static_sorted.insert(insert_pos, info);
+}
+
+void SpxLayerSorter::remove_static_sprite(ISortableSprite* sp) {
+    if (!sp)
+        return;
+
+    GdObj id = sp->get_sort_id();
+    static_sorted.erase(
+        std::remove_if(static_sorted.begin(), static_sorted.end(),
+            [id](const SortInfo& s) { return s.id == id; }),
+        static_sorted.end());
+}
+
 
 void SpxLayerSorter::_mark_dirty(ISortableSprite* sp) {
     if (!sp) return;
     GdObj id = sp->get_sort_id();
-    if (dirty_ids.find(id) != dirty_ids.end()) return;
+    if (dynamic_dirty_ids.find(id) != dynamic_dirty_ids.end()) return;
 
-    dirty.push_back({id, sp->get_sort_position(), sp});
-    dirty_ids.insert(id);
+    dynamic_dirty.push_back({id, sp->get_sort_position(), sp});
+    dynamic_dirty_ids.insert(id);
+}
+
+void SpxLayerSorter::_update_visibility(const Vector<ISortableSprite *> &sortables) {
+    std::unordered_set<GdObj> new_visible;
+
+    auto in_screen = [&](ISortableSprite* sp) -> bool {
+        if (!sp) return false;
+        return screen_rect.has_point(sp->get_sort_position());
+    };
+
+    for (auto sp : sortables) {
+        if (!sp || !sp->is_node_valid()) continue;
+
+        if (in_screen(sp)) {
+            new_visible.insert(sp->get_sort_id());
+            if (visible_ids.find(sp->get_sort_id()) == visible_ids.end()) {
+                if (visibility_callback) visibility_callback(sp, true);
+            }
+        } else {
+            if (visible_ids.find(sp->get_sort_id()) != visible_ids.end()) {
+                if (visibility_callback) visibility_callback(sp, false);
+            }
+        }
+
+    }
+
+    visible_ids.swap(new_visible);
 }
 
 void SpxLayerSorter::_collect_sprites(const Vector<ISortableSprite*>& sortables) {
-    // Remove invalid sprites
-    sorted.erase(
-        std::remove_if(sorted.begin(), sorted.end(),
-            [](const SortInfo &s) {
-                return !s.sortable || !s.sortable->is_node_valid();
-            }),
-        sorted.end()
-    );
+    auto remove_invalid = [&](std::vector<SortInfo>& arr, bool remove_offscreen) {
+        arr.erase(
+            std::remove_if(arr.begin(), arr.end(),
+                [&](const SortInfo &s) {
+                    if (!s.sortable || !s.sortable->is_node_valid())
+                        return true;
+                    if (remove_offscreen && !screen_rect.has_point(s.sortable->get_sort_position()))
+                        return true;
 
-    if (sorted.empty()) {
-        sorted.reserve(sortables.size());
-        for (auto sp : sortables) {
-            if (!sp || !sp->is_node_valid()) continue;
-            sorted.push_back({sp->get_sort_id(), sp->get_sort_position(), sp});
-        }
-        std::sort(sorted.begin(), sorted.end(), sprite_cmp);
-    } else {
-        // Create a set of existing IDs for quick lookup
-        std::unordered_set<GdObj> existing_ids;
-        for (const auto &s : sorted) {
-            existing_ids.insert(s.id);
-        }
+                    return false;
+                }),
+            arr.end());
+    };
 
-        for (auto sp : sortables) {
-            if (!sp || !sp->is_node_valid()) continue;
+    remove_invalid(static_sorted, false);
+    remove_invalid(dynamic_sorted, true);
 
-            GdObj sp_id = sp->get_sort_id();
-            auto sorted_it = std::find_if(sorted.begin(), sorted.end(),
-                [sp_id](const SortInfo &s) { return s.id == sp_id; });
+    for (auto sp : sortables) {
+        if (!sp || !sp->is_node_valid())
+            continue;
 
-            if (sorted_it != sorted.end()) {
-                Point2 cur_pos = sp->get_sort_position();
-                if (sorted_it->pos != cur_pos) {
-                    sorted_it->pos = cur_pos;
-                    sorted_it->sortable = sp;
+        Point2 pos = sp->get_sort_position();
+        if (!screen_rect.has_point(pos))
+            continue;
+
+        GdObj id = sp->get_sort_id();
+        bool is_static = sp->is_sort_static();
+
+        std::vector<SortInfo> &target = is_static ? static_sorted : dynamic_sorted;
+        auto found = std::find_if(target.begin(), target.end(),
+            [id](const SortInfo &s) { return s.id == id; });
+
+        if (found != target.end()) {
+            if (found->pos != pos) {
+                found->pos = pos;
+                found->sortable = sp;
+                if (!is_static)
                     _mark_dirty(sp);
-                }
-            } else {
-                sorted.push_back({sp_id, sp->get_sort_position(), sp});
-                _mark_dirty(sp);
             }
+        } else {
+            target.push_back({id, pos, sp});
+            if (!is_static)
+                _mark_dirty(sp);
+            else
+                static_initialized = false;
         }
     }
+
+    if (!static_sorted.empty() && !static_initialized) {
+        std::sort(static_sorted.begin(), static_sorted.end(), sprite_cmp);
+        static_initialized = true;
+    }
 }
 
-void SpxLayerSorter::_incremental_sort() {
-    sorted.erase(std::remove_if(sorted.begin(), sorted.end(),
-    [&](const SortInfo &s) {
-        return dirty_ids.find(s.id) != dirty_ids.end();
-    }), sorted.end());
+void SpxLayerSorter::_incremental_sort_dynamic() {
+    dynamic_sorted.erase(
+        std::remove_if(dynamic_sorted.begin(), dynamic_sorted.end(), 
+            [&](const SortInfo &s) {
+                return dynamic_dirty_ids.find(s.id) != dynamic_dirty_ids.end();
+            }), 
+        dynamic_sorted.end());
 
-    for (auto &d : dirty) {
-        auto pos = std::lower_bound(sorted.begin(), sorted.end(), d, sprite_cmp);
-        sorted.insert(pos, d);
+    for (auto &d : dynamic_dirty) {
+        auto pos = std::lower_bound(dynamic_sorted.begin(), dynamic_sorted.end(), d, sprite_cmp);
+        dynamic_sorted.insert(pos, d);
     }
 
-    dirty.clear();
-    dirty_ids.clear();
+    dynamic_dirty.clear();
+    dynamic_dirty_ids.clear();
 }
 
-void SpxLayerSorter::_full_sort() {
-    for (auto &s : sorted) {
+void SpxLayerSorter::_full_sort_dynamic() {
+    for (auto &s : dynamic_sorted) {
         if (s.sortable && s.sortable->is_node_valid()) {
             s.pos = s.sortable->get_sort_position();
         }
     }
-    std::sort(sorted.begin(), sorted.end(), sprite_cmp);
-    dirty.clear();
-    dirty_ids.clear();
+    std::sort(dynamic_sorted.begin(), dynamic_sorted.end(), sprite_cmp);
+    dynamic_dirty.clear();
+    dynamic_dirty_ids.clear();
 }
 
-void SpxLayerSorter::_apply_z_index() {
+void SpxLayerSorter::_apply_z_index_merged() {
+    auto it_static = static_sorted.begin();
+    auto it_dynamic = dynamic_sorted.begin();
+
     int z = 1;
-    for (auto &s : sorted) {
-        if (s.sortable && s.sortable->is_node_valid() && s.sortable->get_sort_z_index() != z){
-            s.sortable->set_sort_z_index(z);
+    while (it_static != static_sorted.end() || it_dynamic != dynamic_sorted.end()) {
+        bool use_dynamic = false;
+        if (it_static == static_sorted.end())
+            use_dynamic = true;
+        else if (it_dynamic == dynamic_sorted.end())
+            use_dynamic = false;
+        else
+            use_dynamic = sprite_cmp(*it_dynamic, *it_static);
+
+        SortInfo &s = use_dynamic ? *it_dynamic++ : *it_static++;
+
+        if (s.sortable && s.sortable->is_node_valid()) {
+            if (s.sortable->get_sort_z_index() != z)
+                s.sortable->set_sort_z_index(z);
         }
         ++z;
     }
+}
+
+Rect2 SpxLayerSorter::_get_camera_rect(Camera2D *camera) {
+	if (!camera) return Rect2();
+
+    Vector2 viewport_size = camera->get_viewport_rect().size;
+    Transform2D global_xform = camera->get_screen_transform().affine_inverse();
+
+    Vector2 top_left = global_xform.xform(Vector2(0, 0));
+    Vector2 top_right = global_xform.xform(Vector2(viewport_size.x, 0));
+    Vector2 bottom_left = global_xform.xform(Vector2(0, viewport_size.y));
+    Vector2 bottom_right = global_xform.xform(Vector2(viewport_size.x, viewport_size.y));
+
+    Rect2 rect(top_left, Vector2());
+    rect.expand_to(top_right);
+    rect.expand_to(bottom_left);
+    rect.expand_to(bottom_right);
+
+    return rect;
 }
