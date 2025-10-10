@@ -54,6 +54,7 @@ public:
 	virtual void set_sort_z_index(int z) = 0;
 	virtual int get_sort_z_index() const = 0;
 	virtual bool is_node_valid() const = 0;
+	virtual bool is_sort_static() const {return false;}
 };
 
 // SpxRenderSprite - Wrapper for Sprite2D with sortable interface
@@ -74,7 +75,7 @@ public:
 
 	// ISortableSprite interface implementation
 	GdObj get_sort_id() const override { return sort_id; }
-	Point2 get_sort_position() const override { return get_position() + pivot_offset; }
+	Point2 get_sort_position() const override { return get_global_position() + pivot_offset; }
 	void set_sort_z_index(int z) override { set_z_index(z); }
 	int get_sort_z_index() const override { return get_z_index(); }
 	bool is_node_valid() const override { return is_inside_tree(); }
@@ -98,10 +99,12 @@ public:
 
 	// ISortableSprite interface implementation
 	GdObj get_sort_id() const override { return sort_id; }
-	Point2 get_sort_position() const override { return get_position() + pivot_offset; }
+	Point2 get_sort_position() const override { return get_global_position() + pivot_offset; }
 	void set_sort_z_index(int z) override { set_z_index(z); }
 	int get_sort_z_index() const override { return get_z_index(); }
 	bool is_node_valid() const override { return is_inside_tree(); }
+	bool is_sort_static() const override{return true;};
+	
 	void set_pivot(GdVec2 pivot){pivot_offset = pivot;}
 	GdVec2 get_pivot(){return pivot_offset;}
 protected:
@@ -335,10 +338,11 @@ public:
 
 	// ISortableSprite interface implementation
 	GdObj get_sort_id() const override { return gid; }
-	Point2 get_sort_position() const override { return get_position() + pivot_offset; }
+	Point2 get_sort_position() const override { return get_global_position() + pivot_offset; }
 	void set_sort_z_index(int z) override { set_z_index(z); }
 	int get_sort_z_index() const override { return get_z_index(); }
 	bool is_node_valid() const override { return is_inside_tree(); }
+	bool is_sort_static() const override{return get_physics_mode() == PhysicsMode::STATIC;};
 };
 
 template <typename T>
