@@ -317,7 +317,6 @@ void SpxPathFinder::setup(Vector2i grid_size, Vector2i cell_size, bool with_debu
 
         if (with_debug && !drawer) {
             drawer = memnew(PathDebugDrawer(this));
-            drawer->set_path_finder(this);
             root->add_child(drawer);
         }
     }
