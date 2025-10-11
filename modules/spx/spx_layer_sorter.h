@@ -31,13 +31,17 @@
 #ifndef SPX_LAYER_SORTER_H
 #define SPX_LAYER_SORTER_H
 
+#include "core/object/object.h"
+#include "scene/2d/node_2d.h"
 #include "spx_sprite.h"
 #include <vector>
 #include <unordered_set>
-#include <functional> 
+#include <functional>
 #include <algorithm>
 
 class ISortableSprite;
+class LayerSorterDebugDrawer;
+class Font;
 
 struct SortInfo {
     GdObj id;
@@ -59,10 +63,9 @@ public:
         return inst;
     }
 
-    _FORCE_INLINE_ void set_mode(LayerSortMode mode){
-        sort_mode = mode;
-    }
-    _FORCE_INLINE_ void reset(){
+	void set_mode(LayerSortMode mode);
+
+	_FORCE_INLINE_ void reset(){
         static_sorted.clear();
         dynamic_sorted.clear();
         dynamic_dirty.clear();
@@ -74,6 +77,10 @@ public:
     _FORCE_INLINE_ void set_visibility_callback(VisibilityCallback cb) {
          visibility_callback = std::move(cb); 
     }
+
+    _FORCE_INLINE_ void clear_drawer(){
+        drawer = nullptr;
+    };
 
     void add_static_sprite(ISortableSprite* sp);
     void remove_static_sprite(ISortableSprite* sp);
@@ -94,6 +101,8 @@ private:
     std::unordered_set<GdObj> visible_ids;
     VisibilityCallback visibility_callback;
 
+    LayerSorterDebugDrawer* drawer = nullptr;
+
     static inline LayerSortMode sort_mode = LayerSortMode::NONE;
 
     static inline float full_sort_ratio = 0.3f;
@@ -113,15 +122,54 @@ private:
     void _apply_z_index_merged();
 
     Rect2 _get_camera_rect(Camera2D* camera);
+    void _create_debug_drawer();
 
 private:
     SpxLayerSorter(){
         reset();
     };
-    ~SpxLayerSorter() = default;
+    ~SpxLayerSorter();
 
     SpxLayerSorter(const SpxLayerSorter&) = delete;
     SpxLayerSorter& operator=(const SpxLayerSorter&) = delete;
+
+public:
+    const std::vector<SortInfo>& get_static_sorted() const {
+        return static_sorted;
+    }
+    const std::vector<SortInfo>& get_dynamic_sorted() const {
+        return dynamic_sorted;
+    }
+    const std::vector<SortInfo>& get_dynamic_dirty() const {
+        return dynamic_dirty;
+    }
+};
+
+class LayerSorterDebugDrawer : public Node2D {
+    GDCLASS(LayerSorterDebugDrawer, Node2D);
+
+private:
+    SpxLayerSorter* sorter = nullptr;
+    Ref<Font> font;
+
+protected:
+    LayerSorterDebugDrawer() = default;
+    ~LayerSorterDebugDrawer() = default;
+
+    static void _bind_methods();
+    void _notification(int p_what);
+    void _ready();
+	void _draw();
+    void _exit_tree();
+
+public:
+    explicit LayerSorterDebugDrawer(SpxLayerSorter* p_sorter) {
+        sorter = p_sorter;
+    }
+
+    _FORCE_INLINE_ void update(){
+        queue_redraw();
+    }
 };
 
 #endif //SPX_LAYER_SORTER_H

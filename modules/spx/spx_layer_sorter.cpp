@@ -29,10 +29,13 @@
 /**************************************************************************/
 
 #include "scene/2d/camera_2d.h"
+#include "scene/theme/theme_db.h"
+#include "scene/resources/font.h"
 #include "spx_layer_sorter.h"
 #include "spx_camera_mgr.h"
 #include "spx_platform_mgr.h"
 #include "spx_engine.h"
+#include "spx.h"
 
 // New interface implementation
 void SpxLayerSorter::update(const Vector<ISortableSprite*>& sortables) {
@@ -55,6 +58,9 @@ void SpxLayerSorter::update(const Vector<ISortableSprite*>& sortables) {
     }
 
     _apply_z_index_merged();
+
+    if(Spx::debug_mode && !drawer) _create_debug_drawer();
+    if(drawer) drawer->update();
 }
 
 // Legacy interface: convert RBMap to Vector
@@ -69,8 +75,13 @@ void SpxLayerSorter::update(const RBMap<GdObj, SpxSprite*>& id_objects) {
     update(sortables);
 }
 
-void SpxLayerSorter::add_static_sprite(ISortableSprite* sp) {
-    if (!sp || !sp->is_node_valid())
+void SpxLayerSorter::set_mode(LayerSortMode mode) {
+    sort_mode = mode;
+	_create_debug_drawer();
+}
+
+void SpxLayerSorter::add_static_sprite(ISortableSprite *sp) {
+	if (!sp || !sp->is_node_valid())
         return;
 
     GdObj id = sp->get_sort_id();
@@ -257,4 +268,97 @@ Rect2 SpxLayerSorter::_get_camera_rect(Camera2D *camera) {
     rect.expand_to(bottom_right);
 
     return rect;
+}
+
+void SpxLayerSorter::_create_debug_drawer() {
+	if (Spx::debug_mode && !drawer) {
+		Node *root = nullptr;
+		if (SpxEngine::get_singleton()) {
+			root = SpxEngine::get_singleton()->get_spx_root();
+		}
+
+		if (!root) {
+			root = SceneTree::get_singleton()->get_current_scene();
+		}
+
+		drawer = memnew(LayerSorterDebugDrawer(this));
+		root->add_child(drawer);
+	}
+}
+
+SpxLayerSorter::~SpxLayerSorter() {
+    if(drawer){
+        drawer->queue_free();
+        drawer = nullptr;
+    }
+}
+
+void LayerSorterDebugDrawer::_bind_methods() {
+
+}
+
+void LayerSorterDebugDrawer::_notification(int p_what) {
+    if (p_what == NOTIFICATION_READY) {
+        _ready();
+    }
+
+    if (p_what == NOTIFICATION_DRAW) {
+        _draw();
+    }
+
+    if (p_what == NOTIFICATION_EXIT_TREE) {
+        _exit_tree();
+    }
+}
+
+void LayerSorterDebugDrawer::_ready(){
+    set_process_input(true);
+    set_z_index(1000);
+	set_z_as_relative(false);
+    font = ThemeDB::get_singleton()->get_default_theme()->get_default_font();
+}
+
+void LayerSorterDebugDrawer::_draw() {
+    if (!sorter)
+        return;
+
+    if (!font.is_valid()){
+        print_error("Font is not valid!!!");
+        return;
+    }
+
+    auto draw_sort_group = [&](const std::vector<SortInfo> &arr,
+                            const Color &dot_color,
+                            const Color &text_color,
+                            const String &label_prefix) {
+        for (size_t i = 0; i < arr.size(); ++i) {
+            const auto &s = arr[i];
+            if (!s.sortable || !s.sortable->is_node_valid())
+                continue;
+
+            draw_circle(s.pos, 8, dot_color);
+            draw_string(font, s.pos + Vector2(6, -2),
+                        vformat("%s:%d", label_prefix, (int64_t)i),
+                        HORIZONTAL_ALIGNMENT_LEFT, -1, 24, text_color);
+
+            //if (i > 0) draw_line(arr[i - 1].pos, s.pos, Color(0.4, 0.4, 0.4, 0.4), 1);
+        }
+    };
+
+    draw_sort_group(sorter->get_static_sorted(), Color(0.4, 0.8, 1), Color(0.6, 0.9, 1), "S");
+    draw_sort_group(sorter->get_dynamic_sorted(), Color(1, 0.4, 0.4), Color(1, 0.6, 0.6), "D");
+
+
+    const auto &dirty = sorter->get_dynamic_dirty();
+    for (const auto &s : dirty) {
+        if (!s.sortable || !s.sortable->is_node_valid())
+            continue;
+        draw_circle(s.pos, 16, Color(1, 0.6, 0.2, 0.4));
+    }
+}
+
+void LayerSorterDebugDrawer::_exit_tree() {
+    if(sorter){
+        sorter->clear_drawer();
+    }
 }
