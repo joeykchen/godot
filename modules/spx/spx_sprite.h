@@ -75,7 +75,7 @@ public:
 
 	// ISortableSprite interface implementation
 	GdObj get_sort_id() const override { return sort_id; }
-	Point2 get_sort_position() const override { return get_global_position() + pivot_offset; }
+	Point2 get_sort_position() const override { return get_global_position() - pivot_offset; }
 	void set_sort_z_index(int z) override { set_z_index(z); }
 	int get_sort_z_index() const override { return get_z_index(); }
 	bool is_node_valid() const override { return is_inside_tree(); }
@@ -99,7 +99,7 @@ public:
 
 	// ISortableSprite interface implementation
 	GdObj get_sort_id() const override { return sort_id; }
-	Point2 get_sort_position() const override { return get_global_position() + pivot_offset; }
+	Point2 get_sort_position() const override { return get_global_position() - pivot_offset; }
 	void set_sort_z_index(int z) override { set_z_index(z); }
 	int get_sort_z_index() const override { return get_z_index(); }
 	bool is_node_valid() const override { return is_inside_tree(); }
@@ -338,7 +338,7 @@ public:
 
 	// ISortableSprite interface implementation
 	GdObj get_sort_id() const override { return gid; }
-	Point2 get_sort_position() const override { return get_global_position() + pivot_offset; }
+	Point2 get_sort_position() const override { return get_global_position() - pivot_offset; }
 	void set_sort_z_index(int z) override { set_z_index(z); }
 	int get_sort_z_index() const override { return get_z_index(); }
 	bool is_node_valid() const override { return is_inside_tree(); }
