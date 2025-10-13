@@ -53,6 +53,109 @@ void SpxPathFinder::_bind_methods() {
     ClassDB::bind_method(D_METHOD("cell_to_world_gd", "cell"), &SpxPathFinder::cell_to_world_gd);
 }
 
+SpxPathFinder::SpxPathFinder() {
+    astar.instantiate();
+}
+
+SpxPathFinder::~SpxPathFinder() {
+    if(drawer){
+        drawer->queue_free();
+        drawer = nullptr;
+    }
+}
+
+void SpxPathFinder::setup_spx(GdVec2 grid_size, GdVec2 cell_size, GdBool with_debug) {
+    setup(grid_size, cell_size, with_debug);
+}
+
+void SpxPathFinder::setup(Vector2i grid_size, Vector2i cell_size, bool with_debug) {
+    cached_cell_size = cell_size;
+    Node* root = nullptr;
+
+    if (SpxEngine::get_singleton()) {
+        root = SpxEngine::get_singleton()->get_spx_root();
+    }
+
+    if (!root){
+        root = SceneTree::get_singleton()->get_current_scene();
+    }
+
+    if (root) {
+		_setup_astar(root, grid_size, cell_size);
+
+		add_all_obstacles(root);
+
+        if (with_debug && !drawer) {
+            drawer = memnew(PathDebugDrawer(this));
+            root->add_child(drawer);
+        }
+    }
+}
+
+void SpxPathFinder::set_jumping_enabled(bool p_enabled) {
+	astar->set_jumping_enabled(p_enabled);
+}
+
+void SpxPathFinder::add_all_obstacles(Node *root) {
+    if (!root) 
+        return;
+
+    List<Node*> stack;
+    stack.push_back(root);
+
+    while (!stack.is_empty()){
+        Node *node = stack.back()->get();
+        stack.pop_back();
+
+        for (int i = 0; i < node->get_child_count(); i++) {
+            Node *child = node->get_child(i);
+
+            if (StaticBody2D *body = Object::cast_to<StaticBody2D>(child)) {
+                _process_static_obstacles(body);
+            } else if (SpxSprite *sprite = Object::cast_to<SpxSprite>(child)) {
+                if(sprite->get_physics_mode() == SpxSprite::PhysicsMode::STATIC)
+                    _process_static_obstacles(sprite);
+            } else if (TileMapLayer *layer = Object::cast_to<TileMapLayer>(child)) {
+                _process_tilemap_obstacles(layer);
+            }
+
+            stack.push_back(child);
+        }
+    }
+}
+
+void SpxPathFinder::set_sprite_obstacle(GdObj obj, bool enabled) {
+    _process_sprite_obstacle(obj, enabled);
+}
+
+GdArray SpxPathFinder::find_path_spx(GdVec2 p_from, GdVec2 p_to) {
+    auto path_points = find_path(p_from * Vector2(1, -1), p_to * Vector2(1, -1));
+    auto count = path_points.size();
+	GdArray result = SpxBaseMgr::create_array(GD_ARRAY_TYPE_FLOAT, count * 2);
+
+	for(auto i = 0; i < count; i ++){
+        auto idx = i * 2;
+		SpxBaseMgr::set_array(result, idx, path_points[i].x);
+		SpxBaseMgr::set_array(result, idx + 1, -path_points[i].y);
+	}
+
+	return result;
+}
+
+PackedVector2Array SpxPathFinder::find_path(Vector2 start, Vector2 end) {
+	PackedVector2Array path;
+
+    Vector2i from = _world_to_cell(start);
+    Vector2i to   = _world_to_cell(end);
+
+    auto cell_path = astar->get_id_path(from, to, true);
+    for (int i = 0; i < cell_path.size(); i++) {
+        path.push_back(_cell_to_world(cell_path[i]));
+    }
+
+    return path;
+}
+
 Vector2i SpxPathFinder::_world_to_cell(const Vector2 &pos) const {
     return Vector2i(
         (int)Math::floor(pos.x / cached_cell_size.x),
@@ -309,140 +412,10 @@ Rect2 SpxPathFinder::_get_tilemap_bounds(TileMapLayer *layer) {
     return rect;
 }
 
-SpxPathFinder::SpxPathFinder() {
-    astar.instantiate();
-}
-
-SpxPathFinder::~SpxPathFinder() {
-    if(drawer){
-        drawer->queue_free();
-        drawer = nullptr;
-    }
-}
-
-void SpxPathFinder::setup_spx(GdVec2 grid_size, GdVec2 cell_size, GdBool with_debug) {
-    setup(grid_size, cell_size, with_debug);
-}
-
-void SpxPathFinder::setup(Vector2i grid_size, Vector2i cell_size, bool with_debug) {
-    cached_cell_size = cell_size;
-    Node* root = nullptr;
-
-    if (SpxEngine::get_singleton()) {
-        root = SpxEngine::get_singleton()->get_spx_root();
-    }
-
-    if (!root){
-        root = SceneTree::get_singleton()->get_current_scene();
-    }
-
-    if (root) {
-		_setup_astar(root, grid_size, cell_size);
-
-		add_all_obstacles(root);
-
-        if (with_debug && !drawer) {
-            drawer = memnew(PathDebugDrawer(this));
-            root->add_child(drawer);
-        }
-    }
-}
-
-void SpxPathFinder::set_jumping_enabled(bool p_enabled) {
-	astar->set_jumping_enabled(p_enabled);
-}
-
-void SpxPathFinder::add_all_obstacles(Node *root) {
-    if (!root) 
-        return;
-
-    List<Node*> stack;
-    stack.push_back(root);
-
-    while (!stack.is_empty()){
-        Node *node = stack.back()->get();
-        stack.pop_back();
-
-        for (int i = 0; i < node->get_child_count(); i++) {
-            Node *child = node->get_child(i);
-
-            if (StaticBody2D *body = Object::cast_to<StaticBody2D>(child)) {
-                _process_static_obstacles(body);
-            } else if (SpxSprite *sprite = Object::cast_to<SpxSprite>(child)) {
-                if(sprite->get_physics_mode() == SpxSprite::PhysicsMode::STATIC)
-                    _process_static_obstacles(sprite);
-            } else if (TileMapLayer *layer = Object::cast_to<TileMapLayer>(child)) {
-                _process_tilemap_obstacles(layer);
-            }
-
-            stack.push_back(child);
-        }
-    }
-}
-
-void SpxPathFinder::set_sprite_obstacle(GdObj obj, bool enabled) {
-    _process_sprite_obstacle(obj, enabled);
-}
-
-GdArray SpxPathFinder::find_path_spx(GdVec2 p_from, GdVec2 p_to) {
-    auto path_points = find_path(p_from * Vector2(1, -1), p_to * Vector2(1, -1));
-    auto count = path_points.size();
-	GdArray result = SpxBaseMgr::create_array(GD_ARRAY_TYPE_FLOAT, count * 2);
-
-	for(auto i = 0; i < count; i ++){
-        auto idx = i * 2;
-		SpxBaseMgr::set_array(result, idx, path_points[i].x);
-		SpxBaseMgr::set_array(result, idx + 1, -path_points[i].y);
-	}
-
-	return result;
-}
-
-PackedVector2Array SpxPathFinder::find_path(Vector2 start, Vector2 end) {
-	PackedVector2Array path;
-
-    Vector2i from = _world_to_cell(start);
-    Vector2i to   = _world_to_cell(end);
-
-    auto cell_path = astar->get_id_path(from, to);
-    for (int i = 0; i < cell_path.size(); i++) {
-        path.push_back(_cell_to_world(cell_path[i]));
-    }
-
-    return path;
-}
-
-Vector2i SpxPathFinder::get_size() const {
-    return astar->get_size();
-}
-
-Vector2 SpxPathFinder::get_cell_size() const {
-    return astar->get_cell_size();
-}
-
-bool SpxPathFinder::is_cell_solid(Vector2i cell) const {
-    return astar->is_point_solid(cell);
-}
-
-Vector2 SpxPathFinder::cell_to_world_gd(Vector2i cell) const {
-    return _cell_to_world(cell);
-}
-
 
 void PathDebugDrawer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_path_finder", "path_finder"), &PathDebugDrawer::set_path_finder);
     ClassDB::bind_method(D_METHOD("set_path", "path"), &PathDebugDrawer::set_path);
-}
-
-void PathDebugDrawer::_update_path() {
-    if(start_set || end_set) queue_redraw();
-    if (!start_set || !end_set) return;
-    path = path_finder->find_path(start, end);
-    queue_redraw();
-}
-
-bool PathDebugDrawer::_is_near(const Vector2 &p1, const Vector2 &p2, float threshold) const {
-    return p1.distance_to(p2) <= threshold;
 }
 
 void PathDebugDrawer::_notification(int p_what) {
@@ -549,4 +522,15 @@ void PathDebugDrawer::set_path_finder(const Ref<SpxPathFinder> &p_path_finder) {
 void PathDebugDrawer::set_path(const PackedVector2Array &p_path) {
     path = p_path;
     queue_redraw();
+}
+
+void PathDebugDrawer::_update_path() {
+    if(start_set || end_set) queue_redraw();
+    if (!start_set || !end_set) return;
+    path = path_finder->find_path(start, end);
+    queue_redraw();
+}
+
+bool PathDebugDrawer::_is_near(const Vector2 &p1, const Vector2 &p2) const {
+    return p1.distance_to(p2) <= drag_threshold;
 }
