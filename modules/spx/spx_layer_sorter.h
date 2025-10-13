@@ -134,6 +134,9 @@ private:
     SpxLayerSorter& operator=(const SpxLayerSorter&) = delete;
 
 public:
+    const Rect2& get_screen_rect() const{
+        return screen_rect;
+    }
     const std::vector<SortInfo>& get_static_sorted() const {
         return static_sorted;
     }
