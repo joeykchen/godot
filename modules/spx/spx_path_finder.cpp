@@ -67,6 +67,34 @@ Vector2 SpxPathFinder::_cell_to_world(const Vector2i &cell) const {
     );
 }
 
+Vector2 SpxPathFinder::_cell_to_world_tl(const Vector2i &cell) const {
+	return Vector2(
+        cell.x * cached_cell_size.x,
+        cell.y * cached_cell_size.y
+    );
+}
+
+void SpxPathFinder::_set_point_solid(int cx, int cy, PackedVector2Array &world_poly) {
+    Vector2 center = _cell_to_world(Vector2i(cx, cy));
+    if (Geometry2D::is_point_in_polygon(center, world_poly)) {
+        astar->set_point_solid(Vector2i(cx, cy), true);
+        return;
+    }
+
+    if(!is_precise_check){
+        return;
+    }
+    
+	Vector2 tl = _cell_to_world_tl(Vector2i(cx, cy));
+	for (int i = 0; i < 4; ++i) {
+		Vector2 corner = tl + cached_cell_size * Vector2((i & 1), (i >> 1));
+		if (Geometry2D::is_point_in_polygon(corner, world_poly)) {
+			astar->set_point_solid(Vector2i(cx, cy), true);
+			break;
+		}
+	}
+}
+
 void SpxPathFinder::_setup_astar(Node *root, Vector2i &grid_size, Vector2i &cell_size) {
 	Rect2 scene_bounds = _get_scene_bounds(root);
 	Vector2 scene_center = scene_bounds.get_center();
@@ -198,16 +226,14 @@ void SpxPathFinder::_process_tilemap_obstacles(TileMapLayer *layer, int p_layer_
             Vector2i min_cell = _world_to_cell(min_w);
             Vector2i max_cell = _world_to_cell(max_w);
 
+            
             for (int cx = min_cell.x; cx <= max_cell.x; ++cx) {
                 for (int cy = min_cell.y; cy <= max_cell.y; ++cy) {
-                    Vector2 center = _cell_to_world(Vector2i(cx, cy));
-                    if (Geometry2D::is_point_in_polygon(center, world_poly)) {
-                        astar->set_point_solid(Vector2i(cx, cy), true);
-                    }
-                }
+					_set_point_solid(cx, cy, world_poly);
+				}
             }
         }
-    } 
+    }
 }
 
 void SpxPathFinder::_process_sprite_obstacle(GdObj obj, bool add) {
