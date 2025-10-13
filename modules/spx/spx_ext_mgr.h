@@ -33,63 +33,14 @@
 
 #include "gdextension_spx_ext.h"
 #include "scene/2d/node_2d.h"
-#include "spx_path_finder.h"
 #include "spx_base_mgr.h"
 
-class SpxPen;
-class SpxDrawTiles;
-class ISortableSprite;
-
-struct DebugShape {
-	enum Type {
-		CIRCLE,
-		RECT,
-		LINE
-	};
-	Type type;
-	GdVec2 position;
-	GdVec2 size;
-	GdFloat radius;
-	GdVec2 to_position;
-	GdColor color;
-	Node2D *node;
-};
 
 class SpxExtMgr : SpxBaseMgr {
 	SPXCLASS(SpxExtMgr, SpxBaseMgr)
 public:
 	virtual ~SpxExtMgr() = default;
 
-private:
-	RBMap<GdObj, SpxPen *> id_pens;
-	Node *pen_root;
-	
-	Vector<DebugShape> debug_shapes;
-	Node2D *debug_root;
-
-	SpxDrawTiles* draw_tiles = nullptr;
-
-	Node *pure_sprite_root;
-	RBMap<GdObj, ISortableSprite*> id_pure_sprites;
-
-	Ref<SpxPathFinder> path_finder;	
-
-	static Mutex lock;
-private:
-	SpxPen *_get_pen(GdObj id);
-	void _clear_debug_shapes();
-
-	//path finder
-	const GdVec2 default_grid_size{100, 100};
-	const GdVec2 default_cell_size{16, 16};
-
-public:
-	void on_awake() override;
-	void on_start() override;
-	void on_destroy() override;
-	void on_update(float delta) override;
-
-	void collect_sortable_sprites(Vector<ISortableSprite*>& out);
 public:
 	// engine API
 	void request_exit(GdInt exit_code);
@@ -100,73 +51,6 @@ public:
 	void resume();
 	GdBool is_paused();
 	void next_frame();
-
-	// obj APIs
-	void destroy_all_pens();
-	GdObj create_pen();
-	void destroy_pen(GdObj obj);
-	void pen_stamp(GdObj obj);
-	void move_pen_to(GdObj obj, GdVec2 position);
-	void pen_down(GdObj obj, GdBool move_by_mouse);
-	void pen_up(GdObj obj);
-	void set_pen_color_to(GdObj obj, GdColor color);
-	void change_pen_by(GdObj obj, GdInt property, GdFloat amount);
-	void set_pen_to(GdObj obj, GdInt property, GdFloat value);
-	void change_pen_size_by(GdObj obj, GdFloat amount);
-	void set_pen_size_to(GdObj obj, GdFloat size);
-	void set_pen_stamp_texture(GdObj obj, GdString texture_path);
-
-	// debug
-	void debug_draw_circle(GdVec2 pos, GdFloat radius, GdColor color);
-	void debug_draw_rect(GdVec2 pos, GdVec2 size, GdColor color);
-	void debug_draw_line(GdVec2 from, GdVec2 to, GdColor color);
-
-	// draw tiles 
-	void open_draw_tiles_with_size(GdInt tile_size);
-	void open_draw_tiles();
-	void set_layer_index(GdInt index);
-	void set_tile(GdString texture_path, GdBool with_collision);
-	void set_tile_with_collision_info(GdString texture_path, GdArray collision_points);
-    void set_layer_offset(GdInt index, GdVec2 offset);
-    GdVec2 get_layer_offset(GdInt index);
-	void place_tiles(GdArray positions, GdString texture_path);
-	void place_tiles_with_layer(GdArray positions, GdString texture_path, GdInt layer_index);
-    void place_tile(GdVec2 pos, GdString texture_path);
-    void place_tile_with_layer(GdVec2 pos, GdString texture_path, GdInt layer_index);
-	void erase_tile(GdVec2 pos);
-    void erase_tile_with_layer(GdVec2 pos, GdInt layer_index);
-    GdString get_tile(GdVec2 pos);
-    GdString get_tile_with_layer(GdVec2 pos, GdInt layer_index);
-	void close_draw_tiles();
-	void exit_tilemap_editor_mode();
-	template<typename Func>
-    void with_draw_tiles(Func f, const String error_msg = "The draw tiles node is null, first open it!!!") {
-        if (draw_tiles == nullptr) {
-            print_error(error_msg);
-            return;
-        }
-        f();
-    }
-	template<typename Func>
-	void without_draw_tiles(Func f) {
-		if (draw_tiles == nullptr) {
-			open_draw_tiles();
-		}
-		f();
-	}
-
-	// create sprites
-	void clear_pure_sprites();
-	void create_pure_sprite(GdString texture_path, GdVec2 pos, GdInt zindex);
-	GdObj create_render_sprite(GdString texture_path, GdVec2 pos, GdFloat degree, GdVec2 scale, GdInt zindex, GdVec2 pivot);
-	GdObj create_static_sprite(GdString texture_path, GdVec2 pos, GdFloat degree, GdVec2 scale, GdInt zindex, GdVec2 pivot, GdInt collider_type, GdVec2 collider_pivot, GdArray collider_params);
-	void destroy_pure_sprite(GdObj id);
-
-	// path finder
-	void setup_path_finder_with_size(GdVec2 grid_size, GdVec2 cell_size, GdBool with_jump, GdBool with_debug);
-	void setup_path_finder(GdBool with_jump);
-	void set_obstacle(GdObj obj, GdBool enabled);
-	GdArray find_path(GdVec2 p_from, GdVec2 p_to, GdBool with_jump);
 
 	// layer sorter
 	void set_layer_sorter_mode(GdInt mode);

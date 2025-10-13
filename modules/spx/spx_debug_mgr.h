@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  spx_ext_mgr.cpp                                                    */
+/*  spx_debug_mgr.h                                                       */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,69 +28,48 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "spx_ext_mgr.h"
-#include "core/input/input_event.h"
-#include "core/math/color.h"
+#ifndef SPX_DEBUG_MGR_H
+#define SPX_DEBUG_MGR_H
+
 #include "gdextension_spx_ext.h"
-#include "scene/2d/line_2d.h"
-#include "scene/2d/sprite_2d.h"
-#include "scene/2d/polygon_2d.h"
-#include "scene/2d/physics/static_body_2d.h"
-#include "scene/2d/physics/collision_shape_2d.h"
-#include "scene/resources/2d/capsule_shape_2d.h"
-#include "scene/resources/2d/circle_shape_2d.h"
-#include "scene/resources/2d/rectangle_shape_2d.h"
-#include "spx.h"
-#include "spx_engine.h"
-#include "spx_pen.h"
-#include "spx_res_mgr.h"
-#include "spx_sprite.h"
-#include "spx_draw_tiles.h"
-#include "spx_layer_sorter.h"
-#include "spx_physic_mgr.h"
+#include "scene/2d/node_2d.h"
+#include "spx_base_mgr.h"
 
-#include <cmath>
+struct DebugShape {
+	enum Type {
+		CIRCLE,
+		RECT,
+		LINE
+	};
+	Type type;
+	GdVec2 position;
+	GdVec2 size;
+	GdFloat radius;
+	GdVec2 to_position;
+	GdColor color;
+	Node2D *node;
+};
 
+class SpxDebugMgr : SpxBaseMgr {
+	SPXCLASS(SpxDebugMgr, SpxBaseMgr)
+public:
+	virtual ~SpxDebugMgr() = default;
 
-void SpxExtMgr::request_exit(GdInt exit_code) {
-	auto callback = SpxEngine::get_singleton()->get_on_runtime_exit();
-	if (callback != nullptr) {
-		callback(exit_code);
-	}	
-	
-	SpxEngine::get_singleton()->on_exit(exit_code);
-	get_tree()->quit(exit_code);
-}
+private:
+	Vector<DebugShape> debug_shapes;
+	Node2D *debug_root;
 
-void SpxExtMgr::on_runtime_panic(GdString msg) {
-	auto msg_str = SpxStr(msg);
-	auto callback = SpxEngine::get_singleton()->get_on_runtime_panic();
-	if (callback != nullptr) {
-		auto str = SpxReturnStr(msg_str);
-		callback(str);
-	}
-}
+	void _clear_debug_shapes();
+	static Mutex lock;
 
+public:
+	void on_awake() override;
+	void on_update(float delta) override;
+	void on_destroy() override;
 
+	void debug_draw_circle(GdVec2 pos, GdFloat radius, GdColor color);
+	void debug_draw_rect(GdVec2 pos, GdVec2 size, GdColor color);
+	void debug_draw_line(GdVec2 from, GdVec2 to, GdColor color);
+};
 
-// Pause API implementations - delegate to Spx layer
-void SpxExtMgr::pause() {
-	Spx::pause();
-}
-
-void SpxExtMgr::resume() {
-	Spx::resume();
-}
-
-GdBool SpxExtMgr::is_paused() {
-	return Spx::is_paused();
-}
-
-void SpxExtMgr::next_frame() {
-	Spx::next_frame();
-}
-
-
-void SpxExtMgr::set_layer_sorter_mode(GdInt mode) {
-	SpxLayerSorter::instance().set_mode((LayerSortMode)mode);
-}
+#endif // SPX_DEBUG_MGR_H

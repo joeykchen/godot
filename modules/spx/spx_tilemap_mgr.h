@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  spx_ext_mgr.cpp                                                    */
+/*  spx_tilemap_mgr.h                                                     */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,69 +28,59 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "spx_ext_mgr.h"
-#include "core/input/input_event.h"
-#include "core/math/color.h"
+#ifndef SPX_TILEMAP_MGR_H
+#define SPX_TILEMAP_MGR_H
+
 #include "gdextension_spx_ext.h"
-#include "scene/2d/line_2d.h"
-#include "scene/2d/sprite_2d.h"
-#include "scene/2d/polygon_2d.h"
-#include "scene/2d/physics/static_body_2d.h"
-#include "scene/2d/physics/collision_shape_2d.h"
-#include "scene/resources/2d/capsule_shape_2d.h"
-#include "scene/resources/2d/circle_shape_2d.h"
-#include "scene/resources/2d/rectangle_shape_2d.h"
-#include "spx.h"
-#include "spx_engine.h"
-#include "spx_pen.h"
-#include "spx_res_mgr.h"
-#include "spx_sprite.h"
-#include "spx_draw_tiles.h"
-#include "spx_layer_sorter.h"
-#include "spx_physic_mgr.h"
+#include "spx_base_mgr.h"
 
-#include <cmath>
+class SpxDrawTiles;
 
+class SpxTilemapMgr : SpxBaseMgr {
+	SPXCLASS(SpxTilemapMgr, SpxBaseMgr)
+public:
+	virtual ~SpxTilemapMgr() = default;
 
-void SpxExtMgr::request_exit(GdInt exit_code) {
-	auto callback = SpxEngine::get_singleton()->get_on_runtime_exit();
-	if (callback != nullptr) {
-		callback(exit_code);
-	}	
-	
-	SpxEngine::get_singleton()->on_exit(exit_code);
-	get_tree()->quit(exit_code);
-}
+private:
+	SpxDrawTiles* draw_tiles = nullptr;
 
-void SpxExtMgr::on_runtime_panic(GdString msg) {
-	auto msg_str = SpxStr(msg);
-	auto callback = SpxEngine::get_singleton()->get_on_runtime_panic();
-	if (callback != nullptr) {
-		auto str = SpxReturnStr(msg_str);
-		callback(str);
+public:
+	void on_destroy() override;
+
+	void open_draw_tiles_with_size(GdInt tile_size);
+	void open_draw_tiles();
+	void set_layer_index(GdInt index);
+	void set_tile(GdString texture_path, GdBool with_collision);
+	void set_tile_with_collision_info(GdString texture_path, GdArray collision_points);
+	void set_layer_offset(GdInt index, GdVec2 offset);
+	GdVec2 get_layer_offset(GdInt index);
+	void place_tiles(GdArray positions, GdString texture_path);
+	void place_tiles_with_layer(GdArray positions, GdString texture_path, GdInt layer_index);
+	void place_tile(GdVec2 pos, GdString texture_path);
+	void place_tile_with_layer(GdVec2 pos, GdString texture_path, GdInt layer_index);
+	void erase_tile(GdVec2 pos);
+	void erase_tile_with_layer(GdVec2 pos, GdInt layer_index);
+	GdString get_tile(GdVec2 pos);
+	GdString get_tile_with_layer(GdVec2 pos, GdInt layer_index);
+	void close_draw_tiles();
+	void exit_tilemap_editor_mode();
+
+	template<typename Func>
+	void with_draw_tiles(Func f, const String error_msg = "The draw tiles node is null, first open it!!!") {
+		if (draw_tiles == nullptr) {
+			print_error(error_msg);
+			return;
+		}
+		f();
 	}
-}
 
+	template<typename Func>
+	void without_draw_tiles(Func f) {
+		if (draw_tiles == nullptr) {
+			open_draw_tiles();
+		}
+		f();
+	}
+};
 
-
-// Pause API implementations - delegate to Spx layer
-void SpxExtMgr::pause() {
-	Spx::pause();
-}
-
-void SpxExtMgr::resume() {
-	Spx::resume();
-}
-
-GdBool SpxExtMgr::is_paused() {
-	return Spx::is_paused();
-}
-
-void SpxExtMgr::next_frame() {
-	Spx::next_frame();
-}
-
-
-void SpxExtMgr::set_layer_sorter_mode(GdInt mode) {
-	SpxLayerSorter::instance().set_mode((LayerSortMode)mode);
-}
+#endif // SPX_TILEMAP_MGR_H

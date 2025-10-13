@@ -1,0 +1,145 @@
+#include "spx_pen_mgr.h"
+#include "spx_pen.h"
+#include "core/input/input_event.h"
+#include "core/math/color.h"
+#include "gdextension_spx_ext.h"
+#include "scene/2d/line_2d.h"
+#include "scene/2d/sprite_2d.h"
+#include "scene/2d/polygon_2d.h"
+#include "scene/2d/physics/static_body_2d.h"
+#include "scene/2d/physics/collision_shape_2d.h"
+#include "scene/resources/2d/capsule_shape_2d.h"
+#include "scene/resources/2d/circle_shape_2d.h"
+#include "scene/resources/2d/rectangle_shape_2d.h"
+#include "spx.h"
+#include "spx_engine.h"
+#include "spx_pen.h"
+#include "spx_res_mgr.h"
+#include "spx_sprite.h"
+#include "spx_draw_tiles.h"
+#include "spx_layer_sorter.h"
+#include "spx_physic_mgr.h"
+
+#include <cmath>
+
+#define check_and_get_pen_v()                                              \
+	auto pen = _get_pen(obj);                                              \
+	if (pen == nullptr) {                                                  \
+		print_error("try to get property of a null pen gid=" + itos(obj)); \
+		return;                                                            \
+	}
+
+Mutex SpxPenMgr::lock;
+
+
+void SpxPenMgr::on_awake() {
+	SpxBaseMgr::on_awake();
+	pen_root = memnew(Node2D);
+	pen_root->set_name("pen_root");
+	get_spx_root()->add_child(pen_root);
+	
+}
+
+void SpxPenMgr::on_update(float delta) {
+	SpxBaseMgr::on_update(delta);
+	
+	
+	lock.lock();
+	for (auto mgr : id_pens) {
+		mgr.value->on_update(delta);
+	}
+	lock.unlock();
+}
+
+void SpxPenMgr::on_destroy() {
+	lock.lock();
+	for (auto mgr : id_pens) {
+		mgr.value->on_destroy();
+	}
+	id_pens.clear();
+	if (pen_root) {
+		pen_root->queue_free();
+		pen_root = nullptr;
+	}
+	
+	lock.unlock();
+	SpxBaseMgr::on_destroy();
+}
+
+
+
+SpxPen *SpxPenMgr::_get_pen(GdObj obj) {
+	if (id_pens.has(obj)) {
+		return id_pens[obj];
+	}
+	return nullptr;
+}
+
+void SpxPenMgr::destroy_all_pens() {
+	lock.lock();
+	for (auto mgr : id_pens) {
+		mgr.value->erase_all();
+	}
+	lock.unlock();
+}
+
+GdObj SpxPenMgr::create_pen() {
+	auto id = get_unique_id();
+	lock.lock();
+	SpxPen *node = memnew(SpxPen);
+	node->on_create(id, pen_root);
+	id_pens[id] = node;
+	lock.unlock();
+	return id;
+}
+
+void SpxPenMgr::destroy_pen(GdObj obj) {
+	lock.lock();
+	auto pen = _get_pen(obj);                                              \
+	if (pen != nullptr) {
+		id_pens.erase(obj);
+		pen->on_destroy();
+	}
+	lock.unlock();
+}
+
+void SpxPenMgr::move_pen_to(GdObj obj, GdVec2 position) {
+	check_and_get_pen_v()
+	pen->move_to(position);
+}
+void SpxPenMgr::pen_stamp(GdObj obj) {
+	check_and_get_pen_v()
+	pen->stamp();
+}
+void SpxPenMgr::pen_down(GdObj obj, GdBool move_by_mouse) {
+	check_and_get_pen_v()
+	pen->on_down(move_by_mouse);
+}
+void SpxPenMgr::pen_up(GdObj obj) {
+	check_and_get_pen_v()
+	pen->on_up();
+}
+void SpxPenMgr::set_pen_color_to(GdObj obj, GdColor color) {
+	check_and_get_pen_v()
+	pen->set_color_to(color);
+}
+void SpxPenMgr::change_pen_by(GdObj obj, GdInt property, GdFloat amount) {
+	check_and_get_pen_v()
+	pen->change_by(property, amount);
+}
+void SpxPenMgr::set_pen_to(GdObj obj, GdInt property, GdFloat value) {
+	check_and_get_pen_v()
+	pen->set_to(property, value);
+}
+void SpxPenMgr::change_pen_size_by(GdObj obj, GdFloat amount) {
+	check_and_get_pen_v()
+	pen->change_size_by(amount);
+}
+void SpxPenMgr::set_pen_size_to(GdObj obj, GdFloat size) {
+	check_and_get_pen_v()
+	pen->set_size_to(size);
+}
+void SpxPenMgr::set_pen_stamp_texture(GdObj obj, GdString texture_path) {
+	check_and_get_pen_v()
+	pen->set_stamp_texture(texture_path);
+}

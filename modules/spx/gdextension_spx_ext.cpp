@@ -37,24 +37,32 @@
 #include "spx_engine.h"
 #include "spx_audio_mgr.h"
 #include "spx_camera_mgr.h"
+#include "spx_debug_mgr.h"
 #include "spx_ext_mgr.h"
 #include "spx_input_mgr.h"
+#include "spx_navigation_mgr.h"
+#include "spx_pen_mgr.h"
 #include "spx_physic_mgr.h"
 #include "spx_platform_mgr.h"
 #include "spx_res_mgr.h"
 #include "spx_scene_mgr.h"
 #include "spx_sprite_mgr.h"
+#include "spx_tilemap_mgr.h"
 #include "spx_ui_mgr.h"
 
 #define audioMgr SpxEngine::get_singleton()->get_audio()
 #define cameraMgr SpxEngine::get_singleton()->get_camera()
+#define debugMgr SpxEngine::get_singleton()->get_debug()
 #define extMgr SpxEngine::get_singleton()->get_ext()
 #define inputMgr SpxEngine::get_singleton()->get_input()
+#define navigationMgr SpxEngine::get_singleton()->get_navigation()
+#define penMgr SpxEngine::get_singleton()->get_pen()
 #define physicMgr SpxEngine::get_singleton()->get_physic()
 #define platformMgr SpxEngine::get_singleton()->get_platform()
 #define resMgr SpxEngine::get_singleton()->get_res()
 #define sceneMgr SpxEngine::get_singleton()->get_scene()
 #define spriteMgr SpxEngine::get_singleton()->get_sprite()
+#define tilemapMgr SpxEngine::get_singleton()->get_tilemap()
 #define uiMgr SpxEngine::get_singleton()->get_ui()
 
 #define REGISTER_SPX_INTERFACE_FUNC(m_name) GDExtension::register_interface_function( #m_name, (GDExtensionInterfaceFunctionPtr)&gdextension_##m_name)
@@ -133,6 +141,15 @@ static void gdextension_spx_camera_set_camera_zoom(GdVec2 size) {
 static void gdextension_spx_camera_get_viewport_rect(GdRect2* ret_val) {
 	*ret_val = cameraMgr->get_viewport_rect();
 }
+static void gdextension_spx_debug_debug_draw_circle(GdVec2 pos,GdFloat radius,GdColor color) {
+	 debugMgr->debug_draw_circle(pos, radius, color);
+}
+static void gdextension_spx_debug_debug_draw_rect(GdVec2 pos,GdVec2 size,GdColor color) {
+	 debugMgr->debug_draw_rect(pos, size, color);
+}
+static void gdextension_spx_debug_debug_draw_line(GdVec2 from,GdVec2 to,GdColor color) {
+	 debugMgr->debug_draw_line(from, to, color);
+}
 static void gdextension_spx_ext_request_exit(GdInt exit_code) {
 	 extMgr->request_exit(exit_code);
 }
@@ -150,132 +167,6 @@ static void gdextension_spx_ext_is_paused(GdBool* ret_val) {
 }
 static void gdextension_spx_ext_next_frame() {
 	 extMgr->next_frame();
-}
-static void gdextension_spx_ext_destroy_all_pens() {
-	 extMgr->destroy_all_pens();
-}
-static void gdextension_spx_ext_create_pen(GdObj* ret_val) {
-	*ret_val = extMgr->create_pen();
-}
-static void gdextension_spx_ext_destroy_pen(GdObj obj) {
-	 extMgr->destroy_pen(obj);
-}
-static void gdextension_spx_ext_pen_stamp(GdObj obj) {
-	 extMgr->pen_stamp(obj);
-}
-static void gdextension_spx_ext_move_pen_to(GdObj obj,GdVec2 position) {
-	 extMgr->move_pen_to(obj, position);
-}
-static void gdextension_spx_ext_pen_down(GdObj obj,GdBool move_by_mouse) {
-	 extMgr->pen_down(obj, move_by_mouse);
-}
-static void gdextension_spx_ext_pen_up(GdObj obj) {
-	 extMgr->pen_up(obj);
-}
-static void gdextension_spx_ext_set_pen_color_to(GdObj obj,GdColor color) {
-	 extMgr->set_pen_color_to(obj, color);
-}
-static void gdextension_spx_ext_change_pen_by(GdObj obj,GdInt property,GdFloat amount) {
-	 extMgr->change_pen_by(obj, property, amount);
-}
-static void gdextension_spx_ext_set_pen_to(GdObj obj,GdInt property,GdFloat value) {
-	 extMgr->set_pen_to(obj, property, value);
-}
-static void gdextension_spx_ext_change_pen_size_by(GdObj obj,GdFloat amount) {
-	 extMgr->change_pen_size_by(obj, amount);
-}
-static void gdextension_spx_ext_set_pen_size_to(GdObj obj,GdFloat size) {
-	 extMgr->set_pen_size_to(obj, size);
-}
-static void gdextension_spx_ext_set_pen_stamp_texture(GdObj obj,GdString texture_path) {
-	 extMgr->set_pen_stamp_texture(obj, texture_path);
-}
-static void gdextension_spx_ext_debug_draw_circle(GdVec2 pos,GdFloat radius,GdColor color) {
-	 extMgr->debug_draw_circle(pos, radius, color);
-}
-static void gdextension_spx_ext_debug_draw_rect(GdVec2 pos,GdVec2 size,GdColor color) {
-	 extMgr->debug_draw_rect(pos, size, color);
-}
-static void gdextension_spx_ext_debug_draw_line(GdVec2 from,GdVec2 to,GdColor color) {
-	 extMgr->debug_draw_line(from, to, color);
-}
-static void gdextension_spx_ext_open_draw_tiles_with_size(GdInt tile_size) {
-	 extMgr->open_draw_tiles_with_size(tile_size);
-}
-static void gdextension_spx_ext_open_draw_tiles() {
-	 extMgr->open_draw_tiles();
-}
-static void gdextension_spx_ext_set_layer_index(GdInt index) {
-	 extMgr->set_layer_index(index);
-}
-static void gdextension_spx_ext_set_tile(GdString texture_path,GdBool with_collision) {
-	 extMgr->set_tile(texture_path, with_collision);
-}
-static void gdextension_spx_ext_set_tile_with_collision_info(GdString texture_path,GdArray collision_points) {
-	 extMgr->set_tile_with_collision_info(texture_path, collision_points);
-}
-static void gdextension_spx_ext_set_layer_offset(GdInt index,GdVec2 offset) {
-	 extMgr->set_layer_offset(index, offset);
-}
-static void gdextension_spx_ext_get_layer_offset(GdInt index,GdVec2* ret_val) {
-	*ret_val = extMgr->get_layer_offset(index);
-}
-static void gdextension_spx_ext_place_tiles(GdArray positions,GdString texture_path) {
-	 extMgr->place_tiles(positions, texture_path);
-}
-static void gdextension_spx_ext_place_tiles_with_layer(GdArray positions,GdString texture_path,GdInt layer_index) {
-	 extMgr->place_tiles_with_layer(positions, texture_path, layer_index);
-}
-static void gdextension_spx_ext_place_tile(GdVec2 pos,GdString texture_path) {
-	 extMgr->place_tile(pos, texture_path);
-}
-static void gdextension_spx_ext_place_tile_with_layer(GdVec2 pos,GdString texture_path,GdInt layer_index) {
-	 extMgr->place_tile_with_layer(pos, texture_path, layer_index);
-}
-static void gdextension_spx_ext_erase_tile(GdVec2 pos) {
-	 extMgr->erase_tile(pos);
-}
-static void gdextension_spx_ext_erase_tile_with_layer(GdVec2 pos,GdInt layer_index) {
-	 extMgr->erase_tile_with_layer(pos, layer_index);
-}
-static void gdextension_spx_ext_get_tile(GdVec2 pos,GdString* ret_val) {
-	*ret_val = extMgr->get_tile(pos);
-}
-static void gdextension_spx_ext_get_tile_with_layer(GdVec2 pos,GdInt layer_index,GdString* ret_val) {
-	*ret_val = extMgr->get_tile_with_layer(pos, layer_index);
-}
-static void gdextension_spx_ext_close_draw_tiles() {
-	 extMgr->close_draw_tiles();
-}
-static void gdextension_spx_ext_exit_tilemap_editor_mode() {
-	 extMgr->exit_tilemap_editor_mode();
-}
-static void gdextension_spx_ext_clear_pure_sprites() {
-	 extMgr->clear_pure_sprites();
-}
-static void gdextension_spx_ext_create_pure_sprite(GdString texture_path,GdVec2 pos,GdInt zindex) {
-	 extMgr->create_pure_sprite(texture_path, pos, zindex);
-}
-static void gdextension_spx_ext_create_render_sprite(GdString texture_path,GdVec2 pos,GdFloat degree,GdVec2 scale,GdInt zindex,GdVec2 pivot,GdObj* ret_val) {
-	*ret_val = extMgr->create_render_sprite(texture_path, pos, degree, scale, zindex, pivot);
-}
-static void gdextension_spx_ext_create_static_sprite(GdString texture_path,GdVec2 pos,GdFloat degree,GdVec2 scale,GdInt zindex,GdVec2 pivot,GdInt collider_type,GdVec2 collider_pivot,GdArray collider_params,GdObj* ret_val) {
-	*ret_val = extMgr->create_static_sprite(texture_path, pos, degree, scale, zindex, pivot, collider_type, collider_pivot, collider_params);
-}
-static void gdextension_spx_ext_destroy_pure_sprite(GdObj id) {
-	 extMgr->destroy_pure_sprite(id);
-}
-static void gdextension_spx_ext_setup_path_finder_with_size(GdVec2 grid_size,GdVec2 cell_size,GdBool with_jump,GdBool with_debug) {
-	 extMgr->setup_path_finder_with_size(grid_size, cell_size, with_jump, with_debug);
-}
-static void gdextension_spx_ext_setup_path_finder(GdBool with_jump) {
-	 extMgr->setup_path_finder(with_jump);
-}
-static void gdextension_spx_ext_set_obstacle(GdObj obj,GdBool enabled) {
-	 extMgr->set_obstacle(obj, enabled);
-}
-static void gdextension_spx_ext_find_path(GdVec2 p_from,GdVec2 p_to,GdBool with_jump,GdArray* ret_val) {
-	*ret_val = extMgr->find_path(p_from, p_to, with_jump);
 }
 static void gdextension_spx_ext_set_layer_sorter_mode(GdInt mode) {
 	 extMgr->set_layer_sorter_mode(mode);
@@ -303,6 +194,57 @@ static void gdextension_spx_input_is_action_just_pressed(GdString action,GdBool*
 }
 static void gdextension_spx_input_is_action_just_released(GdString action,GdBool* ret_val) {
 	*ret_val = inputMgr->is_action_just_released(action);
+}
+static void gdextension_spx_navigation_setup_path_finder_with_size(GdVec2 grid_size,GdVec2 cell_size,GdBool with_jump,GdBool with_debug) {
+	 navigationMgr->setup_path_finder_with_size(grid_size, cell_size, with_jump, with_debug);
+}
+static void gdextension_spx_navigation_setup_path_finder(GdBool with_jump) {
+	 navigationMgr->setup_path_finder(with_jump);
+}
+static void gdextension_spx_navigation_set_obstacle(GdObj obj,GdBool enabled) {
+	 navigationMgr->set_obstacle(obj, enabled);
+}
+static void gdextension_spx_navigation_find_path(GdVec2 p_from,GdVec2 p_to,GdBool with_jump,GdArray* ret_val) {
+	*ret_val = navigationMgr->find_path(p_from, p_to, with_jump);
+}
+static void gdextension_spx_pen_destroy_all_pens() {
+	 penMgr->destroy_all_pens();
+}
+static void gdextension_spx_pen_create_pen(GdObj* ret_val) {
+	*ret_val = penMgr->create_pen();
+}
+static void gdextension_spx_pen_destroy_pen(GdObj obj) {
+	 penMgr->destroy_pen(obj);
+}
+static void gdextension_spx_pen_pen_stamp(GdObj obj) {
+	 penMgr->pen_stamp(obj);
+}
+static void gdextension_spx_pen_move_pen_to(GdObj obj,GdVec2 position) {
+	 penMgr->move_pen_to(obj, position);
+}
+static void gdextension_spx_pen_pen_down(GdObj obj,GdBool move_by_mouse) {
+	 penMgr->pen_down(obj, move_by_mouse);
+}
+static void gdextension_spx_pen_pen_up(GdObj obj) {
+	 penMgr->pen_up(obj);
+}
+static void gdextension_spx_pen_set_pen_color_to(GdObj obj,GdColor color) {
+	 penMgr->set_pen_color_to(obj, color);
+}
+static void gdextension_spx_pen_change_pen_by(GdObj obj,GdInt property,GdFloat amount) {
+	 penMgr->change_pen_by(obj, property, amount);
+}
+static void gdextension_spx_pen_set_pen_to(GdObj obj,GdInt property,GdFloat value) {
+	 penMgr->set_pen_to(obj, property, value);
+}
+static void gdextension_spx_pen_change_pen_size_by(GdObj obj,GdFloat amount) {
+	 penMgr->change_pen_size_by(obj, amount);
+}
+static void gdextension_spx_pen_set_pen_size_to(GdObj obj,GdFloat size) {
+	 penMgr->set_pen_size_to(obj, size);
+}
+static void gdextension_spx_pen_set_pen_stamp_texture(GdObj obj,GdString texture_path) {
+	 penMgr->set_pen_stamp_texture(obj, texture_path);
 }
 static void gdextension_spx_physic_raycast(GdVec2 from,GdVec2 to,GdInt collision_mask,GdObj* ret_val) {
 	*ret_val = physicMgr->raycast(from, to, collision_mask);
@@ -435,6 +377,21 @@ static void gdextension_spx_scene_reload_current_scene(GdInt* ret_val) {
 }
 static void gdextension_spx_scene_unload_current_scene() {
 	 sceneMgr->unload_current_scene();
+}
+static void gdextension_spx_scene_clear_pure_sprites() {
+	 sceneMgr->clear_pure_sprites();
+}
+static void gdextension_spx_scene_create_pure_sprite(GdString texture_path,GdVec2 pos,GdInt zindex) {
+	 sceneMgr->create_pure_sprite(texture_path, pos, zindex);
+}
+static void gdextension_spx_scene_destroy_pure_sprite(GdObj id) {
+	 sceneMgr->destroy_pure_sprite(id);
+}
+static void gdextension_spx_scene_create_render_sprite(GdString texture_path,GdVec2 pos,GdFloat degree,GdVec2 scale,GdInt zindex,GdVec2 pivot,GdObj* ret_val) {
+	*ret_val = sceneMgr->create_render_sprite(texture_path, pos, degree, scale, zindex, pivot);
+}
+static void gdextension_spx_scene_create_static_sprite(GdString texture_path,GdVec2 pos,GdFloat degree,GdVec2 scale,GdInt zindex,GdVec2 pivot,GdInt collider_type,GdVec2 collider_pivot,GdArray collider_params,GdObj* ret_val) {
+	*ret_val = sceneMgr->create_static_sprite(texture_path, pos, degree, scale, zindex, pivot, collider_type, collider_pivot, collider_params);
 }
 static void gdextension_spx_sprite_set_dont_destroy_on_load(GdObj obj) {
 	 spriteMgr->set_dont_destroy_on_load(obj);
@@ -793,6 +750,57 @@ static void gdextension_spx_sprite_check_collision_by_alpha(GdObj obj,GdFloat al
 static void gdextension_spx_sprite_check_collision_with_sprite_by_alpha(GdObj obj,GdObj obj_b,GdFloat alpha_threshold,GdBool* ret_val) {
 	*ret_val = spriteMgr->check_collision_with_sprite_by_alpha(obj, obj_b, alpha_threshold);
 }
+static void gdextension_spx_tilemap_open_draw_tiles_with_size(GdInt tile_size) {
+	 tilemapMgr->open_draw_tiles_with_size(tile_size);
+}
+static void gdextension_spx_tilemap_open_draw_tiles() {
+	 tilemapMgr->open_draw_tiles();
+}
+static void gdextension_spx_tilemap_set_layer_index(GdInt index) {
+	 tilemapMgr->set_layer_index(index);
+}
+static void gdextension_spx_tilemap_set_tile(GdString texture_path,GdBool with_collision) {
+	 tilemapMgr->set_tile(texture_path, with_collision);
+}
+static void gdextension_spx_tilemap_set_tile_with_collision_info(GdString texture_path,GdArray collision_points) {
+	 tilemapMgr->set_tile_with_collision_info(texture_path, collision_points);
+}
+static void gdextension_spx_tilemap_set_layer_offset(GdInt index,GdVec2 offset) {
+	 tilemapMgr->set_layer_offset(index, offset);
+}
+static void gdextension_spx_tilemap_get_layer_offset(GdInt index,GdVec2* ret_val) {
+	*ret_val = tilemapMgr->get_layer_offset(index);
+}
+static void gdextension_spx_tilemap_place_tiles(GdArray positions,GdString texture_path) {
+	 tilemapMgr->place_tiles(positions, texture_path);
+}
+static void gdextension_spx_tilemap_place_tiles_with_layer(GdArray positions,GdString texture_path,GdInt layer_index) {
+	 tilemapMgr->place_tiles_with_layer(positions, texture_path, layer_index);
+}
+static void gdextension_spx_tilemap_place_tile(GdVec2 pos,GdString texture_path) {
+	 tilemapMgr->place_tile(pos, texture_path);
+}
+static void gdextension_spx_tilemap_place_tile_with_layer(GdVec2 pos,GdString texture_path,GdInt layer_index) {
+	 tilemapMgr->place_tile_with_layer(pos, texture_path, layer_index);
+}
+static void gdextension_spx_tilemap_erase_tile(GdVec2 pos) {
+	 tilemapMgr->erase_tile(pos);
+}
+static void gdextension_spx_tilemap_erase_tile_with_layer(GdVec2 pos,GdInt layer_index) {
+	 tilemapMgr->erase_tile_with_layer(pos, layer_index);
+}
+static void gdextension_spx_tilemap_get_tile(GdVec2 pos,GdString* ret_val) {
+	*ret_val = tilemapMgr->get_tile(pos);
+}
+static void gdextension_spx_tilemap_get_tile_with_layer(GdVec2 pos,GdInt layer_index,GdString* ret_val) {
+	*ret_val = tilemapMgr->get_tile_with_layer(pos, layer_index);
+}
+static void gdextension_spx_tilemap_close_draw_tiles() {
+	 tilemapMgr->close_draw_tiles();
+}
+static void gdextension_spx_tilemap_exit_tilemap_editor_mode() {
+	 tilemapMgr->exit_tilemap_editor_mode();
+}
 static void gdextension_spx_ui_bind_node(GdObj obj,GdString rel_path,GdObj* ret_val) {
 	*ret_val = uiMgr->bind_node(obj, rel_path);
 }
@@ -949,54 +957,15 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_camera_get_camera_zoom);
 	REGISTER_SPX_INTERFACE_FUNC(spx_camera_set_camera_zoom);
 	REGISTER_SPX_INTERFACE_FUNC(spx_camera_get_viewport_rect);
+	REGISTER_SPX_INTERFACE_FUNC(spx_debug_debug_draw_circle);
+	REGISTER_SPX_INTERFACE_FUNC(spx_debug_debug_draw_rect);
+	REGISTER_SPX_INTERFACE_FUNC(spx_debug_debug_draw_line);
 	REGISTER_SPX_INTERFACE_FUNC(spx_ext_request_exit);
 	REGISTER_SPX_INTERFACE_FUNC(spx_ext_on_runtime_panic);
 	REGISTER_SPX_INTERFACE_FUNC(spx_ext_pause);
 	REGISTER_SPX_INTERFACE_FUNC(spx_ext_resume);
 	REGISTER_SPX_INTERFACE_FUNC(spx_ext_is_paused);
 	REGISTER_SPX_INTERFACE_FUNC(spx_ext_next_frame);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_destroy_all_pens);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_create_pen);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_destroy_pen);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_pen_stamp);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_move_pen_to);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_pen_down);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_pen_up);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_set_pen_color_to);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_change_pen_by);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_set_pen_to);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_change_pen_size_by);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_set_pen_size_to);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_set_pen_stamp_texture);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_debug_draw_circle);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_debug_draw_rect);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_debug_draw_line);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_open_draw_tiles_with_size);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_open_draw_tiles);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_set_layer_index);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_set_tile);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_set_tile_with_collision_info);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_set_layer_offset);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_get_layer_offset);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_place_tiles);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_place_tiles_with_layer);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_place_tile);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_place_tile_with_layer);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_erase_tile);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_erase_tile_with_layer);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_get_tile);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_get_tile_with_layer);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_close_draw_tiles);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_exit_tilemap_editor_mode);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_clear_pure_sprites);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_create_pure_sprite);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_create_render_sprite);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_create_static_sprite);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_destroy_pure_sprite);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_setup_path_finder_with_size);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_setup_path_finder);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_set_obstacle);
-	REGISTER_SPX_INTERFACE_FUNC(spx_ext_find_path);
 	REGISTER_SPX_INTERFACE_FUNC(spx_ext_set_layer_sorter_mode);
 	REGISTER_SPX_INTERFACE_FUNC(spx_input_get_mouse_pos);
 	REGISTER_SPX_INTERFACE_FUNC(spx_input_get_key);
@@ -1006,6 +975,23 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_input_is_action_pressed);
 	REGISTER_SPX_INTERFACE_FUNC(spx_input_is_action_just_pressed);
 	REGISTER_SPX_INTERFACE_FUNC(spx_input_is_action_just_released);
+	REGISTER_SPX_INTERFACE_FUNC(spx_navigation_setup_path_finder_with_size);
+	REGISTER_SPX_INTERFACE_FUNC(spx_navigation_setup_path_finder);
+	REGISTER_SPX_INTERFACE_FUNC(spx_navigation_set_obstacle);
+	REGISTER_SPX_INTERFACE_FUNC(spx_navigation_find_path);
+	REGISTER_SPX_INTERFACE_FUNC(spx_pen_destroy_all_pens);
+	REGISTER_SPX_INTERFACE_FUNC(spx_pen_create_pen);
+	REGISTER_SPX_INTERFACE_FUNC(spx_pen_destroy_pen);
+	REGISTER_SPX_INTERFACE_FUNC(spx_pen_pen_stamp);
+	REGISTER_SPX_INTERFACE_FUNC(spx_pen_move_pen_to);
+	REGISTER_SPX_INTERFACE_FUNC(spx_pen_pen_down);
+	REGISTER_SPX_INTERFACE_FUNC(spx_pen_pen_up);
+	REGISTER_SPX_INTERFACE_FUNC(spx_pen_set_pen_color_to);
+	REGISTER_SPX_INTERFACE_FUNC(spx_pen_change_pen_by);
+	REGISTER_SPX_INTERFACE_FUNC(spx_pen_set_pen_to);
+	REGISTER_SPX_INTERFACE_FUNC(spx_pen_change_pen_size_by);
+	REGISTER_SPX_INTERFACE_FUNC(spx_pen_set_pen_size_to);
+	REGISTER_SPX_INTERFACE_FUNC(spx_pen_set_pen_stamp_texture);
 	REGISTER_SPX_INTERFACE_FUNC(spx_physic_raycast);
 	REGISTER_SPX_INTERFACE_FUNC(spx_physic_check_collision);
 	REGISTER_SPX_INTERFACE_FUNC(spx_physic_check_touched_camera_boundaries);
@@ -1050,6 +1036,11 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_scene_destroy_all_sprites);
 	REGISTER_SPX_INTERFACE_FUNC(spx_scene_reload_current_scene);
 	REGISTER_SPX_INTERFACE_FUNC(spx_scene_unload_current_scene);
+	REGISTER_SPX_INTERFACE_FUNC(spx_scene_clear_pure_sprites);
+	REGISTER_SPX_INTERFACE_FUNC(spx_scene_create_pure_sprite);
+	REGISTER_SPX_INTERFACE_FUNC(spx_scene_destroy_pure_sprite);
+	REGISTER_SPX_INTERFACE_FUNC(spx_scene_create_render_sprite);
+	REGISTER_SPX_INTERFACE_FUNC(spx_scene_create_static_sprite);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_dont_destroy_on_load);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_process);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_physic_process);
@@ -1169,6 +1160,23 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_check_collision_by_color);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_check_collision_by_alpha);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_check_collision_with_sprite_by_alpha);
+	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_open_draw_tiles_with_size);
+	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_open_draw_tiles);
+	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_set_layer_index);
+	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_set_tile);
+	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_set_tile_with_collision_info);
+	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_set_layer_offset);
+	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_get_layer_offset);
+	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_place_tiles);
+	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_place_tiles_with_layer);
+	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_place_tile);
+	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_place_tile_with_layer);
+	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_erase_tile);
+	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_erase_tile_with_layer);
+	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_get_tile);
+	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_get_tile_with_layer);
+	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_close_draw_tiles);
+	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_exit_tilemap_editor_mode);
 	REGISTER_SPX_INTERFACE_FUNC(spx_ui_bind_node);
 	REGISTER_SPX_INTERFACE_FUNC(spx_ui_create_node);
 	REGISTER_SPX_INTERFACE_FUNC(spx_ui_create_button);
