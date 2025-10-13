@@ -254,20 +254,14 @@ void SpxLayerSorter::_apply_z_index_merged() {
 Rect2 SpxLayerSorter::_get_camera_rect(Camera2D *camera) {
 	if (!camera) return Rect2();
 
-    Vector2 viewport_size = camera->get_viewport_rect().size;
-    Transform2D global_xform = camera->get_screen_transform().affine_inverse();
+	Viewport *vp = camera->get_viewport();
+	Transform2D screen_to_world = vp->get_canvas_transform().affine_inverse();
 
-    Vector2 top_left = global_xform.xform(Vector2(0, 0));
-    Vector2 top_right = global_xform.xform(Vector2(viewport_size.x, 0));
-    Vector2 bottom_left = global_xform.xform(Vector2(0, viewport_size.y));
-    Vector2 bottom_right = global_xform.xform(Vector2(viewport_size.x, viewport_size.y));
+	Vector2 vp_size = vp->get_visible_rect().size;
+	Vector2 tl = screen_to_world.xform(Vector2(0, 0));
+	Vector2 br = screen_to_world.xform(vp_size);
 
-    Rect2 rect(top_left, Vector2());
-    rect.expand_to(top_right);
-    rect.expand_to(bottom_left);
-    rect.expand_to(bottom_right);
-
-    return rect;
+	return Rect2(tl, br - tl);
 }
 
 void SpxLayerSorter::_create_debug_drawer() {
@@ -355,6 +349,9 @@ void LayerSorterDebugDrawer::_draw() {
             continue;
         draw_circle(s.pos, 16, Color(1, 0.6, 0.2, 0.4));
     }
+
+    const auto &screen_rect = sorter->get_screen_rect();
+    draw_rect(screen_rect, Color(0,0,1,1), false, 4);
 }
 
 void LayerSorterDebugDrawer::_exit_tree() {
