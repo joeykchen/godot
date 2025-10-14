@@ -46,7 +46,7 @@ class Font;
 struct SortInfo {
     GdObj id;
     Point2 pos;
-    ISortableSprite* sortable;
+    ISortableSprite *sortable;
 };
 
 enum class LayerSortMode {
@@ -56,14 +56,18 @@ enum class LayerSortMode {
 
 class SpxLayerSorter {
 public:
-    using VisibilityCallback = std::function<void(ISortableSprite*, bool visible)>;
+    using VisibilityCallback = std::function<void(ISortableSprite *, bool visible)>;
 
-    static SpxLayerSorter& instance() {
+    static SpxLayerSorter &instance() {
         static SpxLayerSorter inst;
         return inst;
     }
 
 	void set_mode(LayerSortMode mode);
+    void update(const Vector<ISortableSprite *> &sortables);
+
+    void add_static_sprite(ISortableSprite *sp);
+    void remove_static_sprite(ISortableSprite *sp);
 
 	_FORCE_INLINE_ void reset(){
         static_sorted.clear();
@@ -71,7 +75,7 @@ public:
         dynamic_dirty.clear();
         dynamic_dirty_ids.clear();
     }
-    _FORCE_INLINE_ void set_screen_rect(const Rect2& rect) { 
+    _FORCE_INLINE_ void set_screen_rect(const Rect2 &rect) { 
         screen_rect = rect; 
     }
     _FORCE_INLINE_ void set_visibility_callback(VisibilityCallback cb) {
@@ -81,15 +85,6 @@ public:
     _FORCE_INLINE_ void clear_drawer(){
         drawer = nullptr;
     };
-
-    void add_static_sprite(ISortableSprite* sp);
-    void remove_static_sprite(ISortableSprite* sp);
-
-    // New interface: accept any sortable sprites
-    void update(const Vector<ISortableSprite*>& sortables);
-
-    // Legacy interface: keep compatibility with SpxSprite
-    void update(const RBMap<GdObj, SpxSprite*>& id_objects);
 
 private:
     std::vector<SortInfo> static_sorted; // never frequently re-sorted
@@ -115,13 +110,13 @@ private:
     };
 
     void _mark_dirty(ISortableSprite* sp);
-    void _update_visibility(const Vector<ISortableSprite*>& sortables);
-    void _collect_sprites(const Vector<ISortableSprite*>& sortables);
+    void _update_visibility(const Vector<ISortableSprite *> &sortables);
+    void _collect_sprites(const Vector<ISortableSprite *> &sortables);
     void _incremental_sort_dynamic();
     void _full_sort_dynamic();
     void _apply_z_index_merged();
 
-    Rect2 _get_camera_rect(Camera2D* camera);
+    Rect2 _get_camera_rect(Camera2D *camera);
     void _create_debug_drawer();
 
 private:
@@ -130,21 +125,18 @@ private:
     };
     ~SpxLayerSorter();
 
-    SpxLayerSorter(const SpxLayerSorter&) = delete;
-    SpxLayerSorter& operator=(const SpxLayerSorter&) = delete;
+    SpxLayerSorter(const SpxLayerSorter &) = delete;
+    SpxLayerSorter &operator=(const SpxLayerSorter &) = delete;
 
 public:
     const Rect2& get_screen_rect() const{
         return screen_rect;
     }
-    const std::vector<SortInfo>& get_static_sorted() const {
+    const std::vector<SortInfo> &get_static_sorted() const {
         return static_sorted;
     }
-    const std::vector<SortInfo>& get_dynamic_sorted() const {
+    const std::vector<SortInfo> &get_dynamic_sorted() const {
         return dynamic_sorted;
-    }
-    const std::vector<SortInfo>& get_dynamic_dirty() const {
-        return dynamic_dirty;
     }
 };
 
@@ -152,7 +144,7 @@ class LayerSorterDebugDrawer : public Node2D {
     GDCLASS(LayerSorterDebugDrawer, Node2D);
 
 private:
-    SpxLayerSorter* sorter = nullptr;
+    SpxLayerSorter *sorter = nullptr;
     Ref<Font> font;
 
 protected:
@@ -166,7 +158,7 @@ protected:
     void _exit_tree();
 
 public:
-    explicit LayerSorterDebugDrawer(SpxLayerSorter* p_sorter) {
+    explicit LayerSorterDebugDrawer(SpxLayerSorter *p_sorter) {
         sorter = p_sorter;
     }
 
