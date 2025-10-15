@@ -37,8 +37,13 @@
 #include "spx_engine.h"
 #include "spx.h"
 
-// New interface implementation
-void SpxLayerSorter::update(const Vector<ISortableSprite*>& sortables) {
+
+void SpxLayerSorter::set_mode(LayerSortMode mode) {
+    sort_mode = mode;
+	_create_debug_drawer();
+}
+
+void SpxLayerSorter::update(const Vector<ISortableSprite *> &sortables) {
     if(sort_mode == LayerSortMode::NONE) return;
     
     auto camera_mgr = SpxEngine::get_singleton()->get_camera();
@@ -63,23 +68,6 @@ void SpxLayerSorter::update(const Vector<ISortableSprite*>& sortables) {
     if(drawer) drawer->update();
 }
 
-// Legacy interface: convert RBMap to Vector
-void SpxLayerSorter::update(const RBMap<GdObj, SpxSprite*>& id_objects) {
-    Vector<ISortableSprite*> sortables;
-    for (auto &pair : id_objects) {
-        if (pair.value) {
-            sortables.push_back(pair.value);
-        }
-    }
-    
-    update(sortables);
-}
-
-void SpxLayerSorter::set_mode(LayerSortMode mode) {
-    sort_mode = mode;
-	_create_debug_drawer();
-}
-
 void SpxLayerSorter::add_static_sprite(ISortableSprite *sp) {
 	if (!sp || !sp->is_node_valid())
         return;
@@ -96,7 +84,7 @@ void SpxLayerSorter::add_static_sprite(ISortableSprite *sp) {
     static_sorted.insert(insert_pos, info);
 }
 
-void SpxLayerSorter::remove_static_sprite(ISortableSprite* sp) {
+void SpxLayerSorter::remove_static_sprite(ISortableSprite *sp) {
     if (!sp)
         return;
 
@@ -108,7 +96,7 @@ void SpxLayerSorter::remove_static_sprite(ISortableSprite* sp) {
 }
 
 
-void SpxLayerSorter::_mark_dirty(ISortableSprite* sp) {
+void SpxLayerSorter::_mark_dirty(ISortableSprite *sp) {
     if (!sp) return;
     GdObj id = sp->get_sort_id();
     if (dynamic_dirty_ids.find(id) != dynamic_dirty_ids.end()) return;
@@ -120,7 +108,7 @@ void SpxLayerSorter::_mark_dirty(ISortableSprite* sp) {
 void SpxLayerSorter::_update_visibility(const Vector<ISortableSprite *> &sortables) {
     std::unordered_set<GdObj> new_visible;
 
-    auto in_screen = [&](ISortableSprite* sp) -> bool {
+    auto in_screen = [&](ISortableSprite *sp) -> bool {
         if (!sp) return false;
         return screen_rect.has_point(sp->get_sort_position());
     };
@@ -144,7 +132,7 @@ void SpxLayerSorter::_update_visibility(const Vector<ISortableSprite *> &sortabl
     visible_ids.swap(new_visible);
 }
 
-void SpxLayerSorter::_collect_sprites(const Vector<ISortableSprite*>& sortables) {
+void SpxLayerSorter::_collect_sprites(const Vector<ISortableSprite *> &sortables) {
     auto remove_invalid = [&](std::vector<SortInfo>& arr, bool remove_offscreen) {
         arr.erase(
             std::remove_if(arr.begin(), arr.end(),
@@ -173,9 +161,9 @@ void SpxLayerSorter::_collect_sprites(const Vector<ISortableSprite*>& sortables)
         GdObj id = sp->get_sort_id();
         bool is_static = sp->is_sort_static();
 
-        std::vector<SortInfo> &target = is_static ? static_sorted : dynamic_sorted;
+        std::vector<SortInfo>& target = is_static ? static_sorted : dynamic_sorted;
         auto found = std::find_if(target.begin(), target.end(),
-            [id](const SortInfo &s) { return s.id == id; });
+            [id](const SortInfo& s) { return s.id == id; });
 
         if (found != target.end()) {
             if (found->pos != pos) {
@@ -202,12 +190,12 @@ void SpxLayerSorter::_collect_sprites(const Vector<ISortableSprite*>& sortables)
 void SpxLayerSorter::_incremental_sort_dynamic() {
     dynamic_sorted.erase(
         std::remove_if(dynamic_sorted.begin(), dynamic_sorted.end(), 
-            [&](const SortInfo &s) {
+            [&](const SortInfo& s) {
                 return dynamic_dirty_ids.find(s.id) != dynamic_dirty_ids.end();
             }), 
         dynamic_sorted.end());
 
-    for (auto &d : dynamic_dirty) {
+    for (auto& d : dynamic_dirty) {
         auto pos = std::lower_bound(dynamic_sorted.begin(), dynamic_sorted.end(), d, sprite_cmp);
         dynamic_sorted.insert(pos, d);
     }
@@ -217,11 +205,6 @@ void SpxLayerSorter::_incremental_sort_dynamic() {
 }
 
 void SpxLayerSorter::_full_sort_dynamic() {
-    for (auto &s : dynamic_sorted) {
-        if (s.sortable && s.sortable->is_node_valid()) {
-            s.pos = s.sortable->get_sort_position();
-        }
-    }
     std::sort(dynamic_sorted.begin(), dynamic_sorted.end(), sprite_cmp);
     dynamic_dirty.clear();
     dynamic_dirty_ids.clear();
@@ -241,7 +224,7 @@ void SpxLayerSorter::_apply_z_index_merged() {
         else
             use_dynamic = sprite_cmp(*it_dynamic, *it_static);
 
-        SortInfo &s = use_dynamic ? *it_dynamic++ : *it_static++;
+        SortInfo& s = use_dynamic ? *it_dynamic++ : *it_static++;
 
         if (s.sortable && s.sortable->is_node_valid()) {
             if (s.sortable->get_sort_z_index() != z)
@@ -266,7 +249,7 @@ Rect2 SpxLayerSorter::_get_camera_rect(Camera2D *camera) {
 
 void SpxLayerSorter::_create_debug_drawer() {
 	if (Spx::debug_mode && !drawer) {
-		Node *root = nullptr;
+		Node* root = nullptr;
 		if (SpxEngine::get_singleton()) {
 			root = SpxEngine::get_singleton()->get_spx_root();
 		}
@@ -342,16 +325,7 @@ void LayerSorterDebugDrawer::_draw() {
     draw_sort_group(sorter->get_static_sorted(), Color(0.4, 0.8, 1), Color(0.6, 0.9, 1), "S");
     draw_sort_group(sorter->get_dynamic_sorted(), Color(1, 0.4, 0.4), Color(1, 0.6, 0.6), "D");
 
-
-    const auto &dirty = sorter->get_dynamic_dirty();
-    for (const auto &s : dirty) {
-        if (!s.sortable || !s.sortable->is_node_valid())
-            continue;
-        draw_circle(s.pos, 16, Color(1, 0.6, 0.2, 0.4));
-    }
-
-    const auto &screen_rect = sorter->get_screen_rect();
-    draw_rect(screen_rect, Color(0,0,1,1), false, 4);
+    draw_rect(sorter->get_screen_rect(), Color(0, 0, 1, 1), false, 4);
 }
 
 void LayerSorterDebugDrawer::_exit_tree() {

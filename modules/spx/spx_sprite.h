@@ -79,6 +79,8 @@ public:
 	void set_sort_z_index(int z) override { set_z_index(z); }
 	int get_sort_z_index() const override { return get_z_index(); }
 	bool is_node_valid() const override { return is_inside_tree(); }
+	bool is_sort_static() const override{return true;};
+	
 	void set_pivot(GdVec2 pivot){pivot_offset = pivot;}
 	GdVec2 get_pivot(){return pivot_offset;}
 };
