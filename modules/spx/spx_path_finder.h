@@ -50,6 +50,48 @@ private:
     
     Vector2 cached_cell_size{16, 16};
 
+protected:
+    static void _bind_methods();
+
+public:
+    SpxPathFinder();
+    ~SpxPathFinder();
+    
+    void setup_spx(GdVec2 size, GdVec2 cell_size, GdBool with_debug);
+	void setup(Vector2i size, Vector2i cell_size, bool with_debug = false);
+	void set_jumping_enabled(bool p_enabled);
+	void add_all_obstacles(Node *root);
+
+    void set_sprite_obstacle(GdObj obj, bool enabled);
+
+    GdArray find_path_spx(GdVec2 p_from, GdVec2 p_to);
+	PackedVector2Array find_path(Vector2 start, Vector2 end);
+
+    _FORCE_INLINE_ Rect2i get_region() const {
+        return astar->get_region();
+    }
+
+    _FORCE_INLINE_ Vector2i get_size() const {
+        return astar->get_size();
+    }
+
+    _FORCE_INLINE_ Vector2 get_cell_size() const {
+        return astar->get_cell_size();
+    }
+
+    _FORCE_INLINE_ bool is_cell_solid(Vector2i cell) const {
+        return astar->is_point_solid(cell);
+    }
+
+    _FORCE_INLINE_ Vector2 cell_to_world_gd(Vector2i cell) const {
+        return _cell_to_world(cell);
+    }
+
+    _FORCE_INLINE_ void clear_drawer() {
+        drawer = nullptr;
+    };
+
+private:
     Vector2i _world_to_cell(const Vector2 &pos) const;
     Vector2 _cell_to_world(const Vector2i &cell) const;
     Vector2 _cell_to_world_tl(const Vector2i &cell) const;
@@ -64,35 +106,6 @@ private:
 
     Rect2 _get_scene_bounds(Node *root);
     Rect2 _get_tilemap_bounds(TileMapLayer *layer);
-
-protected:
-    static void _bind_methods();
-
-public:
-    SpxPathFinder();
-    ~SpxPathFinder();
-
-    void setup_spx(GdVec2 size, GdVec2 cell_size, GdBool with_debug);
-	void setup(Vector2i size, Vector2i cell_size, bool with_debug = false);
-	void set_jumping_enabled(bool p_enabled);
-	void add_all_obstacles(Node *root);
-
-    void set_sprite_obstacle(GdObj obj, bool enabled);
-
-    GdArray find_path_spx(GdVec2 p_from, GdVec2 p_to);
-	PackedVector2Array find_path(Vector2 start, Vector2 end);
-
-    _FORCE_INLINE_ Rect2i get_region()const{
-        return astar->get_region();
-    }
-    Vector2i get_size() const;
-    Vector2 get_cell_size() const;
-    bool is_cell_solid(Vector2i cell) const;
-    Vector2 cell_to_world_gd(Vector2i cell) const;
-
-    void clear_drawer(){
-        drawer = nullptr;
-    };
 };
 
 class PathDebugDrawer : public Node2D {
@@ -106,12 +119,10 @@ private:
     Vector2 end;
     bool start_set = false;
     bool end_set = false;
+    float drag_threshold = 10.0;
 
     enum DragState { NONE, DRAG_START, DRAG_END };
     DragState dragging = NONE;
-
-    void _update_path();
-    bool _is_near(const Vector2 &p1, const Vector2 &p2, float threshold = 10.0) const;
 
 protected:
     PathDebugDrawer() = default;
@@ -131,6 +142,10 @@ public:
 
     void set_path_finder(const Ref<SpxPathFinder> &p_path_finder);
     void set_path(const PackedVector2Array &p_path);
+
+private:
+    void _update_path();
+    bool _is_near(const Vector2 &p1, const Vector2 &p2) const;
 };
 
 
