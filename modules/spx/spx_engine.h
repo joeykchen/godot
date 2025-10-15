@@ -48,6 +48,10 @@ class SpxCameraMgr;
 class SpxPlatformMgr;
 class SpxResMgr;
 class SpxExtMgr;
+class SpxDebugMgr;
+class SpxNavigationMgr;
+class SpxPenMgr;
+class SpxTilemapMgr;
 
 typedef void (*GDExtensionSpxGlobalRuntimePanicCallback)(GdString msg);
 typedef void (*GDExtensionSpxGlobalRuntimeExitCallback)(GdInt code);
@@ -75,6 +79,10 @@ private:
 	SpxPlatformMgr *platform;
 	SpxResMgr *res;
 	SpxExtMgr *ext;
+	SpxDebugMgr *debug;
+	SpxNavigationMgr *navigation;
+	SpxPenMgr *pen;
+	SpxTilemapMgr *tilemap;
 
 public:
 	SpxInputMgr *get_input() { return input; }
@@ -87,6 +95,10 @@ public:
 	SpxPlatformMgr *get_platform() { return platform; }
 	SpxResMgr *get_res() { return res; }
 	SpxExtMgr *get_ext() { return ext; }
+	SpxDebugMgr *get_debug() { return debug; }
+	SpxNavigationMgr *get_navigation() { return navigation; }
+	SpxPenMgr *get_pen() { return pen; }
+	SpxTilemapMgr *get_tilemap() { return tilemap; }
 
 private:
 	SceneTree *tree;

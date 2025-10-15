@@ -34,8 +34,19 @@
 #include "gdextension_spx_ext.h"
 #include "spx_base_mgr.h"
 
+class ISortableSprite;
 class SpxSceneMgr : SpxBaseMgr {
 	SPXCLASS(SpxSceneMgr, SpxBaseMgr)
+
+public:
+	// Pure sprite management (kept in SpxExtMgr)
+	Node *pure_sprite_root;
+	RBMap<GdObj, ISortableSprite*> id_pure_sprites;
+
+	void on_awake() override;
+	void on_destroy() override;
+
+	void collect_sortable_sprites(Vector<ISortableSprite*>& out);
 public:
 	virtual ~SpxSceneMgr() = default; // Added virtual destructor to fix -Werror=non-virtual-dtor
 
@@ -43,6 +54,14 @@ public:
 	void destroy_all_sprites();
 	GdInt reload_current_scene();
 	void unload_current_scene();
+
+	// create sprites
+	void clear_pure_sprites();
+	void create_pure_sprite(GdString texture_path, GdVec2 pos, GdInt zindex);
+	void destroy_pure_sprite(GdObj id);
+
+	GdObj create_render_sprite(GdString texture_path, GdVec2 pos, GdFloat degree, GdVec2 scale, GdInt zindex, GdVec2 pivot);
+	GdObj create_static_sprite(GdString texture_path, GdVec2 pos, GdFloat degree, GdVec2 scale, GdInt zindex, GdVec2 pivot, GdInt collider_type, GdVec2 collider_pivot, GdArray collider_params);
 };
 
 #endif // SPX_SCENE_MGR_H

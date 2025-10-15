@@ -37,25 +37,33 @@
 #include "modules/spx/spx_engine.h"
 #include "modules/spx/spx_audio_mgr.h"
 #include "modules/spx/spx_camera_mgr.h"
+#include "modules/spx/spx_debug_mgr.h"
 #include "modules/spx/spx_ext_mgr.h"
 #include "modules/spx/spx_input_mgr.h"
+#include "modules/spx/spx_navigation_mgr.h"
+#include "modules/spx/spx_pen_mgr.h"
 #include "modules/spx/spx_physic_mgr.h"
 #include "modules/spx/spx_platform_mgr.h"
 #include "modules/spx/spx_res_mgr.h"
 #include "modules/spx/spx_scene_mgr.h"
 #include "modules/spx/spx_sprite_mgr.h"
+#include "modules/spx/spx_tilemap_mgr.h"
 #include "modules/spx/spx_ui_mgr.h"
 
 #include <emscripten.h>
 #define audioMgr SpxEngine::get_singleton()->get_audio()
 #define cameraMgr SpxEngine::get_singleton()->get_camera()
+#define debugMgr SpxEngine::get_singleton()->get_debug()
 #define extMgr SpxEngine::get_singleton()->get_ext()
 #define inputMgr SpxEngine::get_singleton()->get_input()
+#define navigationMgr SpxEngine::get_singleton()->get_navigation()
+#define penMgr SpxEngine::get_singleton()->get_pen()
 #define physicMgr SpxEngine::get_singleton()->get_physic()
 #define platformMgr SpxEngine::get_singleton()->get_platform()
 #define resMgr SpxEngine::get_singleton()->get_res()
 #define sceneMgr SpxEngine::get_singleton()->get_scene()
 #define spriteMgr SpxEngine::get_singleton()->get_sprite()
+#define tilemapMgr SpxEngine::get_singleton()->get_tilemap()
 #define uiMgr SpxEngine::get_singleton()->get_ui()
 
 
@@ -167,6 +175,18 @@ void gdspx_camera_get_viewport_rect(GdRect2* ret_val) {
 	*ret_val = cameraMgr->get_viewport_rect();
 }
 EMSCRIPTEN_KEEPALIVE
+void gdspx_debug_debug_draw_circle(GdVec2* pos,GdFloat* radius,GdColor* color) {
+	 debugMgr->debug_draw_circle(*pos, *radius, *color);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_debug_debug_draw_rect(GdVec2* pos,GdVec2* size,GdColor* color) {
+	 debugMgr->debug_draw_rect(*pos, *size, *color);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_debug_debug_draw_line(GdVec2* from,GdVec2* to,GdColor* color) {
+	 debugMgr->debug_draw_line(*from, *to, *color);
+}
+EMSCRIPTEN_KEEPALIVE
 void gdspx_ext_request_exit(GdInt* exit_code) {
 	 extMgr->request_exit(*exit_code);
 }
@@ -189,174 +209,6 @@ void gdspx_ext_is_paused(GdBool* ret_val) {
 EMSCRIPTEN_KEEPALIVE
 void gdspx_ext_next_frame() {
 	 extMgr->next_frame();
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_destroy_all_pens() {
-	 extMgr->destroy_all_pens();
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_create_pen(GdObj* ret_val) {
-	*ret_val = extMgr->create_pen();
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_destroy_pen(GdObj* obj) {
-	 extMgr->destroy_pen(*obj);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_pen_stamp(GdObj* obj) {
-	 extMgr->pen_stamp(*obj);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_move_pen_to(GdObj* obj,GdVec2* position) {
-	 extMgr->move_pen_to(*obj, *position);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_pen_down(GdObj* obj,GdBool* move_by_mouse) {
-	 extMgr->pen_down(*obj, *move_by_mouse);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_pen_up(GdObj* obj) {
-	 extMgr->pen_up(*obj);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_set_pen_color_to(GdObj* obj,GdColor* color) {
-	 extMgr->set_pen_color_to(*obj, *color);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_change_pen_by(GdObj* obj,GdInt* property,GdFloat* amount) {
-	 extMgr->change_pen_by(*obj, *property, *amount);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_set_pen_to(GdObj* obj,GdInt* property,GdFloat* value) {
-	 extMgr->set_pen_to(*obj, *property, *value);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_change_pen_size_by(GdObj* obj,GdFloat* amount) {
-	 extMgr->change_pen_size_by(*obj, *amount);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_set_pen_size_to(GdObj* obj,GdFloat* size) {
-	 extMgr->set_pen_size_to(*obj, *size);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_set_pen_stamp_texture(GdObj* obj,GdString* texture_path) {
-	 extMgr->set_pen_stamp_texture(*obj, *texture_path);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_debug_draw_circle(GdVec2* pos,GdFloat* radius,GdColor* color) {
-	 extMgr->debug_draw_circle(*pos, *radius, *color);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_debug_draw_rect(GdVec2* pos,GdVec2* size,GdColor* color) {
-	 extMgr->debug_draw_rect(*pos, *size, *color);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_debug_draw_line(GdVec2* from,GdVec2* to,GdColor* color) {
-	 extMgr->debug_draw_line(*from, *to, *color);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_open_draw_tiles_with_size(GdInt* tile_size) {
-	 extMgr->open_draw_tiles_with_size(*tile_size);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_open_draw_tiles() {
-	 extMgr->open_draw_tiles();
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_set_layer_index(GdInt* index) {
-	 extMgr->set_layer_index(*index);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_set_tile(GdString* texture_path,GdBool* with_collision) {
-	 extMgr->set_tile(*texture_path, *with_collision);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_set_tile_with_collision_info(GdString* texture_path,GdArray* collision_points) {
-	 extMgr->set_tile_with_collision_info(*texture_path, *collision_points);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_set_layer_offset(GdInt* index,GdVec2* offset) {
-	 extMgr->set_layer_offset(*index, *offset);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_get_layer_offset(GdInt* index,GdVec2* ret_val) {
-	*ret_val = extMgr->get_layer_offset(*index);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_place_tiles(GdArray* positions,GdString* texture_path) {
-	 extMgr->place_tiles(*positions, *texture_path);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_place_tiles_with_layer(GdArray* positions,GdString* texture_path,GdInt* layer_index) {
-	 extMgr->place_tiles_with_layer(*positions, *texture_path, *layer_index);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_place_tile(GdVec2* pos,GdString* texture_path) {
-	 extMgr->place_tile(*pos, *texture_path);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_place_tile_with_layer(GdVec2* pos,GdString* texture_path,GdInt* layer_index) {
-	 extMgr->place_tile_with_layer(*pos, *texture_path, *layer_index);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_erase_tile(GdVec2* pos) {
-	 extMgr->erase_tile(*pos);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_erase_tile_with_layer(GdVec2* pos,GdInt* layer_index) {
-	 extMgr->erase_tile_with_layer(*pos, *layer_index);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_get_tile(GdVec2* pos,GdString* ret_val) {
-	*ret_val = extMgr->get_tile(*pos);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_get_tile_with_layer(GdVec2* pos,GdInt* layer_index,GdString* ret_val) {
-	*ret_val = extMgr->get_tile_with_layer(*pos, *layer_index);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_close_draw_tiles() {
-	 extMgr->close_draw_tiles();
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_exit_tilemap_editor_mode() {
-	 extMgr->exit_tilemap_editor_mode();
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_clear_pure_sprites() {
-	 extMgr->clear_pure_sprites();
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_create_pure_sprite(GdString* texture_path,GdVec2* pos,GdInt* zindex) {
-	 extMgr->create_pure_sprite(*texture_path, *pos, *zindex);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_create_render_sprite(GdString* texture_path,GdVec2* pos,GdFloat* degree,GdVec2* scale,GdInt* zindex,GdVec2* pivot,GdObj* ret_val) {
-	*ret_val = extMgr->create_render_sprite(*texture_path, *pos, *degree, *scale, *zindex, *pivot);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_create_static_sprite(GdString* texture_path,GdVec2* pos,GdFloat* degree,GdVec2* scale,GdInt* zindex,GdVec2* pivot,GdInt* collider_type,GdVec2* collider_pivot,GdArray* collider_params,GdObj* ret_val) {
-	*ret_val = extMgr->create_static_sprite(*texture_path, *pos, *degree, *scale, *zindex, *pivot, *collider_type, *collider_pivot, *collider_params);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_destroy_pure_sprite(GdObj* id) {
-	 extMgr->destroy_pure_sprite(*id);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_setup_path_finder_with_size(GdVec2* grid_size,GdVec2* cell_size,GdBool* with_jump,GdBool* with_debug) {
-	 extMgr->setup_path_finder_with_size(*grid_size, *cell_size, *with_jump, *with_debug);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_setup_path_finder(GdBool* with_jump) {
-	 extMgr->setup_path_finder(*with_jump);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_set_obstacle(GdObj* obj,GdBool* enabled) {
-	 extMgr->set_obstacle(*obj, *enabled);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_ext_find_path(GdVec2* p_from,GdVec2* p_to,GdBool* with_jump,GdArray* ret_val) {
-	*ret_val = extMgr->find_path(*p_from, *p_to, *with_jump);
 }
 EMSCRIPTEN_KEEPALIVE
 void gdspx_ext_set_layer_sorter_mode(GdInt* mode) {
@@ -393,6 +245,74 @@ void gdspx_input_is_action_just_pressed(GdString* action,GdBool* ret_val) {
 EMSCRIPTEN_KEEPALIVE
 void gdspx_input_is_action_just_released(GdString* action,GdBool* ret_val) {
 	*ret_val = inputMgr->is_action_just_released(*action);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_navigation_setup_path_finder_with_size(GdVec2* grid_size,GdVec2* cell_size,GdBool* with_jump,GdBool* with_debug) {
+	 navigationMgr->setup_path_finder_with_size(*grid_size, *cell_size, *with_jump, *with_debug);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_navigation_setup_path_finder(GdBool* with_jump) {
+	 navigationMgr->setup_path_finder(*with_jump);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_navigation_set_obstacle(GdObj* obj,GdBool* enabled) {
+	 navigationMgr->set_obstacle(*obj, *enabled);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_navigation_find_path(GdVec2* p_from,GdVec2* p_to,GdBool* with_jump,GdArray* ret_val) {
+	*ret_val = navigationMgr->find_path(*p_from, *p_to, *with_jump);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_pen_destroy_all_pens() {
+	 penMgr->destroy_all_pens();
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_pen_create_pen(GdObj* ret_val) {
+	*ret_val = penMgr->create_pen();
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_pen_destroy_pen(GdObj* obj) {
+	 penMgr->destroy_pen(*obj);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_pen_pen_stamp(GdObj* obj) {
+	 penMgr->pen_stamp(*obj);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_pen_move_pen_to(GdObj* obj,GdVec2* position) {
+	 penMgr->move_pen_to(*obj, *position);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_pen_pen_down(GdObj* obj,GdBool* move_by_mouse) {
+	 penMgr->pen_down(*obj, *move_by_mouse);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_pen_pen_up(GdObj* obj) {
+	 penMgr->pen_up(*obj);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_pen_set_pen_color_to(GdObj* obj,GdColor* color) {
+	 penMgr->set_pen_color_to(*obj, *color);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_pen_change_pen_by(GdObj* obj,GdInt* property,GdFloat* amount) {
+	 penMgr->change_pen_by(*obj, *property, *amount);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_pen_set_pen_to(GdObj* obj,GdInt* property,GdFloat* value) {
+	 penMgr->set_pen_to(*obj, *property, *value);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_pen_change_pen_size_by(GdObj* obj,GdFloat* amount) {
+	 penMgr->change_pen_size_by(*obj, *amount);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_pen_set_pen_size_to(GdObj* obj,GdFloat* size) {
+	 penMgr->set_pen_size_to(*obj, *size);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_pen_set_pen_stamp_texture(GdObj* obj,GdString* texture_path) {
+	 penMgr->set_pen_stamp_texture(*obj, *texture_path);
 }
 EMSCRIPTEN_KEEPALIVE
 void gdspx_physic_raycast(GdVec2* from,GdVec2* to,GdInt* collision_mask,GdObj* ret_val) {
@@ -569,6 +489,26 @@ void gdspx_scene_reload_current_scene(GdInt* ret_val) {
 EMSCRIPTEN_KEEPALIVE
 void gdspx_scene_unload_current_scene() {
 	 sceneMgr->unload_current_scene();
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_scene_clear_pure_sprites() {
+	 sceneMgr->clear_pure_sprites();
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_scene_create_pure_sprite(GdString* texture_path,GdVec2* pos,GdInt* zindex) {
+	 sceneMgr->create_pure_sprite(*texture_path, *pos, *zindex);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_scene_destroy_pure_sprite(GdObj* id) {
+	 sceneMgr->destroy_pure_sprite(*id);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_scene_create_render_sprite(GdString* texture_path,GdVec2* pos,GdFloat* degree,GdVec2* scale,GdInt* zindex,GdVec2* pivot,GdObj* ret_val) {
+	*ret_val = sceneMgr->create_render_sprite(*texture_path, *pos, *degree, *scale, *zindex, *pivot);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_scene_create_static_sprite(GdString* texture_path,GdVec2* pos,GdFloat* degree,GdVec2* scale,GdInt* zindex,GdVec2* pivot,GdInt* collider_type,GdVec2* collider_pivot,GdArray* collider_params,GdObj* ret_val) {
+	*ret_val = sceneMgr->create_static_sprite(*texture_path, *pos, *degree, *scale, *zindex, *pivot, *collider_type, *collider_pivot, *collider_params);
 }
 EMSCRIPTEN_KEEPALIVE
 void gdspx_sprite_set_dont_destroy_on_load(GdObj* obj) {
@@ -1045,6 +985,74 @@ void gdspx_sprite_check_collision_by_alpha(GdObj* obj,GdFloat* alpha_threshold,G
 EMSCRIPTEN_KEEPALIVE
 void gdspx_sprite_check_collision_with_sprite_by_alpha(GdObj* obj,GdObj* obj_b,GdFloat* alpha_threshold,GdBool* ret_val) {
 	*ret_val = spriteMgr->check_collision_with_sprite_by_alpha(*obj, *obj_b, *alpha_threshold);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_tilemap_open_draw_tiles_with_size(GdInt* tile_size) {
+	 tilemapMgr->open_draw_tiles_with_size(*tile_size);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_tilemap_open_draw_tiles() {
+	 tilemapMgr->open_draw_tiles();
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_tilemap_set_layer_index(GdInt* index) {
+	 tilemapMgr->set_layer_index(*index);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_tilemap_set_tile(GdString* texture_path,GdBool* with_collision) {
+	 tilemapMgr->set_tile(*texture_path, *with_collision);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_tilemap_set_tile_with_collision_info(GdString* texture_path,GdArray* collision_points) {
+	 tilemapMgr->set_tile_with_collision_info(*texture_path, *collision_points);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_tilemap_set_layer_offset(GdInt* index,GdVec2* offset) {
+	 tilemapMgr->set_layer_offset(*index, *offset);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_tilemap_get_layer_offset(GdInt* index,GdVec2* ret_val) {
+	*ret_val = tilemapMgr->get_layer_offset(*index);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_tilemap_place_tiles(GdArray* positions,GdString* texture_path) {
+	 tilemapMgr->place_tiles(*positions, *texture_path);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_tilemap_place_tiles_with_layer(GdArray* positions,GdString* texture_path,GdInt* layer_index) {
+	 tilemapMgr->place_tiles_with_layer(*positions, *texture_path, *layer_index);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_tilemap_place_tile(GdVec2* pos,GdString* texture_path) {
+	 tilemapMgr->place_tile(*pos, *texture_path);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_tilemap_place_tile_with_layer(GdVec2* pos,GdString* texture_path,GdInt* layer_index) {
+	 tilemapMgr->place_tile_with_layer(*pos, *texture_path, *layer_index);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_tilemap_erase_tile(GdVec2* pos) {
+	 tilemapMgr->erase_tile(*pos);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_tilemap_erase_tile_with_layer(GdVec2* pos,GdInt* layer_index) {
+	 tilemapMgr->erase_tile_with_layer(*pos, *layer_index);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_tilemap_get_tile(GdVec2* pos,GdString* ret_val) {
+	*ret_val = tilemapMgr->get_tile(*pos);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_tilemap_get_tile_with_layer(GdVec2* pos,GdInt* layer_index,GdString* ret_val) {
+	*ret_val = tilemapMgr->get_tile_with_layer(*pos, *layer_index);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_tilemap_close_draw_tiles() {
+	 tilemapMgr->close_draw_tiles();
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_tilemap_exit_tilemap_editor_mode() {
+	 tilemapMgr->exit_tilemap_editor_mode();
 }
 EMSCRIPTEN_KEEPALIVE
 void gdspx_ui_bind_node(GdObj* obj,GdString* rel_path,GdObj* ret_val) {

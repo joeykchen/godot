@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  spx_ext_mgr.cpp                                                    */
+/*  spx_nav_mgr.h                                                         */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,69 +28,28 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "spx_ext_mgr.h"
-#include "core/input/input_event.h"
-#include "core/math/color.h"
+#ifndef SPX_NAV_MGR_H
+#define SPX_NAV_MGR_H
+
 #include "gdextension_spx_ext.h"
-#include "scene/2d/line_2d.h"
-#include "scene/2d/sprite_2d.h"
-#include "scene/2d/polygon_2d.h"
-#include "scene/2d/physics/static_body_2d.h"
-#include "scene/2d/physics/collision_shape_2d.h"
-#include "scene/resources/2d/capsule_shape_2d.h"
-#include "scene/resources/2d/circle_shape_2d.h"
-#include "scene/resources/2d/rectangle_shape_2d.h"
-#include "spx.h"
-#include "spx_engine.h"
-#include "spx_pen.h"
-#include "spx_res_mgr.h"
-#include "spx_sprite.h"
-#include "spx_draw_tiles.h"
-#include "spx_layer_sorter.h"
-#include "spx_physic_mgr.h"
+#include "spx_base_mgr.h"
+#include "spx_path_finder.h"
 
-#include <cmath>
+class SpxNavigationMgr : SpxBaseMgr {
+	SPXCLASS(SpxNavigationMgr, SpxBaseMgr)
+public:
+	virtual ~SpxNavigationMgr() = default;
 
+private:
+	Ref<SpxPathFinder> path_finder;
+	const GdVec2 default_grid_size{100, 100};
+	const GdVec2 default_cell_size{16, 16};
 
-void SpxExtMgr::request_exit(GdInt exit_code) {
-	auto callback = SpxEngine::get_singleton()->get_on_runtime_exit();
-	if (callback != nullptr) {
-		callback(exit_code);
-	}	
-	
-	SpxEngine::get_singleton()->on_exit(exit_code);
-	get_tree()->quit(exit_code);
-}
+public:
+	void setup_path_finder_with_size(GdVec2 grid_size, GdVec2 cell_size, GdBool with_jump, GdBool with_debug);
+	void setup_path_finder(GdBool with_jump);
+	void set_obstacle(GdObj obj, GdBool enabled);
+	GdArray find_path(GdVec2 p_from, GdVec2 p_to, GdBool with_jump);
+};
 
-void SpxExtMgr::on_runtime_panic(GdString msg) {
-	auto msg_str = SpxStr(msg);
-	auto callback = SpxEngine::get_singleton()->get_on_runtime_panic();
-	if (callback != nullptr) {
-		auto str = SpxReturnStr(msg_str);
-		callback(str);
-	}
-}
-
-
-
-// Pause API implementations - delegate to Spx layer
-void SpxExtMgr::pause() {
-	Spx::pause();
-}
-
-void SpxExtMgr::resume() {
-	Spx::resume();
-}
-
-GdBool SpxExtMgr::is_paused() {
-	return Spx::is_paused();
-}
-
-void SpxExtMgr::next_frame() {
-	Spx::next_frame();
-}
-
-
-void SpxExtMgr::set_layer_sorter_mode(GdInt mode) {
-	SpxLayerSorter::instance().set_mode((LayerSortMode)mode);
-}
+#endif // SPX_NAV_MGR_H

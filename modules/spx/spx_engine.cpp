@@ -45,6 +45,10 @@
 #include "spx_platform_mgr.h"
 #include "spx_res_mgr.h"
 #include "spx_ext_mgr.h"
+#include "spx_debug_mgr.h"
+#include "spx_navigation_mgr.h"
+#include "spx_pen_mgr.h"
+#include "spx_tilemap_mgr.h"
 SpxEngine *SpxEngine::singleton = nullptr;
 
 void SpxEngine::register_runtime_panic_callbacks(GDExtensionSpxGlobalRuntimePanicCallback callback) {
@@ -129,6 +133,14 @@ void SpxEngine::register_callbacks(GDExtensionSpxCallbackInfoPtr callback_ptr) {
 	singleton->mgrs.append((SpxBaseMgr *)singleton->res);
 	singleton->ext = memnew(SpxExtMgr);
 	singleton->mgrs.append((SpxBaseMgr *)singleton->ext);
+	singleton->debug = memnew(SpxDebugMgr);
+	singleton->mgrs.append((SpxBaseMgr *)singleton->debug);
+	singleton->navigation = memnew(SpxNavigationMgr);
+	singleton->mgrs.append((SpxBaseMgr *)singleton->navigation);
+	singleton->pen = memnew(SpxPenMgr);
+	singleton->mgrs.append((SpxBaseMgr *)singleton->pen);
+	singleton->tilemap = memnew(SpxTilemapMgr);
+	singleton->mgrs.append((SpxBaseMgr *)singleton->tilemap);
 	
 	singleton->callbacks = *(SpxCallbackInfo *)callback_ptr;
 	singleton->global_id = 1;
@@ -257,7 +269,7 @@ void SpxEngine::on_destroy() {
 	
 	// Destroy svg global manager
 	svgMgr->destroy();
-	
+
 	memdelete(input);
 	memdelete(audio);
 	memdelete(physic);
@@ -268,6 +280,10 @@ void SpxEngine::on_destroy() {
 	memdelete(platform);
 	memdelete(res);
 	memdelete(ext);
+	memdelete(debug);
+	memdelete(navigation);
+	memdelete(pen);
+	memdelete(tilemap);
 	mgrs.clear();
 	singleton = nullptr;
 }

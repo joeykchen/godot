@@ -233,6 +233,42 @@ gdspx_camera_get_viewport_rect() {
 	FreeGdRect2(_retValue); 
 	return _finalRetValue
 }
+gdspx_debug_debug_draw_circle(pos,radius,color) {
+	var _gdFuncPtr = Module._gdspx_debug_debug_draw_circle; 
+	
+	var _arg0 = ToGdVec2(pos);
+	var _arg1 = ToGdFloat(radius);
+	var _arg2 = ToGdColor(color);
+	_gdFuncPtr(_arg0, _arg1, _arg2);
+	FreeGdVec2(_arg0); 
+	FreeGdFloat(_arg1); 
+	FreeGdColor(_arg2); 
+
+}
+gdspx_debug_debug_draw_rect(pos,size,color) {
+	var _gdFuncPtr = Module._gdspx_debug_debug_draw_rect; 
+	
+	var _arg0 = ToGdVec2(pos);
+	var _arg1 = ToGdVec2(size);
+	var _arg2 = ToGdColor(color);
+	_gdFuncPtr(_arg0, _arg1, _arg2);
+	FreeGdVec2(_arg0); 
+	FreeGdVec2(_arg1); 
+	FreeGdColor(_arg2); 
+
+}
+gdspx_debug_debug_draw_line(from,to,color) {
+	var _gdFuncPtr = Module._gdspx_debug_debug_draw_line; 
+	
+	var _arg0 = ToGdVec2(from);
+	var _arg1 = ToGdVec2(to);
+	var _arg2 = ToGdColor(color);
+	_gdFuncPtr(_arg0, _arg1, _arg2);
+	FreeGdVec2(_arg0); 
+	FreeGdVec2(_arg1); 
+	FreeGdColor(_arg2); 
+
+}
 gdspx_ext_request_exit(exit_code) {
 	var _gdFuncPtr = Module._gdspx_ext_request_exit; 
 	
@@ -274,440 +310,6 @@ gdspx_ext_next_frame() {
 	
 	_gdFuncPtr();
 
-}
-gdspx_ext_destroy_all_pens() {
-	var _gdFuncPtr = Module._gdspx_ext_destroy_all_pens; 
-	
-	_gdFuncPtr();
-
-}
-gdspx_ext_create_pen() {
-	var _gdFuncPtr = Module._gdspx_ext_create_pen; 
-	var _retValue = AllocGdObj();
-	_gdFuncPtr(_retValue);
-	var _finalRetValue = ToJsObj(_retValue);
-	FreeGdObj(_retValue); 
-	return _finalRetValue
-}
-gdspx_ext_destroy_pen(obj) {
-	var _gdFuncPtr = Module._gdspx_ext_destroy_pen; 
-	
-	var _arg0 = ToGdObj(obj);
-	_gdFuncPtr(_arg0);
-	FreeGdObj(_arg0); 
-
-}
-gdspx_ext_pen_stamp(obj) {
-	var _gdFuncPtr = Module._gdspx_ext_pen_stamp; 
-	
-	var _arg0 = ToGdObj(obj);
-	_gdFuncPtr(_arg0);
-	FreeGdObj(_arg0); 
-
-}
-gdspx_ext_move_pen_to(obj,position) {
-	var _gdFuncPtr = Module._gdspx_ext_move_pen_to; 
-	
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdVec2(position);
-	_gdFuncPtr(_arg0, _arg1);
-	FreeGdObj(_arg0); 
-	FreeGdVec2(_arg1); 
-
-}
-gdspx_ext_pen_down(obj,move_by_mouse) {
-	var _gdFuncPtr = Module._gdspx_ext_pen_down; 
-	
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdBool(move_by_mouse);
-	_gdFuncPtr(_arg0, _arg1);
-	FreeGdObj(_arg0); 
-	FreeGdBool(_arg1); 
-
-}
-gdspx_ext_pen_up(obj) {
-	var _gdFuncPtr = Module._gdspx_ext_pen_up; 
-	
-	var _arg0 = ToGdObj(obj);
-	_gdFuncPtr(_arg0);
-	FreeGdObj(_arg0); 
-
-}
-gdspx_ext_set_pen_color_to(obj,color) {
-	var _gdFuncPtr = Module._gdspx_ext_set_pen_color_to; 
-	
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdColor(color);
-	_gdFuncPtr(_arg0, _arg1);
-	FreeGdObj(_arg0); 
-	FreeGdColor(_arg1); 
-
-}
-gdspx_ext_change_pen_by(obj,property,amount) {
-	var _gdFuncPtr = Module._gdspx_ext_change_pen_by; 
-	
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdInt(property);
-	var _arg2 = ToGdFloat(amount);
-	_gdFuncPtr(_arg0, _arg1, _arg2);
-	FreeGdObj(_arg0); 
-	FreeGdInt(_arg1); 
-	FreeGdFloat(_arg2); 
-
-}
-gdspx_ext_set_pen_to(obj,property,value) {
-	var _gdFuncPtr = Module._gdspx_ext_set_pen_to; 
-	
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdInt(property);
-	var _arg2 = ToGdFloat(value);
-	_gdFuncPtr(_arg0, _arg1, _arg2);
-	FreeGdObj(_arg0); 
-	FreeGdInt(_arg1); 
-	FreeGdFloat(_arg2); 
-
-}
-gdspx_ext_change_pen_size_by(obj,amount) {
-	var _gdFuncPtr = Module._gdspx_ext_change_pen_size_by; 
-	
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdFloat(amount);
-	_gdFuncPtr(_arg0, _arg1);
-	FreeGdObj(_arg0); 
-	FreeGdFloat(_arg1); 
-
-}
-gdspx_ext_set_pen_size_to(obj,size) {
-	var _gdFuncPtr = Module._gdspx_ext_set_pen_size_to; 
-	
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdFloat(size);
-	_gdFuncPtr(_arg0, _arg1);
-	FreeGdObj(_arg0); 
-	FreeGdFloat(_arg1); 
-
-}
-gdspx_ext_set_pen_stamp_texture(obj,texture_path) {
-	var _gdFuncPtr = Module._gdspx_ext_set_pen_stamp_texture; 
-	
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdString(texture_path);
-	_gdFuncPtr(_arg0, _arg1);
-	FreeGdObj(_arg0); 
-	FreeGdString(_arg1); 
-
-}
-gdspx_ext_debug_draw_circle(pos,radius,color) {
-	var _gdFuncPtr = Module._gdspx_ext_debug_draw_circle; 
-	
-	var _arg0 = ToGdVec2(pos);
-	var _arg1 = ToGdFloat(radius);
-	var _arg2 = ToGdColor(color);
-	_gdFuncPtr(_arg0, _arg1, _arg2);
-	FreeGdVec2(_arg0); 
-	FreeGdFloat(_arg1); 
-	FreeGdColor(_arg2); 
-
-}
-gdspx_ext_debug_draw_rect(pos,size,color) {
-	var _gdFuncPtr = Module._gdspx_ext_debug_draw_rect; 
-	
-	var _arg0 = ToGdVec2(pos);
-	var _arg1 = ToGdVec2(size);
-	var _arg2 = ToGdColor(color);
-	_gdFuncPtr(_arg0, _arg1, _arg2);
-	FreeGdVec2(_arg0); 
-	FreeGdVec2(_arg1); 
-	FreeGdColor(_arg2); 
-
-}
-gdspx_ext_debug_draw_line(from,to,color) {
-	var _gdFuncPtr = Module._gdspx_ext_debug_draw_line; 
-	
-	var _arg0 = ToGdVec2(from);
-	var _arg1 = ToGdVec2(to);
-	var _arg2 = ToGdColor(color);
-	_gdFuncPtr(_arg0, _arg1, _arg2);
-	FreeGdVec2(_arg0); 
-	FreeGdVec2(_arg1); 
-	FreeGdColor(_arg2); 
-
-}
-gdspx_ext_open_draw_tiles_with_size(tile_size) {
-	var _gdFuncPtr = Module._gdspx_ext_open_draw_tiles_with_size; 
-	
-	var _arg0 = ToGdInt(tile_size);
-	_gdFuncPtr(_arg0);
-	FreeGdInt(_arg0); 
-
-}
-gdspx_ext_open_draw_tiles() {
-	var _gdFuncPtr = Module._gdspx_ext_open_draw_tiles; 
-	
-	_gdFuncPtr();
-
-}
-gdspx_ext_set_layer_index(index) {
-	var _gdFuncPtr = Module._gdspx_ext_set_layer_index; 
-	
-	var _arg0 = ToGdInt(index);
-	_gdFuncPtr(_arg0);
-	FreeGdInt(_arg0); 
-
-}
-gdspx_ext_set_tile(texture_path,with_collision) {
-	var _gdFuncPtr = Module._gdspx_ext_set_tile; 
-	
-	var _arg0 = ToGdString(texture_path);
-	var _arg1 = ToGdBool(with_collision);
-	_gdFuncPtr(_arg0, _arg1);
-	FreeGdString(_arg0); 
-	FreeGdBool(_arg1); 
-
-}
-gdspx_ext_set_tile_with_collision_info(texture_path,collision_points) {
-	var _gdFuncPtr = Module._gdspx_ext_set_tile_with_collision_info; 
-	
-	var _arg0 = ToGdString(texture_path);
-	var _arg1 = ToGdArray(collision_points);
-	_gdFuncPtr(_arg0, _arg1);
-	FreeGdString(_arg0); 
-	FreeGdArray(_arg1); 
-
-}
-gdspx_ext_set_layer_offset(index,offset) {
-	var _gdFuncPtr = Module._gdspx_ext_set_layer_offset; 
-	
-	var _arg0 = ToGdInt(index);
-	var _arg1 = ToGdVec2(offset);
-	_gdFuncPtr(_arg0, _arg1);
-	FreeGdInt(_arg0); 
-	FreeGdVec2(_arg1); 
-
-}
-gdspx_ext_get_layer_offset(index) {
-	var _gdFuncPtr = Module._gdspx_ext_get_layer_offset; 
-	var _retValue = AllocGdVec2();
-	var _arg0 = ToGdInt(index);
-	_gdFuncPtr(_arg0, _retValue);
-	FreeGdInt(_arg0); 
-	var _finalRetValue = ToJsVec2(_retValue);
-	FreeGdVec2(_retValue); 
-	return _finalRetValue
-}
-gdspx_ext_place_tiles(positions,texture_path) {
-	var _gdFuncPtr = Module._gdspx_ext_place_tiles; 
-	
-	var _arg0 = ToGdArray(positions);
-	var _arg1 = ToGdString(texture_path);
-	_gdFuncPtr(_arg0, _arg1);
-	FreeGdArray(_arg0); 
-	FreeGdString(_arg1); 
-
-}
-gdspx_ext_place_tiles_with_layer(positions,texture_path,layer_index) {
-	var _gdFuncPtr = Module._gdspx_ext_place_tiles_with_layer; 
-	
-	var _arg0 = ToGdArray(positions);
-	var _arg1 = ToGdString(texture_path);
-	var _arg2 = ToGdInt(layer_index);
-	_gdFuncPtr(_arg0, _arg1, _arg2);
-	FreeGdArray(_arg0); 
-	FreeGdString(_arg1); 
-	FreeGdInt(_arg2); 
-
-}
-gdspx_ext_place_tile(pos,texture_path) {
-	var _gdFuncPtr = Module._gdspx_ext_place_tile; 
-	
-	var _arg0 = ToGdVec2(pos);
-	var _arg1 = ToGdString(texture_path);
-	_gdFuncPtr(_arg0, _arg1);
-	FreeGdVec2(_arg0); 
-	FreeGdString(_arg1); 
-
-}
-gdspx_ext_place_tile_with_layer(pos,texture_path,layer_index) {
-	var _gdFuncPtr = Module._gdspx_ext_place_tile_with_layer; 
-	
-	var _arg0 = ToGdVec2(pos);
-	var _arg1 = ToGdString(texture_path);
-	var _arg2 = ToGdInt(layer_index);
-	_gdFuncPtr(_arg0, _arg1, _arg2);
-	FreeGdVec2(_arg0); 
-	FreeGdString(_arg1); 
-	FreeGdInt(_arg2); 
-
-}
-gdspx_ext_erase_tile(pos) {
-	var _gdFuncPtr = Module._gdspx_ext_erase_tile; 
-	
-	var _arg0 = ToGdVec2(pos);
-	_gdFuncPtr(_arg0);
-	FreeGdVec2(_arg0); 
-
-}
-gdspx_ext_erase_tile_with_layer(pos,layer_index) {
-	var _gdFuncPtr = Module._gdspx_ext_erase_tile_with_layer; 
-	
-	var _arg0 = ToGdVec2(pos);
-	var _arg1 = ToGdInt(layer_index);
-	_gdFuncPtr(_arg0, _arg1);
-	FreeGdVec2(_arg0); 
-	FreeGdInt(_arg1); 
-
-}
-gdspx_ext_get_tile(pos) {
-	var _gdFuncPtr = Module._gdspx_ext_get_tile; 
-	var _retValue = AllocGdString();
-	var _arg0 = ToGdVec2(pos);
-	_gdFuncPtr(_arg0, _retValue);
-	FreeGdVec2(_arg0); 
-	var _finalRetValue = ToJsString(_retValue);
-	FreeGdString(_retValue); 
-	return _finalRetValue
-}
-gdspx_ext_get_tile_with_layer(pos,layer_index) {
-	var _gdFuncPtr = Module._gdspx_ext_get_tile_with_layer; 
-	var _retValue = AllocGdString();
-	var _arg0 = ToGdVec2(pos);
-	var _arg1 = ToGdInt(layer_index);
-	_gdFuncPtr(_arg0, _arg1, _retValue);
-	FreeGdVec2(_arg0); 
-	FreeGdInt(_arg1); 
-	var _finalRetValue = ToJsString(_retValue);
-	FreeGdString(_retValue); 
-	return _finalRetValue
-}
-gdspx_ext_close_draw_tiles() {
-	var _gdFuncPtr = Module._gdspx_ext_close_draw_tiles; 
-	
-	_gdFuncPtr();
-
-}
-gdspx_ext_exit_tilemap_editor_mode() {
-	var _gdFuncPtr = Module._gdspx_ext_exit_tilemap_editor_mode; 
-	
-	_gdFuncPtr();
-
-}
-gdspx_ext_clear_pure_sprites() {
-	var _gdFuncPtr = Module._gdspx_ext_clear_pure_sprites; 
-	
-	_gdFuncPtr();
-
-}
-gdspx_ext_create_pure_sprite(texture_path,pos,zindex) {
-	var _gdFuncPtr = Module._gdspx_ext_create_pure_sprite; 
-	
-	var _arg0 = ToGdString(texture_path);
-	var _arg1 = ToGdVec2(pos);
-	var _arg2 = ToGdInt(zindex);
-	_gdFuncPtr(_arg0, _arg1, _arg2);
-	FreeGdString(_arg0); 
-	FreeGdVec2(_arg1); 
-	FreeGdInt(_arg2); 
-
-}
-gdspx_ext_create_render_sprite(texture_path,pos,degree,scale,zindex,pivot) {
-	var _gdFuncPtr = Module._gdspx_ext_create_render_sprite; 
-	var _retValue = AllocGdObj();
-	var _arg0 = ToGdString(texture_path);
-	var _arg1 = ToGdVec2(pos);
-	var _arg2 = ToGdFloat(degree);
-	var _arg3 = ToGdVec2(scale);
-	var _arg4 = ToGdInt(zindex);
-	var _arg5 = ToGdVec2(pivot);
-	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _retValue);
-	FreeGdString(_arg0); 
-	FreeGdVec2(_arg1); 
-	FreeGdFloat(_arg2); 
-	FreeGdVec2(_arg3); 
-	FreeGdInt(_arg4); 
-	FreeGdVec2(_arg5); 
-	var _finalRetValue = ToJsObj(_retValue);
-	FreeGdObj(_retValue); 
-	return _finalRetValue
-}
-gdspx_ext_create_static_sprite(texture_path,pos,degree,scale,zindex,pivot,collider_type,collider_pivot,collider_params) {
-	var _gdFuncPtr = Module._gdspx_ext_create_static_sprite; 
-	var _retValue = AllocGdObj();
-	var _arg0 = ToGdString(texture_path);
-	var _arg1 = ToGdVec2(pos);
-	var _arg2 = ToGdFloat(degree);
-	var _arg3 = ToGdVec2(scale);
-	var _arg4 = ToGdInt(zindex);
-	var _arg5 = ToGdVec2(pivot);
-	var _arg6 = ToGdInt(collider_type);
-	var _arg7 = ToGdVec2(collider_pivot);
-	var _arg8 = ToGdArray(collider_params);
-	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8, _retValue);
-	FreeGdString(_arg0); 
-	FreeGdVec2(_arg1); 
-	FreeGdFloat(_arg2); 
-	FreeGdVec2(_arg3); 
-	FreeGdInt(_arg4); 
-	FreeGdVec2(_arg5); 
-	FreeGdInt(_arg6); 
-	FreeGdVec2(_arg7); 
-	FreeGdArray(_arg8); 
-	var _finalRetValue = ToJsObj(_retValue);
-	FreeGdObj(_retValue); 
-	return _finalRetValue
-}
-gdspx_ext_destroy_pure_sprite(id) {
-	var _gdFuncPtr = Module._gdspx_ext_destroy_pure_sprite; 
-	
-	var _arg0 = ToGdObj(id);
-	_gdFuncPtr(_arg0);
-	FreeGdObj(_arg0); 
-
-}
-gdspx_ext_setup_path_finder_with_size(grid_size,cell_size,with_jump,with_debug) {
-	var _gdFuncPtr = Module._gdspx_ext_setup_path_finder_with_size; 
-	
-	var _arg0 = ToGdVec2(grid_size);
-	var _arg1 = ToGdVec2(cell_size);
-	var _arg2 = ToGdBool(with_jump);
-	var _arg3 = ToGdBool(with_debug);
-	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3);
-	FreeGdVec2(_arg0); 
-	FreeGdVec2(_arg1); 
-	FreeGdBool(_arg2); 
-	FreeGdBool(_arg3); 
-
-}
-gdspx_ext_setup_path_finder(with_jump) {
-	var _gdFuncPtr = Module._gdspx_ext_setup_path_finder; 
-	
-	var _arg0 = ToGdBool(with_jump);
-	_gdFuncPtr(_arg0);
-	FreeGdBool(_arg0); 
-
-}
-gdspx_ext_set_obstacle(obj,enabled) {
-	var _gdFuncPtr = Module._gdspx_ext_set_obstacle; 
-	
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdBool(enabled);
-	_gdFuncPtr(_arg0, _arg1);
-	FreeGdObj(_arg0); 
-	FreeGdBool(_arg1); 
-
-}
-gdspx_ext_find_path(p_from,p_to,with_jump) {
-	var _gdFuncPtr = Module._gdspx_ext_find_path; 
-	var _retValue = AllocGdArray();
-	var _arg0 = ToGdVec2(p_from);
-	var _arg1 = ToGdVec2(p_to);
-	var _arg2 = ToGdBool(with_jump);
-	_gdFuncPtr(_arg0, _arg1, _arg2, _retValue);
-	FreeGdVec2(_arg0); 
-	FreeGdVec2(_arg1); 
-	FreeGdBool(_arg2); 
-	var _finalRetValue = ToJsArray(_retValue);
-	FreeGdArray(_retValue); 
-	return _finalRetValue
 }
 gdspx_ext_set_layer_sorter_mode(mode) {
 	var _gdFuncPtr = Module._gdspx_ext_set_layer_sorter_mode; 
@@ -796,6 +398,174 @@ gdspx_input_is_action_just_released(action) {
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
+}
+gdspx_navigation_setup_path_finder_with_size(grid_size,cell_size,with_jump,with_debug) {
+	var _gdFuncPtr = Module._gdspx_navigation_setup_path_finder_with_size; 
+	
+	var _arg0 = ToGdVec2(grid_size);
+	var _arg1 = ToGdVec2(cell_size);
+	var _arg2 = ToGdBool(with_jump);
+	var _arg3 = ToGdBool(with_debug);
+	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3);
+	FreeGdVec2(_arg0); 
+	FreeGdVec2(_arg1); 
+	FreeGdBool(_arg2); 
+	FreeGdBool(_arg3); 
+
+}
+gdspx_navigation_setup_path_finder(with_jump) {
+	var _gdFuncPtr = Module._gdspx_navigation_setup_path_finder; 
+	
+	var _arg0 = ToGdBool(with_jump);
+	_gdFuncPtr(_arg0);
+	FreeGdBool(_arg0); 
+
+}
+gdspx_navigation_set_obstacle(obj,enabled) {
+	var _gdFuncPtr = Module._gdspx_navigation_set_obstacle; 
+	
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdBool(enabled);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdBool(_arg1); 
+
+}
+gdspx_navigation_find_path(p_from,p_to,with_jump) {
+	var _gdFuncPtr = Module._gdspx_navigation_find_path; 
+	var _retValue = AllocGdArray();
+	var _arg0 = ToGdVec2(p_from);
+	var _arg1 = ToGdVec2(p_to);
+	var _arg2 = ToGdBool(with_jump);
+	_gdFuncPtr(_arg0, _arg1, _arg2, _retValue);
+	FreeGdVec2(_arg0); 
+	FreeGdVec2(_arg1); 
+	FreeGdBool(_arg2); 
+	var _finalRetValue = ToJsArray(_retValue);
+	FreeGdArray(_retValue); 
+	return _finalRetValue
+}
+gdspx_pen_destroy_all_pens() {
+	var _gdFuncPtr = Module._gdspx_pen_destroy_all_pens; 
+	
+	_gdFuncPtr();
+
+}
+gdspx_pen_create_pen() {
+	var _gdFuncPtr = Module._gdspx_pen_create_pen; 
+	var _retValue = AllocGdObj();
+	_gdFuncPtr(_retValue);
+	var _finalRetValue = ToJsObj(_retValue);
+	FreeGdObj(_retValue); 
+	return _finalRetValue
+}
+gdspx_pen_destroy_pen(obj) {
+	var _gdFuncPtr = Module._gdspx_pen_destroy_pen; 
+	
+	var _arg0 = ToGdObj(obj);
+	_gdFuncPtr(_arg0);
+	FreeGdObj(_arg0); 
+
+}
+gdspx_pen_pen_stamp(obj) {
+	var _gdFuncPtr = Module._gdspx_pen_pen_stamp; 
+	
+	var _arg0 = ToGdObj(obj);
+	_gdFuncPtr(_arg0);
+	FreeGdObj(_arg0); 
+
+}
+gdspx_pen_move_pen_to(obj,position) {
+	var _gdFuncPtr = Module._gdspx_pen_move_pen_to; 
+	
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdVec2(position);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdVec2(_arg1); 
+
+}
+gdspx_pen_pen_down(obj,move_by_mouse) {
+	var _gdFuncPtr = Module._gdspx_pen_pen_down; 
+	
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdBool(move_by_mouse);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdBool(_arg1); 
+
+}
+gdspx_pen_pen_up(obj) {
+	var _gdFuncPtr = Module._gdspx_pen_pen_up; 
+	
+	var _arg0 = ToGdObj(obj);
+	_gdFuncPtr(_arg0);
+	FreeGdObj(_arg0); 
+
+}
+gdspx_pen_set_pen_color_to(obj,color) {
+	var _gdFuncPtr = Module._gdspx_pen_set_pen_color_to; 
+	
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdColor(color);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdColor(_arg1); 
+
+}
+gdspx_pen_change_pen_by(obj,property,amount) {
+	var _gdFuncPtr = Module._gdspx_pen_change_pen_by; 
+	
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdInt(property);
+	var _arg2 = ToGdFloat(amount);
+	_gdFuncPtr(_arg0, _arg1, _arg2);
+	FreeGdObj(_arg0); 
+	FreeGdInt(_arg1); 
+	FreeGdFloat(_arg2); 
+
+}
+gdspx_pen_set_pen_to(obj,property,value) {
+	var _gdFuncPtr = Module._gdspx_pen_set_pen_to; 
+	
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdInt(property);
+	var _arg2 = ToGdFloat(value);
+	_gdFuncPtr(_arg0, _arg1, _arg2);
+	FreeGdObj(_arg0); 
+	FreeGdInt(_arg1); 
+	FreeGdFloat(_arg2); 
+
+}
+gdspx_pen_change_pen_size_by(obj,amount) {
+	var _gdFuncPtr = Module._gdspx_pen_change_pen_size_by; 
+	
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdFloat(amount);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdFloat(_arg1); 
+
+}
+gdspx_pen_set_pen_size_to(obj,size) {
+	var _gdFuncPtr = Module._gdspx_pen_set_pen_size_to; 
+	
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdFloat(size);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdFloat(_arg1); 
+
+}
+gdspx_pen_set_pen_stamp_texture(obj,texture_path) {
+	var _gdFuncPtr = Module._gdspx_pen_set_pen_stamp_texture; 
+	
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdString(texture_path);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdString(_arg1); 
+
 }
 gdspx_physic_raycast(from,to,collision_mask) {
 	var _gdFuncPtr = Module._gdspx_physic_raycast; 
@@ -1210,6 +980,78 @@ gdspx_scene_unload_current_scene() {
 	
 	_gdFuncPtr();
 
+}
+gdspx_scene_clear_pure_sprites() {
+	var _gdFuncPtr = Module._gdspx_scene_clear_pure_sprites; 
+	
+	_gdFuncPtr();
+
+}
+gdspx_scene_create_pure_sprite(texture_path,pos,zindex) {
+	var _gdFuncPtr = Module._gdspx_scene_create_pure_sprite; 
+	
+	var _arg0 = ToGdString(texture_path);
+	var _arg1 = ToGdVec2(pos);
+	var _arg2 = ToGdInt(zindex);
+	_gdFuncPtr(_arg0, _arg1, _arg2);
+	FreeGdString(_arg0); 
+	FreeGdVec2(_arg1); 
+	FreeGdInt(_arg2); 
+
+}
+gdspx_scene_destroy_pure_sprite(id) {
+	var _gdFuncPtr = Module._gdspx_scene_destroy_pure_sprite; 
+	
+	var _arg0 = ToGdObj(id);
+	_gdFuncPtr(_arg0);
+	FreeGdObj(_arg0); 
+
+}
+gdspx_scene_create_render_sprite(texture_path,pos,degree,scale,zindex,pivot) {
+	var _gdFuncPtr = Module._gdspx_scene_create_render_sprite; 
+	var _retValue = AllocGdObj();
+	var _arg0 = ToGdString(texture_path);
+	var _arg1 = ToGdVec2(pos);
+	var _arg2 = ToGdFloat(degree);
+	var _arg3 = ToGdVec2(scale);
+	var _arg4 = ToGdInt(zindex);
+	var _arg5 = ToGdVec2(pivot);
+	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _retValue);
+	FreeGdString(_arg0); 
+	FreeGdVec2(_arg1); 
+	FreeGdFloat(_arg2); 
+	FreeGdVec2(_arg3); 
+	FreeGdInt(_arg4); 
+	FreeGdVec2(_arg5); 
+	var _finalRetValue = ToJsObj(_retValue);
+	FreeGdObj(_retValue); 
+	return _finalRetValue
+}
+gdspx_scene_create_static_sprite(texture_path,pos,degree,scale,zindex,pivot,collider_type,collider_pivot,collider_params) {
+	var _gdFuncPtr = Module._gdspx_scene_create_static_sprite; 
+	var _retValue = AllocGdObj();
+	var _arg0 = ToGdString(texture_path);
+	var _arg1 = ToGdVec2(pos);
+	var _arg2 = ToGdFloat(degree);
+	var _arg3 = ToGdVec2(scale);
+	var _arg4 = ToGdInt(zindex);
+	var _arg5 = ToGdVec2(pivot);
+	var _arg6 = ToGdInt(collider_type);
+	var _arg7 = ToGdVec2(collider_pivot);
+	var _arg8 = ToGdArray(collider_params);
+	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8, _retValue);
+	FreeGdString(_arg0); 
+	FreeGdVec2(_arg1); 
+	FreeGdFloat(_arg2); 
+	FreeGdVec2(_arg3); 
+	FreeGdInt(_arg4); 
+	FreeGdVec2(_arg5); 
+	FreeGdInt(_arg6); 
+	FreeGdVec2(_arg7); 
+	FreeGdArray(_arg8); 
+	var _finalRetValue = ToJsObj(_retValue);
+	FreeGdObj(_retValue); 
+	return _finalRetValue
 }
 gdspx_sprite_set_dont_destroy_on_load(obj) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_dont_destroy_on_load; 
@@ -2468,6 +2310,164 @@ gdspx_sprite_check_collision_with_sprite_by_alpha(obj,obj_b,alpha_threshold) {
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
+}
+gdspx_tilemap_open_draw_tiles_with_size(tile_size) {
+	var _gdFuncPtr = Module._gdspx_tilemap_open_draw_tiles_with_size; 
+	
+	var _arg0 = ToGdInt(tile_size);
+	_gdFuncPtr(_arg0);
+	FreeGdInt(_arg0); 
+
+}
+gdspx_tilemap_open_draw_tiles() {
+	var _gdFuncPtr = Module._gdspx_tilemap_open_draw_tiles; 
+	
+	_gdFuncPtr();
+
+}
+gdspx_tilemap_set_layer_index(index) {
+	var _gdFuncPtr = Module._gdspx_tilemap_set_layer_index; 
+	
+	var _arg0 = ToGdInt(index);
+	_gdFuncPtr(_arg0);
+	FreeGdInt(_arg0); 
+
+}
+gdspx_tilemap_set_tile(texture_path,with_collision) {
+	var _gdFuncPtr = Module._gdspx_tilemap_set_tile; 
+	
+	var _arg0 = ToGdString(texture_path);
+	var _arg1 = ToGdBool(with_collision);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdString(_arg0); 
+	FreeGdBool(_arg1); 
+
+}
+gdspx_tilemap_set_tile_with_collision_info(texture_path,collision_points) {
+	var _gdFuncPtr = Module._gdspx_tilemap_set_tile_with_collision_info; 
+	
+	var _arg0 = ToGdString(texture_path);
+	var _arg1 = ToGdArray(collision_points);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdString(_arg0); 
+	FreeGdArray(_arg1); 
+
+}
+gdspx_tilemap_set_layer_offset(index,offset) {
+	var _gdFuncPtr = Module._gdspx_tilemap_set_layer_offset; 
+	
+	var _arg0 = ToGdInt(index);
+	var _arg1 = ToGdVec2(offset);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdInt(_arg0); 
+	FreeGdVec2(_arg1); 
+
+}
+gdspx_tilemap_get_layer_offset(index) {
+	var _gdFuncPtr = Module._gdspx_tilemap_get_layer_offset; 
+	var _retValue = AllocGdVec2();
+	var _arg0 = ToGdInt(index);
+	_gdFuncPtr(_arg0, _retValue);
+	FreeGdInt(_arg0); 
+	var _finalRetValue = ToJsVec2(_retValue);
+	FreeGdVec2(_retValue); 
+	return _finalRetValue
+}
+gdspx_tilemap_place_tiles(positions,texture_path) {
+	var _gdFuncPtr = Module._gdspx_tilemap_place_tiles; 
+	
+	var _arg0 = ToGdArray(positions);
+	var _arg1 = ToGdString(texture_path);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdArray(_arg0); 
+	FreeGdString(_arg1); 
+
+}
+gdspx_tilemap_place_tiles_with_layer(positions,texture_path,layer_index) {
+	var _gdFuncPtr = Module._gdspx_tilemap_place_tiles_with_layer; 
+	
+	var _arg0 = ToGdArray(positions);
+	var _arg1 = ToGdString(texture_path);
+	var _arg2 = ToGdInt(layer_index);
+	_gdFuncPtr(_arg0, _arg1, _arg2);
+	FreeGdArray(_arg0); 
+	FreeGdString(_arg1); 
+	FreeGdInt(_arg2); 
+
+}
+gdspx_tilemap_place_tile(pos,texture_path) {
+	var _gdFuncPtr = Module._gdspx_tilemap_place_tile; 
+	
+	var _arg0 = ToGdVec2(pos);
+	var _arg1 = ToGdString(texture_path);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdVec2(_arg0); 
+	FreeGdString(_arg1); 
+
+}
+gdspx_tilemap_place_tile_with_layer(pos,texture_path,layer_index) {
+	var _gdFuncPtr = Module._gdspx_tilemap_place_tile_with_layer; 
+	
+	var _arg0 = ToGdVec2(pos);
+	var _arg1 = ToGdString(texture_path);
+	var _arg2 = ToGdInt(layer_index);
+	_gdFuncPtr(_arg0, _arg1, _arg2);
+	FreeGdVec2(_arg0); 
+	FreeGdString(_arg1); 
+	FreeGdInt(_arg2); 
+
+}
+gdspx_tilemap_erase_tile(pos) {
+	var _gdFuncPtr = Module._gdspx_tilemap_erase_tile; 
+	
+	var _arg0 = ToGdVec2(pos);
+	_gdFuncPtr(_arg0);
+	FreeGdVec2(_arg0); 
+
+}
+gdspx_tilemap_erase_tile_with_layer(pos,layer_index) {
+	var _gdFuncPtr = Module._gdspx_tilemap_erase_tile_with_layer; 
+	
+	var _arg0 = ToGdVec2(pos);
+	var _arg1 = ToGdInt(layer_index);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdVec2(_arg0); 
+	FreeGdInt(_arg1); 
+
+}
+gdspx_tilemap_get_tile(pos) {
+	var _gdFuncPtr = Module._gdspx_tilemap_get_tile; 
+	var _retValue = AllocGdString();
+	var _arg0 = ToGdVec2(pos);
+	_gdFuncPtr(_arg0, _retValue);
+	FreeGdVec2(_arg0); 
+	var _finalRetValue = ToJsString(_retValue);
+	FreeGdString(_retValue); 
+	return _finalRetValue
+}
+gdspx_tilemap_get_tile_with_layer(pos,layer_index) {
+	var _gdFuncPtr = Module._gdspx_tilemap_get_tile_with_layer; 
+	var _retValue = AllocGdString();
+	var _arg0 = ToGdVec2(pos);
+	var _arg1 = ToGdInt(layer_index);
+	_gdFuncPtr(_arg0, _arg1, _retValue);
+	FreeGdVec2(_arg0); 
+	FreeGdInt(_arg1); 
+	var _finalRetValue = ToJsString(_retValue);
+	FreeGdString(_retValue); 
+	return _finalRetValue
+}
+gdspx_tilemap_close_draw_tiles() {
+	var _gdFuncPtr = Module._gdspx_tilemap_close_draw_tiles; 
+	
+	_gdFuncPtr();
+
+}
+gdspx_tilemap_exit_tilemap_editor_mode() {
+	var _gdFuncPtr = Module._gdspx_tilemap_exit_tilemap_editor_mode; 
+	
+	_gdFuncPtr();
+
 }
 gdspx_ui_bind_node(obj,rel_path) {
 	var _gdFuncPtr = Module._gdspx_ui_bind_node; 

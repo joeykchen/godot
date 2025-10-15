@@ -42,6 +42,7 @@
 #include "spx_engine.h"
 #include "spx_res_mgr.h"
 #include "spx_ext_mgr.h"
+#include "spx_scene_mgr.h"
 #include "spx_physic_mgr.h"
 #include "spx_layer_sorter.h"
 #include "spx_sprite.h"
@@ -49,6 +50,7 @@
 
 #define extMgr SpxEngine::get_singleton()->get_ext()
 #define physicMgr SpxEngine::get_singleton()->get_physic()
+#define sceneMgr SpxEngine::get_singleton()->get_scene()
 #define SPX_CALLBACK SpxEngine::get_singleton()->get_callbacks()
 
 #define DEFAULT_COLLISION_ALPHA_THRESHOLD 0.05
@@ -133,7 +135,7 @@ void SpxSpriteMgr::on_update(float delta) {
 
 	// Add pure sprites from SpxExtMgr
 
-	extMgr->collect_sortable_sprites(all_sortables);
+	sceneMgr->collect_sortable_sprites(all_sortables);
 
 	// Unified sorting
 	SpxLayerSorter::instance().update(all_sortables);
