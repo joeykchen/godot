@@ -233,6 +233,24 @@ gdspx_camera_get_viewport_rect() {
 	FreeGdRect2(_retValue); 
 	return _finalRetValue
 }
+gdspx_camera_set_camera_limit(side,limit) {
+	var _gdFuncPtr = Module._gdspx_camera_set_camera_limit; 
+	
+	var _arg0 = ToGdInt(side);
+	var _arg1 = ToGdInt(limit);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdInt(_arg0); 
+	FreeGdInt(_arg1); 
+
+}
+gdspx_camera_set_camera_smoothing(enabled) {
+	var _gdFuncPtr = Module._gdspx_camera_set_camera_smoothing; 
+	
+	var _arg0 = ToGdBool(enabled);
+	_gdFuncPtr(_arg0);
+	FreeGdBool(_arg0); 
+
+}
 gdspx_debug_debug_draw_circle(pos,radius,color) {
 	var _gdFuncPtr = Module._gdspx_debug_debug_draw_circle; 
 	

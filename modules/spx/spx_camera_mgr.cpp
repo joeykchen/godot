@@ -51,10 +51,6 @@ void SpxCameraMgr::on_awake() {
 	//RenderingServer::get_singleton()->set_default_clear_color(Color(1,1,1,1));
 }
 
-GdRect2 SpxCameraMgr::get_viewport_rect() {
-	return camera->get_viewport_rect();
-}
-
 GdVec2 SpxCameraMgr::get_camera_position() {
 	return camera->get_position();
 }
@@ -69,4 +65,16 @@ GdVec2 SpxCameraMgr::get_camera_zoom() {
 
 void SpxCameraMgr::set_camera_zoom(GdVec2 size) {
 	camera->set_zoom(size);
+}
+
+GdRect2 SpxCameraMgr::get_viewport_rect() {
+	return camera->get_viewport_rect();
+}
+
+void SpxCameraMgr::set_camera_limit(GdInt side, GdInt limit) {
+	camera->set_limit((Side)side, limit);
+}
+
+void SpxCameraMgr::set_camera_smoothing(GdBool enabled) {
+	camera->set_position_smoothing_enabled(enabled);
 }

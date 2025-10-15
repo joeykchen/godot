@@ -175,6 +175,14 @@ void gdspx_camera_get_viewport_rect(GdRect2* ret_val) {
 	*ret_val = cameraMgr->get_viewport_rect();
 }
 EMSCRIPTEN_KEEPALIVE
+void gdspx_camera_set_camera_limit(GdInt* side,GdInt* limit) {
+	 cameraMgr->set_camera_limit(*side, *limit);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_camera_set_camera_smoothing(GdBool* enabled) {
+	 cameraMgr->set_camera_smoothing(*enabled);
+}
+EMSCRIPTEN_KEEPALIVE
 void gdspx_debug_debug_draw_circle(GdVec2* pos,GdFloat* radius,GdColor* color) {
 	 debugMgr->debug_draw_circle(*pos, *radius, *color);
 }
