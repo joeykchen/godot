@@ -44,9 +44,6 @@
 #include "spx_res_mgr.h"
 #include "spx_base_mgr.h"
 
-// Static member variable definitions
-Vector<Vector2> SpxDrawTiles::default_collision_rect = {};
-Vector<Vector2> SpxDrawTiles::no_collision_array = {};
 
 void LayerRenderer::_draw_axis(Node2D *parent_node, const DrawContext &ctx) {
 	Vector2 origin = ctx.layer_pos;
@@ -357,7 +354,6 @@ void SpxDrawTiles::save_full_scene(Node *root) {
     }
 
     SubViewport *viewport = memnew(SubViewport);
-    //viewport->set_disable_3d(true);
     viewport->set_size(rect.size);
     viewport->set_update_mode(SubViewport::UPDATE_ALWAYS);
     viewport->set_clear_mode(SubViewport::CLEAR_MODE_ALWAYS);
@@ -379,7 +375,6 @@ void SpxDrawTiles::request_export(SubViewport *viewport) {
 
 void SpxDrawTiles::export_vp_png(SubViewport *viewport) {
 	Ref<Image> image = viewport->get_texture()->get_image();
-	//image->flip_y();
 	Error err = image->save_png(DEFAULT_SAVE_PATH);
 	String full_path = ProjectSettings::get_singleton()->globalize_path(DEFAULT_SAVE_PATH);
 	if (err == OK) {
@@ -611,9 +606,6 @@ int SpxDrawTiles::_get_or_create_source_id_with_collision(Ref<Texture2D> scaled_
     }
 
     shared_tile_set->add_source(atlas_source, id);
-    bool has_collision = collision_points && collision_points->size() > 0;
-    source_id_collision_map[id] = has_collision;
-
     return id;
 }
 
