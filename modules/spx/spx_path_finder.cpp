@@ -37,10 +37,12 @@
 #include "spx_sprite.h"
 #include "spx_base_mgr.h"
 #include "spx_sprite_mgr.h"
+#include "spx_scene_mgr.h"
 #include "spx_engine.h"
 #include "spx_path_finder.h"
 
 #define spriteMgr SpxEngine::get_singleton()->get_sprite()
+#define sceneMgr SpxEngine::get_singleton()->get_scene()
 
 void SpxPathFinder::_bind_methods() {
     ClassDB::bind_method(D_METHOD("setup_grid", "size", "cell_size", "with_debug"), &SpxPathFinder::setup);
@@ -354,62 +356,7 @@ void SpxPathFinder::_process_sprite_obstacle(GdObj obj, bool add) {
 }
 
 Rect2 SpxPathFinder::_get_scene_bounds(Node *node) {
-	Rect2 total_rect;
-    Rect2 cur_rect;
-    bool first = true;
-
-    for (int i = 0; i < node->get_child_count(); i++) {
-        Node *child = node->get_child(i);
-
-        if (TileMapLayer *tml = Object::cast_to<TileMapLayer>(child)) {
-            Rect2 tml_rect = _get_tilemap_bounds(tml);
-
-            tml_rect.position = tml->get_global_transform().xform(tml_rect.position);
-            cur_rect = tml_rect;
-
-        } else if (SpxSprite *sp = Object::cast_to<SpxSprite>(child)) {
-
-            cur_rect = sp->get_rect();   
-            
-        } else{
-            // other objects...
-        }
-
-        if (first) {
-            first = false;
-            total_rect = cur_rect;
-        } else {
-            total_rect = total_rect.merge(cur_rect);
-        }
-
-        Rect2 child_rect = _get_scene_bounds(child);
-        if (child_rect.size != Vector2(0, 0)) {
-            if (first) {
-                total_rect = child_rect;
-                first = false;
-            } else {
-                total_rect = total_rect.merge(child_rect);
-            }
-        }
-    }
-
-    return total_rect;
-}
-
-Rect2 SpxPathFinder::_get_tilemap_bounds(TileMapLayer *layer) {
-	if (!layer) return Rect2();
-
-    Rect2i used = layer->get_used_rect();
-
-    if (used.size == Vector2i(0, 0)) {
-        return Rect2();
-    }
-
-    Vector2 top_left = layer->map_to_local(used.position);
-    Vector2 bottom_right = layer->map_to_local(used.position + used.size);
-
-    Rect2 rect(top_left - cached_cell_size / 2, bottom_right - top_left);
-    return rect;
+    return sceneMgr->get_scene_bounds(node);
 }
 
 

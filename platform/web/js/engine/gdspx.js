@@ -233,6 +233,14 @@ gdspx_camera_get_viewport_rect() {
 	FreeGdRect2(_retValue); 
 	return _finalRetValue
 }
+gdspx_camera_get_global_camera_rect() {
+	var _gdFuncPtr = Module._gdspx_camera_get_global_camera_rect; 
+	var _retValue = AllocGdRect2();
+	_gdFuncPtr(_retValue);
+	var _finalRetValue = ToJsRect2(_retValue);
+	FreeGdRect2(_retValue); 
+	return _finalRetValue
+}
 gdspx_camera_set_camera_limit(side,limit) {
 	var _gdFuncPtr = Module._gdspx_camera_set_camera_limit; 
 	

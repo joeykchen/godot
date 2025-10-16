@@ -35,18 +35,29 @@
 #include "spx_base_mgr.h"
 
 class ISortableSprite;
+class TileMapLayer;
+
 class SpxSceneMgr : SpxBaseMgr {
 	SPXCLASS(SpxSceneMgr, SpxBaseMgr)
-
+private:	 
+	Vector2 cached_cell_size{16, 16};
 public:
 	// Pure sprite management (kept in SpxExtMgr)
 	Node *pure_sprite_root;
 	RBMap<GdObj, ISortableSprite*> id_pure_sprites;
 
 	void on_awake() override;
+	void on_update(float delta) override;
 	void on_destroy() override;
 
 	void collect_sortable_sprites(Vector<ISortableSprite*>& out);
+
+	_FORCE_INLINE_ void set_cached_cell_size(Vector2 cell_size){
+		cached_cell_size = cell_size;
+	}
+	Rect2 get_scene_bounds(Node *node);
+	Rect2 get_tilemap_bounds(TileMapLayer *layer);
+
 public:
 	virtual ~SpxSceneMgr() = default; // Added virtual destructor to fix -Werror=non-virtual-dtor
 

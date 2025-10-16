@@ -105,7 +105,6 @@ private:
 	void _process_sprite_obstacle(GdObj obj, bool add);
 
     Rect2 _get_scene_bounds(Node *root);
-    Rect2 _get_tilemap_bounds(TileMapLayer *layer);
 };
 
 class PathDebugDrawer : public Node2D {

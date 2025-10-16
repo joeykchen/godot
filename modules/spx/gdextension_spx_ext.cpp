@@ -141,6 +141,9 @@ static void gdextension_spx_camera_set_camera_zoom(GdVec2 size) {
 static void gdextension_spx_camera_get_viewport_rect(GdRect2* ret_val) {
 	*ret_val = cameraMgr->get_viewport_rect();
 }
+static void gdextension_spx_camera_get_global_camera_rect(GdRect2* ret_val) {
+	*ret_val = cameraMgr->get_global_camera_rect();
+}
 static void gdextension_spx_camera_set_camera_limit(GdInt side,GdInt limit) {
 	 cameraMgr->set_camera_limit(side, limit);
 }
@@ -963,6 +966,7 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_camera_get_camera_zoom);
 	REGISTER_SPX_INTERFACE_FUNC(spx_camera_set_camera_zoom);
 	REGISTER_SPX_INTERFACE_FUNC(spx_camera_get_viewport_rect);
+	REGISTER_SPX_INTERFACE_FUNC(spx_camera_get_global_camera_rect);
 	REGISTER_SPX_INTERFACE_FUNC(spx_camera_set_camera_limit);
 	REGISTER_SPX_INTERFACE_FUNC(spx_camera_set_camera_smoothing);
 	REGISTER_SPX_INTERFACE_FUNC(spx_debug_debug_draw_circle);

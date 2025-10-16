@@ -34,10 +34,9 @@
 #include "scene/2d/node_2d.h"
 #include "scene/2d/sprite_2d.h"
 #include "scene/2d/camera_2d.h"
-#include "scene/2d/tile_map.h"
+#include "scene/2d/tile_map_layer.h"
 #include "scene/resources/2d/tile_set.h"
 #include "core/templates/hash_map.h"
-#include "core/math/a_star_grid_2d.h"
 #include "spx_sprite.h"
 
 
@@ -222,8 +221,8 @@ public:
     void set_texture(Ref<Texture2D> texture, bool with_collision = true);
     void set_texture_with_collision_points(Ref<Texture2D> texture, const Vector<Vector2> *collision_points);
 
-    void place_tile(TileMapLayer* layer, Vector2i coords);
-    void erase_tile(TileMapLayer* layer, Vector2i coords);
+    void place_tile(TileMapLayer *layer, Vector2i coords);
+    void erase_tile(TileMapLayer *layer, Vector2i coords);
     void place_or_erase_tile(Vector2 pos, bool erase);
 
     void undo();
@@ -235,11 +234,13 @@ public:
     _FORCE_INLINE_ void exit_editor_mode(){exit_editor = true; queue_redraw();};
 
 private:
-    TileMapLayer* _get_or_create_layer(int layer_index);
-    TileMapLayer* _get_layer(int layer_index);
-    TileMapLayer* _create_layer(int layer_index);
+    TileMapLayer *_get_or_create_layer(int layer_index);
+    TileMapLayer *_get_layer(int layer_index);
+    TileMapLayer *_create_layer(int layer_index);
+
     int _get_or_create_source_id(Ref<Texture2D> scaled_texture, bool with_collision = true);
     int _get_or_create_source_id_with_collision(Ref<Texture2D> scaled_texture, const Vector<Vector2> *collision_points);
+
     bool _create_tile(Ref<TileSetAtlasSource> atlas_source, const Vector2i &tile_coords, const Vector<Vector2> *collision_points);
     Ref<ImageTexture> _get_or_create_scaled_texture(Ref<Texture2D> texture);
     String _get_tile_texture_path(TileMapLayer* layer, const Vector2i& pos);
@@ -248,7 +249,6 @@ private:
     void _place_tile_spx(GdVec2 pos);
     _FORCE_INLINE_ Vector2 flip_y(const Vector2 &pos) { return pos * Vector2(1, -1); }
 
-    Rect2 _get_bounds(TileMapLayer *layer);
     Rect2 _get_scene_bounds(Node *node);
 
     void _destroy_layers();
