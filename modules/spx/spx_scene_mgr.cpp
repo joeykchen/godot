@@ -95,7 +95,12 @@ void SpxSceneMgr::on_update(float delta) {
 }
 
 void SpxSceneMgr::on_destroy() {
-	clear_pure_sprites();
+	// Clear pure sprites without recreating the root node (we're destroying)
+	id_pure_sprites.clear();
+	SpxLayerSorter::instance().reset();
+	if (pure_sprite_root) {
+		pure_sprite_root->queue_free();
+	}
 	pure_sprite_root = nullptr;
 	SpxBaseMgr::on_destroy();
 }
@@ -103,6 +108,8 @@ void SpxSceneMgr::on_destroy() {
 
 void SpxSceneMgr::clear_pure_sprites(){
 	id_pure_sprites.clear();
+	// Clear SpxLayerSorter to avoid dangling pointers
+	SpxLayerSorter::instance().reset();
 	if (pure_sprite_root) {
 		pure_sprite_root->queue_free();
 		pure_sprite_root = memnew(Node2D);
@@ -123,6 +130,10 @@ void SpxSceneMgr::destroy_pure_sprite(GdObj id) {
 		auto sprite = id_pure_sprites[id];
 		id_pure_sprites.erase(id);
 
+		// Clear SpxLayerSorter to avoid dangling pointers
+		// Note: This is conservative but safe. Could be optimized later with per-id removal.
+		SpxLayerSorter::instance().reset();
+		
 		// Cast to Node2D to remove from scene tree
 		Node2D* node = dynamic_cast<Node2D*>(sprite);
 		if (node && node->is_inside_tree()) {
