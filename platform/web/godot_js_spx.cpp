@@ -175,6 +175,10 @@ void gdspx_camera_get_viewport_rect(GdRect2* ret_val) {
 	*ret_val = cameraMgr->get_viewport_rect();
 }
 EMSCRIPTEN_KEEPALIVE
+void gdspx_camera_get_global_camera_rect(GdRect2* ret_val) {
+	*ret_val = cameraMgr->get_global_camera_rect();
+}
+EMSCRIPTEN_KEEPALIVE
 void gdspx_camera_set_camera_limit(GdInt* side,GdInt* limit) {
 	 cameraMgr->set_camera_limit(*side, *limit);
 }

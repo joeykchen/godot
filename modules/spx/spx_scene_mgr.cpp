@@ -64,6 +64,9 @@ void SpxSceneMgr::on_awake() {
 	get_spx_root()->add_child(pure_sprite_root);
 }
 
+void SpxSceneMgr::on_update(float delta) {
+}
+
 void SpxSceneMgr::on_destroy() {
 	clear_pure_sprites();
 	pure_sprite_root = nullptr;
@@ -107,6 +110,65 @@ void SpxSceneMgr::collect_sortable_sprites(Vector<ISortableSprite*>& out) {
 			out.push_back(pair.value);
 		}
 	}
+}
+
+Rect2 SpxSceneMgr::get_scene_bounds(Node *node) {
+	Rect2 total_rect;
+    Rect2 cur_rect;
+    bool first = true;
+
+    for (int i = 0; i < node->get_child_count(); i++) {
+        Node *child = node->get_child(i);
+
+        if (TileMapLayer *tml = Object::cast_to<TileMapLayer>(child)) {
+            Rect2 tml_rect = get_tilemap_bounds(tml);
+
+            tml_rect.position = tml->get_global_transform().xform(tml_rect.position);
+            cur_rect = tml_rect;
+
+        } else if (SpxSprite *sp = Object::cast_to<SpxSprite>(child)) {
+
+            cur_rect = sp->get_rect();   
+            
+        } else{
+            // other objects...
+        }
+
+        if (first) {
+            first = false;
+            total_rect = cur_rect;
+        } else {
+            total_rect = total_rect.merge(cur_rect);
+        }
+
+        Rect2 child_rect = get_scene_bounds(child);
+        if (child_rect.size != Vector2(0, 0)) {
+            if (first) {
+                total_rect = child_rect;
+                first = false;
+            } else {
+                total_rect = total_rect.merge(child_rect);
+            }
+        }
+    }
+
+    return total_rect;
+}
+
+Rect2 SpxSceneMgr::get_tilemap_bounds(TileMapLayer *layer) {
+	if (!layer) return Rect2();
+
+    Rect2i used = layer->get_used_rect();
+
+    if (used.size == Vector2i(0, 0)) {
+        return Rect2();
+    }
+
+    Vector2 top_left = layer->map_to_local(used.position);
+    Vector2 bottom_right = layer->map_to_local(used.position + used.size);
+
+    Rect2 rect(top_left - cached_cell_size / 2, bottom_right - top_left);
+    return rect;
 }
 
 GdObj SpxSceneMgr::create_render_sprite(GdString texture_path, GdVec2 pos, GdFloat degree, GdVec2 scale, GdInt zindex, GdVec2 pivot){
@@ -251,4 +313,3 @@ GdInt SpxSceneMgr::reload_current_scene() {
 void SpxSceneMgr::unload_current_scene() {
 	get_tree()->unload_current_scene();
 }
-

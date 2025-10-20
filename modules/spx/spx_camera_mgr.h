@@ -46,14 +46,14 @@ private:
 	Camera2D *camera = nullptr;
 public:
 	void on_awake() override;
-	Camera2D * get_camera(){ return camera; }
+	Camera2D *get_camera(){ return camera; }
 public:
 	GdVec2 get_camera_position();
 	void set_camera_position(GdVec2 position);
 	GdVec2 get_camera_zoom();
 	void set_camera_zoom(GdVec2 size);
 	GdRect2 get_viewport_rect();
-
+	GdRect2 get_global_camera_rect();
 	void set_camera_limit(GdInt side, GdInt limit);
 	void set_camera_smoothing(GdBool enabled);
 };

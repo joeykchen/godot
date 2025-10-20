@@ -71,6 +71,17 @@ GdRect2 SpxCameraMgr::get_viewport_rect() {
 	return camera->get_viewport_rect();
 }
 
+GdRect2 SpxCameraMgr::get_global_camera_rect() {
+	Viewport *vp = camera->get_viewport();
+	Transform2D screen_to_world = vp->get_canvas_transform().affine_inverse();
+
+	Vector2 vp_size = vp->get_visible_rect().size;
+	Vector2 tl = screen_to_world.xform(Vector2(0, 0));
+	Vector2 br = screen_to_world.xform(vp_size);
+
+	return Rect2(tl, br - tl);
+}
+
 void SpxCameraMgr::set_camera_limit(GdInt side, GdInt limit) {
 	camera->set_limit((Side)side, limit);
 }

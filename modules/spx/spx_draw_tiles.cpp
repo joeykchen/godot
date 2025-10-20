@@ -38,12 +38,14 @@
 #include "scene/resources/2d/rectangle_shape_2d.h"
 #include "scene/resources/world_2d.h"
 #include "scene/gui/color_rect.h"
-#include "spx_draw_tiles.h"
 #include "spx_engine.h"
 #include "spx_ext_mgr.h"
 #include "spx_res_mgr.h"
 #include "spx_base_mgr.h"
+#include "spx_scene_mgr.h"
+#include "spx_draw_tiles.h"
 
+#define sceneMgr SpxEngine::get_singleton()->get_scene()
 
 void LayerRenderer::_draw_axis(Node2D *parent_node, const DrawContext &ctx) {
 	Vector2 origin = ctx.layer_pos;
@@ -666,54 +668,8 @@ String SpxDrawTiles::_get_tile_texture_path(TileMapLayer *layer, const Vector2i 
     return "";
 }
 
-Rect2 SpxDrawTiles::_get_bounds(TileMapLayer *layer) {
-    if (!layer) return Rect2();
-
-    Rect2i used = layer->get_used_rect();
-
-    if (used.size == Vector2i(0, 0)) {
-        return Rect2();
-    }
-
-    Vector2 top_left = layer->map_to_local(used.position);
-    Vector2 bottom_right = layer->map_to_local(used.position + used.size);
-
-    Rect2 rect(top_left - default_cell_size / 2, bottom_right - top_left);
-    return rect;
-}
-
 Rect2 SpxDrawTiles::_get_scene_bounds(Node *node) {
-	Rect2 rect;
-    bool first = true;
-
-    for (int i = 0; i < node->get_child_count(); i++) {
-        Node *child = node->get_child(i);
-
-        if (TileMapLayer *tm = Object::cast_to<TileMapLayer>(child)) {
-            Rect2 tml_rect = _get_bounds(tm);
-
-            tml_rect.position = tm->get_global_transform().xform(tml_rect.position);
-
-            if (first) {
-                rect = tml_rect;
-                first = false;
-            } else {
-                rect = rect.merge(tml_rect);
-            }
-        }
-
-        Rect2 child_rect = _get_scene_bounds(child);
-        if (child_rect.size != Vector2(0, 0)) {
-            if (first) {
-                rect = child_rect;
-                first = false;
-            } else {
-                rect = rect.merge(child_rect);
-            }
-        }
-    }
-
-    return rect;
+    return sceneMgr->get_scene_bounds(node);
 }
 
 void SpxDrawTiles::_destroy_layers(){

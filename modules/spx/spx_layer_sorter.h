@@ -116,7 +116,6 @@ private:
     void _full_sort_dynamic();
     void _apply_z_index_merged();
 
-    Rect2 _get_camera_rect(Camera2D *camera);
     void _create_debug_drawer();
 
 private:

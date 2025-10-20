@@ -47,7 +47,7 @@ void SpxLayerSorter::update(const Vector<ISortableSprite *> &sortables) {
     if(sort_mode == LayerSortMode::NONE) return;
     
     auto camera_mgr = SpxEngine::get_singleton()->get_camera();
-    set_screen_rect(_get_camera_rect(camera_mgr->get_camera()));
+    set_screen_rect(camera_mgr->get_global_camera_rect());
 
     // Uncomment the line below to enable screen visibility callbacks
     //_update_visibility(sortables);
@@ -232,19 +232,6 @@ void SpxLayerSorter::_apply_z_index_merged() {
         }
         ++z;
     }
-}
-
-Rect2 SpxLayerSorter::_get_camera_rect(Camera2D *camera) {
-	if (!camera) return Rect2();
-
-	Viewport *vp = camera->get_viewport();
-	Transform2D screen_to_world = vp->get_canvas_transform().affine_inverse();
-
-	Vector2 vp_size = vp->get_visible_rect().size;
-	Vector2 tl = screen_to_world.xform(Vector2(0, 0));
-	Vector2 br = screen_to_world.xform(vp_size);
-
-	return Rect2(tl, br - tl);
 }
 
 void SpxLayerSorter::_create_debug_drawer() {
