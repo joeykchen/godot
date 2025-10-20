@@ -36,11 +36,21 @@
 
 class ISortableSprite;
 class TileMapLayer;
+class SubViewport;
 
 class SpxSceneMgr : SpxBaseMgr {
 	SPXCLASS(SpxSceneMgr, SpxBaseMgr)
+
 private:	 
+	const String DEFAULT_SAVE_PATH = "user://exported_scene.png";
+    bool export_pending = false;
+    double elapsed = 0.0;
+    SubViewport *viewport_to_export = nullptr;
 	Vector2 cached_cell_size{16, 16};
+	
+	void _request_export(SubViewport *viewport);
+	void _export_vp_png(SubViewport *viewport);
+
 public:
 	// Pure sprite management (kept in SpxExtMgr)
 	Node *pure_sprite_root;
@@ -57,6 +67,8 @@ public:
 	}
 	Rect2 get_scene_bounds(Node *node);
 	Rect2 get_tilemap_bounds(TileMapLayer *layer);
+
+	void export_scene_as_png(Node *root);
 
 public:
 	virtual ~SpxSceneMgr() = default; // Added virtual destructor to fix -Werror=non-virtual-dtor
