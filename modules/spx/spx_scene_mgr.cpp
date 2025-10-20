@@ -34,6 +34,7 @@
 #include "spx_res_mgr.h"
 #include "core/input/input_event.h"
 #include "core/math/color.h"
+#include "core/config/project_settings.h"
 #include "gdextension_spx_ext.h"
 #include "scene/2d/line_2d.h"
 #include "scene/2d/sprite_2d.h"
@@ -57,6 +58,25 @@
 #define spriteMgr SpxEngine::get_singleton()->get_sprite()
 #define resMgr SpxEngine::get_singleton()->get_res()
 
+void SpxSceneMgr::_request_export(SubViewport *viewport) {
+    viewport_to_export = viewport;
+    export_pending = true;
+    elapsed = 0.0;
+}
+
+void SpxSceneMgr::_export_vp_png(SubViewport *viewport) {
+	Ref<Image> image = viewport->get_texture()->get_image();
+	Error err = image->save_png(DEFAULT_SAVE_PATH);
+	String full_path = ProjectSettings::get_singleton()->globalize_path(DEFAULT_SAVE_PATH);
+	if (err == OK) {
+		print_line_rich("TileMap scene saved to: " + full_path);
+	} else {
+		print_error("Failed to save TileMap scene!");
+	}
+
+	viewport->queue_free();
+}
+
 void SpxSceneMgr::on_awake() {
 	SpxBaseMgr::on_awake();
 	pure_sprite_root = memnew(Node2D);
@@ -65,6 +85,13 @@ void SpxSceneMgr::on_awake() {
 }
 
 void SpxSceneMgr::on_update(float delta) {
+	if (export_pending) {
+        elapsed += delta;
+        if (elapsed >= 1.0) {
+            export_pending = false;
+            _export_vp_png(viewport_to_export);
+        }
+    }
 }
 
 void SpxSceneMgr::on_destroy() {
@@ -114,45 +141,32 @@ void SpxSceneMgr::collect_sortable_sprites(Vector<ISortableSprite*>& out) {
 
 Rect2 SpxSceneMgr::get_scene_bounds(Node *node) {
 	Rect2 total_rect;
-    Rect2 cur_rect;
-    bool first = true;
 
-    for (int i = 0; i < node->get_child_count(); i++) {
-        Node *child = node->get_child(i);
+	for (int i = 0; i < node->get_child_count(); i++) {
+		Node *child = node->get_child(i);
+		Rect2 child_rect;
 
-        if (TileMapLayer *tml = Object::cast_to<TileMapLayer>(child)) {
-            Rect2 tml_rect = get_tilemap_bounds(tml);
+		if (TileMapLayer *tml = Object::cast_to<TileMapLayer>(child)) {
+			Rect2 tml_rect = get_tilemap_bounds(tml);
+			if (tml_rect.has_area()) {
+				child_rect = tml->get_global_transform().xform(tml_rect);
+			}
 
-            tml_rect.position = tml->get_global_transform().xform(tml_rect.position);
-            cur_rect = tml_rect;
+		} else if (SpxSprite *sp = Object::cast_to<SpxSprite>(child)) {
+			child_rect = sp->get_rect();
+		}
 
-        } else if (SpxSprite *sp = Object::cast_to<SpxSprite>(child)) {
+		if (child_rect.has_area()) {
+			total_rect = total_rect.has_area() ? total_rect.merge(child_rect) : child_rect;
+		}
 
-            cur_rect = sp->get_rect();   
-            
-        } else{
-            // other objects...
-        }
+		Rect2 descendants_rect = get_scene_bounds(child);
+		if (descendants_rect.has_area()) {
+			total_rect = total_rect.has_area() ? total_rect.merge(descendants_rect) : descendants_rect;
+		}
+	}
 
-        if (first) {
-            first = false;
-            total_rect = cur_rect;
-        } else {
-            total_rect = total_rect.merge(cur_rect);
-        }
-
-        Rect2 child_rect = get_scene_bounds(child);
-        if (child_rect.size != Vector2(0, 0)) {
-            if (first) {
-                total_rect = child_rect;
-                first = false;
-            } else {
-                total_rect = total_rect.merge(child_rect);
-            }
-        }
-    }
-
-    return total_rect;
+	return total_rect;
 }
 
 Rect2 SpxSceneMgr::get_tilemap_bounds(TileMapLayer *layer) {
@@ -169,6 +183,32 @@ Rect2 SpxSceneMgr::get_tilemap_bounds(TileMapLayer *layer) {
 
     Rect2 rect(top_left - cached_cell_size / 2, bottom_right - top_left);
     return rect;
+}
+
+void SpxSceneMgr::export_scene_as_png(Node *root) {
+    if (!root) {
+        print_error("Root is null");
+        return;
+    }
+
+    Rect2 rect = get_scene_bounds(root);
+    if (rect.size == Vector2(0, 0)) {
+        print_error("No TileMapLayer found in scene!");
+        return;
+    }
+
+    SubViewport *viewport = memnew(SubViewport);
+    viewport->set_size(rect.size);
+    viewport->set_update_mode(SubViewport::UPDATE_ALWAYS);
+    viewport->set_clear_mode(SubViewport::CLEAR_MODE_ALWAYS);
+
+    Node *copy = root->duplicate(Node::DUPLICATE_USE_INSTANTIATION);
+    if (Node2D *n2d = Object::cast_to<Node2D>(copy)) {
+        n2d->set_position(n2d->get_global_position() - rect.position);
+    }
+    viewport->add_child(copy);
+    get_tree()->get_current_scene()->add_child(viewport);
+    _request_export(viewport);
 }
 
 GdObj SpxSceneMgr::create_render_sprite(GdString texture_path, GdVec2 pos, GdFloat degree, GdVec2 scale, GdInt zindex, GdVec2 pivot){

@@ -29,7 +29,6 @@
 /**************************************************************************/
 
 #include "core/os/keyboard.h"
-#include "core/config/project_settings.h"
 #include "core/io/resource_loader.h"
 #include "servers/physics_server_2d.h"
 #include "scene/2d/sprite_2d.h"
@@ -129,7 +128,6 @@ void SpxDrawTiles::_bind_methods() {
     ClassDB::bind_method(D_METHOD("clear_all_layers"), &SpxDrawTiles::clear_all_layers);
     ClassDB::bind_method(D_METHOD("enter_editor_mode"), &SpxDrawTiles::enter_editor_mode);
     ClassDB::bind_method(D_METHOD("exit_editor_mode"), &SpxDrawTiles::exit_editor_mode);
-    ClassDB::bind_method(D_METHOD("export_vp_png", "viewport"), &SpxDrawTiles::export_vp_png);
 }
 
 void SpxDrawTiles::_notification(int p_what) {
@@ -155,13 +153,7 @@ void SpxDrawTiles::_ready() {
 }
 
 void SpxDrawTiles::_process(double delta) {
-    if (export_pending) {
-        elapsed += delta;
-        if (elapsed >= 1.0) {
-            export_pending = false;
-            export_vp_png(viewport_to_export);
-        }
-    }
+
 }
 
 void SpxDrawTiles::update_default_collision_rect() {
@@ -211,7 +203,7 @@ void SpxDrawTiles::input(const Ref<InputEvent> &p_event) {
     if (!key.is_valid()) return;
     if (key->is_pressed() && key->get_keycode() == Key::E && 
         (key->get_modifiers_mask().has_flag(KeyModifierMask::CTRL))){
-        save_full_scene(this);
+        sceneMgr->export_scene_as_png(this);
     }
 
     if(exit_editor)
@@ -341,51 +333,6 @@ void SpxDrawTiles::set_tile_texture_spx(GdString texture_path, const Vector<Vect
 
 void SpxDrawTiles::erase_tile_spx(GdVec2 pos) {
     place_or_erase_tile(flip_y(pos), true);
-}
-
-void SpxDrawTiles::save_full_scene(Node *root) {
-    if (!root) {
-        print_error("Root is null");
-        return;
-    }
-
-    Rect2 rect = _get_scene_bounds(root);
-    if (rect.size == Vector2(0, 0)) {
-        print_error("No TileMapLayer found in scene!");
-        return;
-    }
-
-    SubViewport *viewport = memnew(SubViewport);
-    viewport->set_size(rect.size);
-    viewport->set_update_mode(SubViewport::UPDATE_ALWAYS);
-    viewport->set_clear_mode(SubViewport::CLEAR_MODE_ALWAYS);
-
-    Node *copy = root->duplicate(Node::DUPLICATE_USE_INSTANTIATION);
-    if (Node2D *n2d = Object::cast_to<Node2D>(copy)) {
-        n2d->set_position(n2d->get_global_position() - rect.position);
-    }
-    viewport->add_child(copy);
-    get_tree()->get_current_scene()->add_child(viewport);
-    request_export(viewport);
-}
-
-void SpxDrawTiles::request_export(SubViewport *viewport) {
-    viewport_to_export = viewport;
-    export_pending = true;
-    elapsed = 0.0;
-}
-
-void SpxDrawTiles::export_vp_png(SubViewport *viewport) {
-	Ref<Image> image = viewport->get_texture()->get_image();
-	Error err = image->save_png(DEFAULT_SAVE_PATH);
-	String full_path = ProjectSettings::get_singleton()->globalize_path(DEFAULT_SAVE_PATH);
-	if (err == OK) {
-		print_line_rich("TileMap scene saved to: " + full_path);
-	} else {
-		print_error("Failed to save TileMap scene!");
-	}
-
-	viewport->queue_free();
 }
 
 void SpxDrawTiles::_place_tiles_bulk_spx(GdArray positions) {
@@ -666,10 +613,6 @@ String SpxDrawTiles::_get_tile_texture_path(TileMapLayer *layer, const Vector2i 
     }
 
     return "";
-}
-
-Rect2 SpxDrawTiles::_get_scene_bounds(Node *node) {
-    return sceneMgr->get_scene_bounds(node);
 }
 
 void SpxDrawTiles::_destroy_layers(){
