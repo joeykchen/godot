@@ -227,8 +227,8 @@ void gdspx_ext_set_layer_sorter_mode(GdInt* mode) {
 	 extMgr->set_layer_sorter_mode(*mode);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_input_get_mouse_pos(GdVec2* ret_val) {
-	*ret_val = inputMgr->get_mouse_pos();
+void gdspx_input_get_global_mouse_pos(GdVec2* ret_val) {
+	*ret_val = inputMgr->get_global_mouse_pos();
 }
 EMSCRIPTEN_KEEPALIVE
 void gdspx_input_get_key(GdInt* key,GdBool* ret_val) {
@@ -387,6 +387,14 @@ void gdspx_platform_set_stretch_mode(GdBool* enable) {
 	 platformMgr->set_stretch_mode(*enable);
 }
 EMSCRIPTEN_KEEPALIVE
+void gdspx_platform_set_stretch_aspect(GdBool* is_keep) {
+	 platformMgr->set_stretch_aspect(*is_keep);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_platform_set_stretch_content_scale(GdInt* width,GdInt* height) {
+	 platformMgr->set_stretch_content_scale(*width, *height);
+}
+EMSCRIPTEN_KEEPALIVE
 void gdspx_platform_set_window_position(GdVec2* pos) {
 	 platformMgr->set_window_position(*pos);
 }
@@ -395,8 +403,8 @@ void gdspx_platform_get_window_position(GdVec2* ret_val) {
 	*ret_val = platformMgr->get_window_position();
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_platform_set_window_size(GdInt* width,GdInt* height) {
-	 platformMgr->set_window_size(*width, *height);
+void gdspx_platform_set_window_size(GdInt* width,GdInt* height,GdBool* with_content_scale) {
+	 platformMgr->set_window_size(*width, *height, *with_content_scale);
 }
 EMSCRIPTEN_KEEPALIVE
 void gdspx_platform_get_window_size(GdVec2* ret_val) {

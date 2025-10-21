@@ -47,10 +47,12 @@ public:
 public:
 	//Expose as few interfaces as possible to prevent misuse.
 	void set_stretch_mode(GdBool enable);
+	void set_stretch_aspect(GdBool is_keep);
+	void set_stretch_content_scale(GdInt width, GdInt height);
 
 	void set_window_position(GdVec2 pos);
 	GdVec2 get_window_position();
-	void set_window_size(GdInt width, GdInt height);
+	void set_window_size(GdInt width, GdInt height, GdBool with_content_scale);
 	GdVec2 get_window_size();
 	void set_window_title(GdString title);
 	GdString get_window_title();

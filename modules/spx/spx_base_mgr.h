@@ -49,6 +49,7 @@ public:                               \
 #define spriteMgr SpxEngine::get_singleton()->get_sprite()
 #define resMgr SpxEngine::get_singleton()->get_res()
 #define uiMgr SpxEngine::get_singleton()->get_ui()
+#define cameraMgr SpxEngine::get_singleton()->get_camera()
 
 #define svgMgr SvgManager::get_singleton()
 
