@@ -356,6 +356,7 @@ void SpxPathFinder::_process_sprite_obstacle(GdObj obj, bool add) {
 }
 
 Rect2 SpxPathFinder::_get_scene_bounds(Node *node) {
+    if(!SpxEngine::get_singleton()) return Rect2();
     return sceneMgr->get_scene_bounds(node);
 }
 
