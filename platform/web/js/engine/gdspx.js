@@ -345,8 +345,8 @@ gdspx_ext_set_layer_sorter_mode(mode) {
 	FreeGdInt(_arg0); 
 
 }
-gdspx_input_get_mouse_pos() {
-	var _gdFuncPtr = Module._gdspx_input_get_mouse_pos; 
+gdspx_input_get_global_mouse_pos() {
+	var _gdFuncPtr = Module._gdspx_input_get_global_mouse_pos; 
 	var _retValue = AllocGdVec2();
 	_gdFuncPtr(_retValue);
 	var _finalRetValue = ToJsVec2(_retValue);
@@ -759,6 +759,24 @@ gdspx_platform_set_stretch_mode(enable) {
 	FreeGdBool(_arg0); 
 
 }
+gdspx_platform_set_stretch_aspect(is_keep) {
+	var _gdFuncPtr = Module._gdspx_platform_set_stretch_aspect; 
+	
+	var _arg0 = ToGdBool(is_keep);
+	_gdFuncPtr(_arg0);
+	FreeGdBool(_arg0); 
+
+}
+gdspx_platform_set_stretch_content_scale(width,height) {
+	var _gdFuncPtr = Module._gdspx_platform_set_stretch_content_scale; 
+	
+	var _arg0 = ToGdInt(width);
+	var _arg1 = ToGdInt(height);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdInt(_arg0); 
+	FreeGdInt(_arg1); 
+
+}
 gdspx_platform_set_window_position(pos) {
 	var _gdFuncPtr = Module._gdspx_platform_set_window_position; 
 	
@@ -775,14 +793,16 @@ gdspx_platform_get_window_position() {
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
-gdspx_platform_set_window_size(width,height) {
+gdspx_platform_set_window_size(width,height,with_content_scale) {
 	var _gdFuncPtr = Module._gdspx_platform_set_window_size; 
 	
 	var _arg0 = ToGdInt(width);
 	var _arg1 = ToGdInt(height);
-	_gdFuncPtr(_arg0, _arg1);
+	var _arg2 = ToGdBool(with_content_scale);
+	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdInt(_arg0); 
 	FreeGdInt(_arg1); 
+	FreeGdBool(_arg2); 
 
 }
 gdspx_platform_get_window_size() {

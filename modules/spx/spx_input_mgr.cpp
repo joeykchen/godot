@@ -29,6 +29,8 @@
 /**************************************************************************/
 
 #include "spx_input_mgr.h"
+#include "spx_camera_mgr.h"
+#include "spx_engine.h"
 #include "gdextension_spx_ext.h"
 #include "scene/main/window.h"
 
@@ -41,10 +43,9 @@ void SpxInputMgr::on_start() {
 }
 
 // input
-GdVec2 SpxInputMgr::get_mouse_pos() {
-	auto pos = Input::get_singleton()->get_mouse_position();
-	auto size  = DisplayServer::get_singleton()->window_get_size();
-	return GdVec2(pos.x - size.x*0.5, size.y*0.5- pos.y);
+GdVec2 SpxInputMgr::get_global_mouse_pos() {
+	auto mouse_pos = cameraMgr->get_global_mouse_position();
+	return GdVec2(mouse_pos.x, -mouse_pos.y);
 }
 
 GdBool SpxInputMgr::get_mouse_state(GdInt mouse_id) {

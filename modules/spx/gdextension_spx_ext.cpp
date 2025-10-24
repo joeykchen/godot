@@ -180,8 +180,8 @@ static void gdextension_spx_ext_next_frame() {
 static void gdextension_spx_ext_set_layer_sorter_mode(GdInt mode) {
 	 extMgr->set_layer_sorter_mode(mode);
 }
-static void gdextension_spx_input_get_mouse_pos(GdVec2* ret_val) {
-	*ret_val = inputMgr->get_mouse_pos();
+static void gdextension_spx_input_get_global_mouse_pos(GdVec2* ret_val) {
+	*ret_val = inputMgr->get_global_mouse_pos();
 }
 static void gdextension_spx_input_get_key(GdInt key,GdBool* ret_val) {
 	*ret_val = inputMgr->get_key(key);
@@ -300,14 +300,20 @@ static void gdextension_spx_physic_raycast_with_details(GdVec2 from,GdVec2 to,Gd
 static void gdextension_spx_platform_set_stretch_mode(GdBool enable) {
 	 platformMgr->set_stretch_mode(enable);
 }
+static void gdextension_spx_platform_set_stretch_aspect(GdBool is_keep) {
+	 platformMgr->set_stretch_aspect(is_keep);
+}
+static void gdextension_spx_platform_set_stretch_content_scale(GdInt width,GdInt height) {
+	 platformMgr->set_stretch_content_scale(width, height);
+}
 static void gdextension_spx_platform_set_window_position(GdVec2 pos) {
 	 platformMgr->set_window_position(pos);
 }
 static void gdextension_spx_platform_get_window_position(GdVec2* ret_val) {
 	*ret_val = platformMgr->get_window_position();
 }
-static void gdextension_spx_platform_set_window_size(GdInt width,GdInt height) {
-	 platformMgr->set_window_size(width, height);
+static void gdextension_spx_platform_set_window_size(GdInt width,GdInt height,GdBool with_content_scale) {
+	 platformMgr->set_window_size(width, height, with_content_scale);
 }
 static void gdextension_spx_platform_get_window_size(GdVec2* ret_val) {
 	*ret_val = platformMgr->get_window_size();
@@ -979,7 +985,7 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_ext_is_paused);
 	REGISTER_SPX_INTERFACE_FUNC(spx_ext_next_frame);
 	REGISTER_SPX_INTERFACE_FUNC(spx_ext_set_layer_sorter_mode);
-	REGISTER_SPX_INTERFACE_FUNC(spx_input_get_mouse_pos);
+	REGISTER_SPX_INTERFACE_FUNC(spx_input_get_global_mouse_pos);
 	REGISTER_SPX_INTERFACE_FUNC(spx_input_get_key);
 	REGISTER_SPX_INTERFACE_FUNC(spx_input_get_mouse_state);
 	REGISTER_SPX_INTERFACE_FUNC(spx_input_get_key_state);
@@ -1019,6 +1025,8 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_physic_check_collision_circle);
 	REGISTER_SPX_INTERFACE_FUNC(spx_physic_raycast_with_details);
 	REGISTER_SPX_INTERFACE_FUNC(spx_platform_set_stretch_mode);
+	REGISTER_SPX_INTERFACE_FUNC(spx_platform_set_stretch_aspect);
+	REGISTER_SPX_INTERFACE_FUNC(spx_platform_set_stretch_content_scale);
 	REGISTER_SPX_INTERFACE_FUNC(spx_platform_set_window_position);
 	REGISTER_SPX_INTERFACE_FUNC(spx_platform_get_window_position);
 	REGISTER_SPX_INTERFACE_FUNC(spx_platform_set_window_size);

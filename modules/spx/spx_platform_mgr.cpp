@@ -48,6 +48,24 @@ void SpxPlatformMgr::set_stretch_mode(GdBool enable) {
             root->set_content_scale_mode(target_mode);
         }
     }
+
+	set_stretch_aspect(enable);
+}
+
+void SpxPlatformMgr::set_stretch_aspect(GdBool is_keep) {
+	if (auto root = get_root()) {
+		auto target_aspect = is_keep
+	        ? Window::ContentScaleAspect::CONTENT_SCALE_ASPECT_KEEP
+			: Window::ContentScaleAspect::CONTENT_SCALE_ASPECT_IGNORE;
+
+		if(root->get_content_scale_aspect() != target_aspect){
+			root->set_content_scale_aspect(target_aspect);
+		}
+	}
+}
+
+void SpxPlatformMgr::set_stretch_content_scale(GdInt width, GdInt height) {
+	get_root()->set_content_scale_size(Size2i(width, height));
 }
 
 void SpxPlatformMgr::set_window_position(GdVec2 pos) {
@@ -57,8 +75,9 @@ GdVec2 SpxPlatformMgr::get_window_position() {
 	auto pos = DisplayServer::get_singleton()->window_get_position();
 	return GdVec2(pos.x, pos.y);
 }
-void SpxPlatformMgr::set_window_size(GdInt width, GdInt height) {
-	DisplayServer::get_singleton()->window_set_size(Size2i(width, height));
+void SpxPlatformMgr::set_window_size(GdInt width, GdInt height, GdBool with_content_scale) {
+	if(with_content_scale) set_stretch_content_scale(width, height);
+	get_root()->set_size(Size2i(width, height));
 }
 
 GdVec2 SpxPlatformMgr::get_window_size() {

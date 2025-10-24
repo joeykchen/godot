@@ -45,7 +45,7 @@ public:
 protected:
 	SpxInputProxy *input_proxy;
 public:
-	GdVec2 get_mouse_pos();
+	GdVec2 get_global_mouse_pos();
 	GdBool get_key(GdInt key);
 	GdBool get_mouse_state(GdInt mouse_id);
 	GdInt get_key_state(GdInt key);
