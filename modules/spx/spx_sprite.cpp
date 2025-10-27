@@ -735,7 +735,7 @@ void SpxSprite::set_collider_capsule(GdVec2 center, GdVec2 size) {
 
 void SpxSprite::set_collision_enabled(GdBool enabled) {
 	_is_collision_enabled = enabled;
-	collider2d->set_disabled(_is_collision_enabled && is_visible());
+	collider2d->set_disabled(!(_is_collision_enabled && is_visible()));
 }
 
 GdBool SpxSprite::is_collision_enabled() {
