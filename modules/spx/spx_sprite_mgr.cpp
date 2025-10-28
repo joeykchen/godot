@@ -247,19 +247,20 @@ GdBool SpxSpriteMgr::check_collision_with_point(GdObj obj, GdVec2 point, GdBool 
 }
 
 GdInt SpxSpriteMgr::create_backdrop(GdString path) {
-	return _create_sprite(path,true);
+	return _create_sprite(path, GdVec2(), true);
 }
 
-GdInt SpxSpriteMgr::create_sprite(GdString path) {
-	return _create_sprite(path,false);
+GdInt SpxSpriteMgr::create_sprite(GdString path, GdVec2 pos) {
+	return _create_sprite(path, pos, false);
 }
 
 // sprite
-GdInt SpxSpriteMgr::_create_sprite(GdString path, GdBool is_backdrop) {
+GdInt SpxSpriteMgr::_create_sprite(GdString path, GdVec2 pos, GdBool is_backdrop) {
 	const String path_str = SpxStr(path);
 	SpxSprite *sprite = nullptr;
 	if (path_str == "") {
 		sprite = memnew(SpxSprite);
+		sprite->set_position(GdVec2(pos.x, -pos.y));
 		AnimatedSprite2D *animated_sprite = memnew(AnimatedSprite2D);
 		sprite->add_child(animated_sprite);
 		Area2D *area = memnew(Area2D);

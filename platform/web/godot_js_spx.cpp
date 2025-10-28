@@ -591,8 +591,8 @@ void gdspx_sprite_create_backdrop(GdString* path,GdObj* ret_val) {
 	*ret_val = spriteMgr->create_backdrop(*path);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_sprite_create_sprite(GdString* path,GdObj* ret_val) {
-	*ret_val = spriteMgr->create_sprite(*path);
+void gdspx_sprite_create_sprite(GdString* path,GdVec2* pos,GdObj* ret_val) {
+	*ret_val = spriteMgr->create_sprite(*path, *pos);
 }
 EMSCRIPTEN_KEEPALIVE
 void gdspx_sprite_clone_sprite(GdObj* obj,GdObj* ret_val) {
