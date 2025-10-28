@@ -1269,12 +1269,14 @@ gdspx_sprite_create_backdrop(path) {
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_create_sprite(path) {
+gdspx_sprite_create_sprite(path,pos) {
 	var _gdFuncPtr = Module._gdspx_sprite_create_sprite; 
 	var _retValue = AllocGdObj();
 	var _arg0 = ToGdString(path);
-	_gdFuncPtr(_arg0, _retValue);
+	var _arg1 = ToGdVec2(pos);
+	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdString(_arg0); 
+	FreeGdVec2(_arg1); 
 	var _finalRetValue = ToJsObj(_retValue);
 	FreeGdObj(_retValue); 
 	return _finalRetValue

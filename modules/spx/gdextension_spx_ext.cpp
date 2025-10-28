@@ -453,8 +453,8 @@ static void gdextension_spx_sprite_check_collision_with_point(GdObj obj,GdVec2 p
 static void gdextension_spx_sprite_create_backdrop(GdString path,GdObj* ret_val) {
 	*ret_val = spriteMgr->create_backdrop(path);
 }
-static void gdextension_spx_sprite_create_sprite(GdString path,GdObj* ret_val) {
-	*ret_val = spriteMgr->create_sprite(path);
+static void gdextension_spx_sprite_create_sprite(GdString path,GdVec2 pos,GdObj* ret_val) {
+	*ret_val = spriteMgr->create_sprite(path, pos);
 }
 static void gdextension_spx_sprite_clone_sprite(GdObj obj,GdObj* ret_val) {
 	*ret_val = spriteMgr->clone_sprite(obj);

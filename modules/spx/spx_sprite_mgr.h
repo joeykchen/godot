@@ -121,7 +121,7 @@ public:
 	void on_sprite_destroy(SpxSprite *sprite);
 	void on_trigger_enter(GdInt self_id, GdInt other_id);
 	void on_trigger_exit(GdInt self_id, GdInt other_id);
-	GdObj _create_sprite(GdString path, GdBool is_backdrop);
+	GdObj _create_sprite(GdString path, GdVec2 pos, GdBool is_backdrop);
 	void destroy_all_sprites();
 	void collect_sortable_sprites(Vector<ISortableSprite*>& out);
 public:
@@ -147,7 +147,7 @@ public:
 	GdBool check_collision_with_point(GdObj obj,GdVec2 point, GdBool is_trigger);
 	//
 	GdObj create_backdrop(GdString path);
-	GdObj create_sprite(GdString path);
+	GdObj create_sprite(GdString path,  GdVec2 pos);
 	GdObj clone_sprite(GdObj obj);
 	GdBool destroy_sprite(GdObj obj);
 	GdBool is_sprite_alive(GdObj obj);
