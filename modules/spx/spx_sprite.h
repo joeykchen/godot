@@ -117,6 +117,7 @@ protected:
 class SpxSprite : public CharacterBody2D, public ISortableSprite {
 	GDCLASS(SpxSprite, CharacterBody2D);
 
+	friend class SpxSpriteMgr;
 public:
 	// Physics mode enumeration
 	enum PhysicsMode {
@@ -166,12 +167,17 @@ private:
 	String current_svg_path; // Name of the current SVG animation (image)
 	String current_svg_anim_key; // Name of the current SVG animation
 	String current_anim_name = ""; // Name of the current animation
-	
 
-	void update_anim_scale();
-	Vector2 _get_actual_render_scale();
-	int _get_actual_match_render_scale();
+	// Scale and flip state (new unified scale model)
+	Vector2 _base_scale = Vector2(1.0f, 1.0f);  // Logical size (always positive)
+	bool _is_flipped_h = false;                  // Horizontal flip state
 
+	// Private methods for scale and flip management
+	void _apply_scale_and_flip();                     // Apply scale and flip to Node2D
+	void _update_svg_scale_if_needed();               // Update SVG scaling (called manually)
+	int _calculate_optimal_svg_scale();               // Calculate optimal SVG scale level
+	Vector2 _get_actual_global_scale_abs();           // Get absolute global scale
+	void _switch_svg_animation_scale(int new_scale);  // Switch SVG animation scale level
 protected:
 	void _notification(int p_what);
 	void _draw();
@@ -192,7 +198,6 @@ protected:
 	CollisionShape2D *trigger2d;
 	CollisionShape2D *collider2d;
 	VisibleOnScreenNotifier2D *visible_notifier;
-	Vector2 _render_scale = Vector2(1.0f, 1.0f);
 
 public:
 	AnimatedSprite2D *anim2d;
@@ -282,10 +287,6 @@ public:
 	GdBool is_anim_centered() const;
 	void set_anim_offset(GdVec2 p_offset);
 	GdVec2 get_anim_offset() const;
-	void set_anim_flip_h(GdBool p_flip);
-	GdBool is_anim_flipped_h() const;
-	void set_anim_flip_v(GdBool p_flip);
-	GdBool is_anim_flipped_v() const;
 
 	void set_dynamic_frame_offset_enabled(GdBool enabled);
 	GdBool is_dynamic_frame_offset_enabled() const;
@@ -331,8 +332,12 @@ public:
 	GdBool check_collision(SpxSprite *other, GdBool is_src_trigger = true, GdBool is_dst_trigger = true);
 	GdBool check_collision_with_point(GdVec2 point, GdBool is_trigger = true);
 
-	void set_render_scale(GdVec2 scale);
-	GdVec2 get_render_scale();
+	// Scale and flip API (new unified model)
+	void set_scale(GdVec2 scale);   // Set logical size (always positive)
+	GdVec2 get_scale() const;       // Get logical size
+	void set_flip_h(GdBool flip);   // Set horizontal flip
+	GdBool is_flip_h() const;    // Get horizontal flip state
+
 	GdString get_current_anim_name();
 
 	void set_pivot(GdVec2 pivot){pivot_offset = pivot;}

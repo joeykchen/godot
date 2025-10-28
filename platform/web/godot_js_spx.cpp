@@ -631,12 +631,12 @@ void gdspx_sprite_get_scale(GdObj* obj,GdVec2* ret_val) {
 	*ret_val = spriteMgr->get_scale(*obj);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_sprite_set_render_scale(GdObj* obj,GdVec2* scale) {
-	 spriteMgr->set_render_scale(*obj, *scale);
+void gdspx_sprite_set_flip_h(GdObj* obj,GdBool* flip) {
+	 spriteMgr->set_flip_h(*obj, *flip);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_sprite_get_render_scale(GdObj* obj,GdVec2* ret_val) {
-	*ret_val = spriteMgr->get_render_scale(*obj);
+void gdspx_sprite_is_flip_h(GdObj* obj,GdBool* ret_val) {
+	*ret_val = spriteMgr->is_flip_h(*obj);
 }
 EMSCRIPTEN_KEEPALIVE
 void gdspx_sprite_set_color(GdObj* obj,GdColor* color) {
@@ -781,22 +781,6 @@ void gdspx_sprite_set_anim_offset(GdObj* obj,GdVec2* p_offset) {
 EMSCRIPTEN_KEEPALIVE
 void gdspx_sprite_get_anim_offset(GdObj* obj,GdVec2* ret_val) {
 	*ret_val = spriteMgr->get_anim_offset(*obj);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_sprite_set_anim_flip_h(GdObj* obj,GdBool* p_flip) {
-	 spriteMgr->set_anim_flip_h(*obj, *p_flip);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_sprite_is_anim_flipped_h(GdObj* obj,GdBool* ret_val) {
-	*ret_val = spriteMgr->is_anim_flipped_h(*obj);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_sprite_set_anim_flip_v(GdObj* obj,GdBool* p_flip) {
-	 spriteMgr->set_anim_flip_v(*obj, *p_flip);
-}
-EMSCRIPTEN_KEEPALIVE
-void gdspx_sprite_is_anim_flipped_v(GdObj* obj,GdBool* ret_val) {
-	*ret_val = spriteMgr->is_anim_flipped_v(*obj);
 }
 EMSCRIPTEN_KEEPALIVE
 void gdspx_sprite_get_current_anim_name(GdObj* obj,GdString* ret_val) {

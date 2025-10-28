@@ -483,11 +483,11 @@ static void gdextension_spx_sprite_set_scale(GdObj obj,GdVec2 scale) {
 static void gdextension_spx_sprite_get_scale(GdObj obj,GdVec2* ret_val) {
 	*ret_val = spriteMgr->get_scale(obj);
 }
-static void gdextension_spx_sprite_set_render_scale(GdObj obj,GdVec2 scale) {
-	 spriteMgr->set_render_scale(obj, scale);
+static void gdextension_spx_sprite_set_flip_h(GdObj obj,GdBool flip) {
+	 spriteMgr->set_flip_h(obj, flip);
 }
-static void gdextension_spx_sprite_get_render_scale(GdObj obj,GdVec2* ret_val) {
-	*ret_val = spriteMgr->get_render_scale(obj);
+static void gdextension_spx_sprite_is_flip_h(GdObj obj,GdBool* ret_val) {
+	*ret_val = spriteMgr->is_flip_h(obj);
 }
 static void gdextension_spx_sprite_set_color(GdObj obj,GdColor color) {
 	 spriteMgr->set_color(obj, color);
@@ -596,18 +596,6 @@ static void gdextension_spx_sprite_set_anim_offset(GdObj obj,GdVec2 p_offset) {
 }
 static void gdextension_spx_sprite_get_anim_offset(GdObj obj,GdVec2* ret_val) {
 	*ret_val = spriteMgr->get_anim_offset(obj);
-}
-static void gdextension_spx_sprite_set_anim_flip_h(GdObj obj,GdBool p_flip) {
-	 spriteMgr->set_anim_flip_h(obj, p_flip);
-}
-static void gdextension_spx_sprite_is_anim_flipped_h(GdObj obj,GdBool* ret_val) {
-	*ret_val = spriteMgr->is_anim_flipped_h(obj);
-}
-static void gdextension_spx_sprite_set_anim_flip_v(GdObj obj,GdBool p_flip) {
-	 spriteMgr->set_anim_flip_v(obj, p_flip);
-}
-static void gdextension_spx_sprite_is_anim_flipped_v(GdObj obj,GdBool* ret_val) {
-	*ret_val = spriteMgr->is_anim_flipped_v(obj);
 }
 static void gdextension_spx_sprite_get_current_anim_name(GdObj obj,GdString* ret_val) {
 	*ret_val = spriteMgr->get_current_anim_name(obj);
@@ -1086,8 +1074,8 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_get_rotation);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_scale);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_get_scale);
-	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_render_scale);
-	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_get_render_scale);
+	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_flip_h);
+	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_is_flip_h);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_color);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_get_color);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_material_shader);
@@ -1124,10 +1112,6 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_is_anim_centered);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_anim_offset);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_get_anim_offset);
-	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_anim_flip_h);
-	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_is_anim_flipped_h);
-	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_anim_flip_v);
-	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_is_anim_flipped_v);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_get_current_anim_name);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_velocity);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_get_velocity);

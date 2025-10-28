@@ -149,6 +149,16 @@ void SpxSpriteMgr::collect_sortable_sprites(Vector<ISortableSprite*>& out) {
 	}
 }
 
+void SpxSpriteMgr::update_all_svg_sprites_scale() {
+	// Batch update all SVG sprites' scale (called when camera zoom changes)
+	for (auto& pair : id_objects) {
+		SpxSprite* sprite = pair.value;
+		if (sprite && sprite->is_svg_mode && sprite->is_inside_tree()) {
+			sprite->_update_svg_scale_if_needed();
+		}
+	}
+}
+
 SpxSprite *SpxSpriteMgr::get_sprite(GdObj obj) {
 	if (id_objects.has(obj)) {
 		return id_objects[obj];
@@ -348,6 +358,16 @@ void SpxSpriteMgr::set_scale(GdObj obj, GdVec2 scale) {
 	sprite->set_scale(scale);
 }
 
+void SpxSpriteMgr::set_flip_h(GdObj obj, GdBool flip){
+	check_and_get_sprite_v()
+	sprite->set_flip_h(flip);
+}
+GdBool SpxSpriteMgr::is_flip_h(GdObj obj){
+	check_and_get_sprite_r(GdBool())
+	return sprite->is_flip_h();
+}
+
+
 GdVec2 SpxSpriteMgr::get_position(GdObj obj) {
 	check_and_get_sprite_r(GdVec2())
 	auto pos = sprite->get_position();
@@ -363,15 +383,6 @@ GdFloat SpxSpriteMgr::get_rotation(GdObj obj) {
 GdVec2 SpxSpriteMgr::get_scale(GdObj obj) {
 	check_and_get_sprite_r(GdVec2())
 	return sprite->get_scale();
-}
-
-void SpxSpriteMgr::set_render_scale(GdObj obj, GdVec2 scale) {
-	check_and_get_sprite_v()
-	sprite->set_render_scale(scale);
-}
-GdVec2 SpxSpriteMgr::get_render_scale(GdObj obj) {
-	check_and_get_sprite_r(GdVec2())
-	return sprite->get_render_scale();
 }
 
 void SpxSpriteMgr::set_color(GdObj obj, GdColor color) {
@@ -555,29 +566,6 @@ GdVec2 SpxSpriteMgr::get_anim_offset(GdObj obj) {
 	return sprite->get_anim_offset();
 }
 
-void SpxSpriteMgr::set_anim_flip_h(GdObj obj, GdBool p_flip) {
-	check_and_get_sprite_v()
-	sprite->set_anim_flip_h(p_flip);
-}
-
-GdBool SpxSpriteMgr::is_anim_flipped_h(GdObj obj) {
-	auto sprite = get_sprite(obj);
-	if (sprite == nullptr) {
-		print_error("try to get property of a null sprite" + itos(obj));
-		return false;
-	}
-	return sprite->is_anim_flipped_h();
-}
-
-void SpxSpriteMgr::set_anim_flip_v(GdObj obj, GdBool p_flip) {
-	check_and_get_sprite_v()
-	sprite->set_anim_flip_v(p_flip);
-}
-
-GdBool SpxSpriteMgr::is_anim_flipped_v(GdObj obj) {
-	check_and_get_sprite_r(false)
-	return sprite->is_anim_flipped_v();
-}
 GdString SpxSpriteMgr::get_current_anim_name(GdObj obj) {
 	check_and_get_sprite_r(GdString())
 	return sprite->get_current_anim_name();
