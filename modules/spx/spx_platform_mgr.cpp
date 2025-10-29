@@ -28,9 +28,11 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "spx_platform_mgr.h"
 #include "core/config/engine.h"
 #include "scene/main/window.h"
+#include "spx_platform_mgr.h"
+#include "spx_camera_mgr.h"
+#include "spx_engine.h"
 #include "spx.h"
 
 void SpxPlatformMgr::on_awake() {
@@ -50,6 +52,7 @@ void SpxPlatformMgr::set_stretch_mode(GdBool enable) {
     }
 
 	set_stretch_aspect(enable);
+	if (enable) cameraMgr->set_stretch_clear_color();
 }
 
 void SpxPlatformMgr::set_stretch_aspect(GdBool is_keep) {
