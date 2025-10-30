@@ -305,28 +305,16 @@ const GodotDisplayScreen = {
 				return 0;
 			}
 			
+			const scale = GodotDisplayScreen.getPixelRatio();
 			if (isFullscreen || wantsFullWindow) {
 				// We need to match screen size.
-				width = window.innerWidth ;
-				height = window.innerHeight ;
+				width = window.innerWidth * scale ;
+				height = window.innerHeight * scale;
 			}
-			let csw = `${width}px`;
-			let csh = `${height}px`;
 
-			if (!(isFullscreen || wantsFullWindow)) {
-				const radio = dWidth / dHeight;
-				const displayWidth = window.innerWidth;
-				const displayHeight = window.innerHeight;
-				const winRadio = displayWidth / displayHeight;
+			let csw = `${width / scale}px`;
+			let csh = `${height / scale}px`;
 
-				if (winRadio > radio) {
-					csh = Math.round(displayHeight) + 'px';
-					csw = Math.round(displayHeight * radio) + 'px';
-				} else {
-					csw = Math.round(displayWidth) + 'px';
-					csh = Math.round(displayWidth / radio) + 'px';
-				}
-			}
 			this.wait_resize_frame_time--;
 			let is_size_changed = canvas.style.width !== csw || canvas.style.height !== csh || canvas.width !== width || canvas.height !== height;
 			if (is_size_changed || this.wait_resize_frame_time <= 0) {
