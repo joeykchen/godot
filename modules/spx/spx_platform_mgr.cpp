@@ -51,8 +51,8 @@ void SpxPlatformMgr::set_stretch_mode(GdBool enable) {
         }
     }
 
-	set_stretch_aspect(enable);
-	if (enable) cameraMgr->set_stretch_clear_color();
+	set_stretch_aspect(false);
+	//if (enable) cameraMgr->set_stretch_clear_color();
 }
 
 void SpxPlatformMgr::set_stretch_aspect(GdBool is_keep) {
