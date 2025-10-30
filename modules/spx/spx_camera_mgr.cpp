@@ -55,6 +55,13 @@ Vector2 SpxCameraMgr::get_global_mouse_position() {
 	return camera->get_global_mouse_position();
 }
 
+void SpxCameraMgr::set_stretch_clear_color() {
+	Viewport *vp = camera->get_viewport();
+	vp->set_transparent_background(true);
+	vp->set_use_hdr_2d(false);
+	RenderingServer::get_singleton()->set_default_clear_color(Color(0,0,0,0));
+}
+
 GdVec2 SpxCameraMgr::get_camera_position() {
 	return camera->get_position();
 }
