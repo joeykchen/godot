@@ -32,6 +32,8 @@
 
 #include "scene/2d/camera_2d.h"
 #include "scene/main/window.h"
+#include "spx_engine.h"
+#include "spx_sprite_mgr.h"
 
 void SpxCameraMgr::on_awake() {
 	SpxBaseMgr::on_awake();
@@ -75,7 +77,18 @@ GdVec2 SpxCameraMgr::get_camera_zoom() {
 }
 
 void SpxCameraMgr::set_camera_zoom(GdVec2 size) {
+	// Early return if zoom hasn't changed
+	if (camera->get_zoom() == size) {
+		return;
+	}
+
 	camera->set_zoom(size);
+
+	// Notify all SVG sprites to update their scale
+	auto sprite_mgr = SpxEngine::get_singleton()->get_sprite();
+	if (sprite_mgr) {
+		sprite_mgr->update_all_svg_sprites_scale();
+	}
 }
 
 GdRect2 SpxCameraMgr::get_viewport_rect() {
