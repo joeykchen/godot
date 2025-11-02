@@ -124,8 +124,6 @@ public:
 	GdObj _create_sprite(GdString path, GdVec2 pos, GdBool is_backdrop);
 	void destroy_all_sprites();
 	void collect_sortable_sprites(Vector<ISortableSprite*>& out);
-	void update_all_svg_sprites_scale();  // Batch update all SVG sprites (called when camera zoom changes)
-
 public:
 	void set_dont_destroy_on_load(GdObj obj);
 	// process
@@ -159,8 +157,8 @@ public:
 	GdFloat get_rotation(GdObj obj);
 	void set_scale(GdObj obj, GdVec2 scale);
 	GdVec2 get_scale(GdObj obj);
-	void set_flip_h(GdObj obj, GdBool flip);
-	GdBool is_flip_h(GdObj obj);
+	void set_render_scale(GdObj obj, GdVec2 scale);
+	GdVec2 get_render_scale(GdObj obj);
 	void set_color(GdObj obj, GdColor color);
 	GdColor get_color(GdObj obj);
 
@@ -205,6 +203,10 @@ public:
 	GdBool is_anim_centered(GdObj obj);
 	void set_anim_offset(GdObj obj, GdVec2 p_offset);
 	GdVec2 get_anim_offset(GdObj obj);
+	void set_anim_flip_h(GdObj obj, GdBool p_flip);
+	GdBool is_anim_flipped_h(GdObj obj);
+	void set_anim_flip_v(GdObj obj, GdBool p_flip);
+	GdBool is_anim_flipped_v(GdObj obj);
 	GdString get_current_anim_name(GdObj obj);
 	
 	// physics

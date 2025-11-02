@@ -211,11 +211,6 @@ void SpxSprite::on_start() {
 		anim2d->set_sprite_frames(default_sprite_frames);
 	}
 
-	// Reset AnimatedSprite2D flip_h to avoid conflicts with parent node negative scale
-	if (anim2d) {
-		anim2d->set_flip_h(false);
-	}
-
 	visible_notifier = get_component<VisibleOnScreenNotifier2D>();
 	if (visible_notifier == nullptr) {
 		visible_notifier = memnew(VisibleOnScreenNotifier2D);
@@ -474,7 +469,7 @@ void SpxSprite::set_texture_direct(GdString path, GdBool direct) {
 	Ref<Texture2D> texture = nullptr;
 	is_svg_mode = svgMgr->is_svg_file(path_str);
 	if (is_svg_mode){
-		int target_scale = _calculate_optimal_svg_scale();
+		int target_scale = _get_actual_match_render_scale();
 		current_svg_scale = target_scale;
 		current_svg_path = path_str;
 		texture = svgMgr->get_svg_image(path_str, target_scale);
@@ -555,7 +550,7 @@ void SpxSprite::play_anim(GdString p_name, GdFloat p_speed, GdBool isLoop, GdBoo
 		// Check if this is an SVG animation that supports scaling
 		if (is_svg_mode) {
 			// Calculate required scale based on current render scale
-			int target_scale = _calculate_optimal_svg_scale();
+			int target_scale = _get_actual_match_render_scale();
 			frames = svgMgr->get_svg_animation(base_anim_key, target_scale);
 			final_anim_key = base_anim_key;
 		} else {
@@ -641,7 +636,21 @@ GdVec2 SpxSprite::get_anim_offset() const {
 	return anim2d->get_offset();
 }
 
-// Old flip methods removed - use set_flip_h() instead
+void SpxSprite::set_anim_flip_h(GdBool p_flip) {
+	anim2d->set_flip_h(p_flip);
+}
+
+GdBool SpxSprite::is_anim_flipped_h() const {
+	return anim2d->is_flipped_h();
+}
+
+void SpxSprite::set_anim_flip_v(GdBool p_flip) {
+	anim2d->set_flip_v(p_flip);
+}
+
+GdBool SpxSprite::is_anim_flipped_v() const {
+	return anim2d->is_flipped_v();
+}
 
 void SpxSprite::set_gravity(GdFloat gravity) {
 	_gravity = gravity;
@@ -798,152 +807,91 @@ GdBool SpxSprite::check_collision_with_point(GdVec2 point, GdBool is_trigger) {
 	return is_colliding;
 }
 
-// ============================================================================
-// New unified scale and flip API
-// ============================================================================
-
-GdVec2 SpxSprite::get_scale() const {
-	return _base_scale;
-}
-void SpxSprite::set_scale(GdVec2 scale) {
-	// Store logical size (force positive values)
-	_base_scale = Vector2(Math::abs(scale.x), Math::abs(scale.y));
-
-	// Apply to CharacterBody2D scale (combining with flip state)
-	_apply_scale_and_flip();
+void SpxSprite::set_render_scale(GdVec2 new_scale) {
+	_render_scale = new_scale;
+	update_anim_scale();
 }
 
-void SpxSprite::_update_svg_scale_if_needed() {
-	if (!is_svg_mode || !anim2d) {
-		return;
-	}
-
-	// 1. Calculate optimal SVG scale level
-	int optimal_svg_scale = _calculate_optimal_svg_scale();
-
-	// 2. Switch SVG level if needed
-	if (optimal_svg_scale != current_svg_scale) {
-		current_svg_scale = optimal_svg_scale;
-
-		if (is_single_image_mode) {
-			// Single image mode
-			Ref<Texture2D> texture = svgMgr->get_svg_image(current_svg_path, optimal_svg_scale);
-			_play_single_image_animation(texture);
-		} else {
-			// Animation mode
-			_switch_svg_animation_scale(optimal_svg_scale);
+void SpxSprite::update_anim_scale(){
+	GdVec2 finalScale = _render_scale;
+	auto target_scale = _get_actual_match_render_scale();
+	if(target_scale != current_svg_scale){
+		current_svg_scale = target_scale;
+		if(is_svg_mode){
+			if(is_single_image_mode){
+				Ref<Texture2D> texture = svgMgr->get_svg_image(current_svg_path, target_scale);
+				_play_single_image_animation(texture);
+			}else{ 
+				// Save current animation state
+				bool was_playing = anim2d->is_playing();
+				int current_frame = anim2d->get_frame();
+				float frame_progress = anim2d->get_frame_progress();
+				float custom_speed_scale = anim2d->get_playing_speed() / anim2d->get_speed_scale();
+				
+				auto loop = false;
+				auto animation = anim2d->get_animation();
+				auto old_frames = anim2d->get_sprite_frames();
+				if(old_frames.is_valid() && old_frames->has_animation(animation)){
+					loop = old_frames->get_animation_loop(animation);
+				}
+				auto base_anim_key = current_svg_anim_key;
+				auto frames = svgMgr->get_svg_animation(base_anim_key, target_scale);
+				if (frames.is_valid()) {
+					anim2d->set_sprite_frames(frames);
+					frames->set_animation_loop(base_anim_key, loop);
+					
+					// Set animation without resetting state
+					anim2d->set_animation(base_anim_key);
+					
+					// Restore animation state
+					int max_frame = frames->get_frame_count(base_anim_key) - 1;
+					if (current_frame > max_frame) {
+						current_frame = max_frame;
+					}
+					anim2d->set_frame_and_progress(current_frame, frame_progress);
+					
+					// Resume playing if it was playing before
+					if (was_playing) {
+						anim2d->play(base_anim_key, custom_speed_scale);
+					}
+				}
+			}
 		}
 	}
-
-	// 3. CRITICAL FIX: Calculate compensation scale using absolute values
-	Vector2 actual_scale = CharacterBody2D::get_scale();  // May be negative (e.g., -2, 2)
-
-	// Take absolute values (avoid double negation!)
-	Vector2 abs_scale = Vector2(Math::abs(actual_scale.x), Math::abs(actual_scale.y));
-
-	// Compensation scale = absolute value / SVG level
-	Vector2 compensation = abs_scale / float(current_svg_scale);
-
-	// 4. Apply to AnimatedSprite2D (MUST be positive, no flip)
-	anim2d->set_scale(compensation);
-}
-void SpxSprite::_switch_svg_animation_scale(int new_scale) {
-	if (!anim2d || !is_svg_mode || is_single_image_mode) {
-		return;
+	if(is_svg_mode){
+		finalScale.x = finalScale.x / current_svg_scale;
+		finalScale.y = finalScale.y / current_svg_scale;
 	}
-
-	// Save current animation state
-	bool was_playing = anim2d->is_playing();
-	int current_frame = anim2d->get_frame();
-	float frame_progress = anim2d->get_frame_progress();
-	float custom_speed = anim2d->get_playing_speed() / anim2d->get_speed_scale();
-
-	StringName animation = anim2d->get_animation();
-	auto old_frames = anim2d->get_sprite_frames();
-	bool loop = old_frames.is_valid() && old_frames->has_animation(animation)
-	            ? old_frames->get_animation_loop(animation)
-	            : false;
-
-	// Load new SpriteFrames
-	String base_anim_key = current_svg_anim_key;
-	Ref<SpriteFrames> new_frames = svgMgr->get_svg_animation(base_anim_key, new_scale);
-
-	if (new_frames.is_valid()) {
-		anim2d->set_sprite_frames(new_frames);
-		new_frames->set_animation_loop(base_anim_key, loop);
-		anim2d->set_animation(base_anim_key);
-
-		// Restore animation state
-		int max_frame = new_frames->get_frame_count(base_anim_key) - 1;
-		current_frame = MIN(current_frame, max_frame);
-		anim2d->set_frame_and_progress(current_frame, frame_progress);
-
-		if (was_playing) {
-			anim2d->play(base_anim_key, custom_speed);
-		}
-	}
+	anim2d->set_scale(finalScale);
 }
 
-void SpxSprite::set_flip_h(GdBool flip) {
-	if (_is_flipped_h == flip) {
-		return;  // No change, early return
-	}
-
-	_is_flipped_h = flip;
-	_apply_scale_and_flip();
+GdVec2 SpxSprite::get_render_scale() {
+	return _render_scale;
 }
 
-GdBool SpxSprite::is_flip_h() const {
-	return _is_flipped_h;
+int SpxSprite::_get_actual_match_render_scale() {
+	Vector2 current_scale = _get_actual_render_scale();
+	int optimal_scale = svgMgr->calculate_svg_scale(current_scale);
+	return optimal_scale;
 }
 
-void SpxSprite::_apply_scale_and_flip() {
-	// Calculate actual scale (combining size and flip)
-	Vector2 actual_scale = _base_scale;
-
-	if (_is_flipped_h) {
-		actual_scale.x = -actual_scale.x;  // Horizontal flip using negative scale
-	}
-
-	// Set to CharacterBody2D (affects entire node tree including colliders)
-	CharacterBody2D::set_scale(actual_scale);
-
-	// Manually trigger SVG scale update
-	if (is_svg_mode) {
-		_update_svg_scale_if_needed();
-	}
-}
-
-
-
-int SpxSprite::_calculate_optimal_svg_scale() {
-	Vector2 global_scale = _get_actual_global_scale_abs();
-	return svgMgr->calculate_svg_scale(global_scale);
-}
-
-Vector2 SpxSprite::_get_actual_global_scale_abs() {
+Vector2 SpxSprite::_get_actual_render_scale() {
 	if (!anim2d) {
 		return Vector2(1.0f, 1.0f);
 	}
-
-	// 1. Get global scale from node (may be negative due to flip)
-	Vector2 global_scale = get_global_transform().get_scale();
-
-	// 2. Take absolute values (SVG level selection only cares about size, not flip)
-	global_scale.x = Math::abs(global_scale.x);
-	global_scale.y = Math::abs(global_scale.y);
-
-	// 3. Consider camera zoom
+	
+	// Get the global transform scale
+	Vector2 global_scale = get_global_transform().get_scale() * _render_scale;
+	
+	// Consider camera zoom if available
 	auto camera_mgr = SpxEngine::get_singleton()->get_camera();
 	if (camera_mgr) {
 		Vector2 camera_zoom = camera_mgr->get_camera_zoom();
 		global_scale *= camera_zoom;
 	}
-
+	
 	return global_scale;
 }
-
-
 
 void SpxSprite::_on_frame_changed() {
 	if (anim2d == nullptr) {
@@ -981,6 +929,9 @@ GdBool SpxSprite::is_dynamic_frame_offset_enabled() const {
 	return enable_dynamic_frame_offset;
 }
 
+// ============================================================================
+// Physics mode implementation
+// ============================================================================
 
 void SpxSprite::_physics_process(double delta) {
 	switch (physics_mode) {

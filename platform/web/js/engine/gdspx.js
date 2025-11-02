@@ -1371,24 +1371,24 @@ gdspx_sprite_get_scale(obj) {
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_flip_h(obj,flip) {
-	var _gdFuncPtr = Module._gdspx_sprite_set_flip_h; 
+gdspx_sprite_set_render_scale(obj,scale) {
+	var _gdFuncPtr = Module._gdspx_sprite_set_render_scale; 
 	
 	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdBool(flip);
+	var _arg1 = ToGdVec2(scale);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
-	FreeGdBool(_arg1); 
+	FreeGdVec2(_arg1); 
 
 }
-gdspx_sprite_is_flip_h(obj) {
-	var _gdFuncPtr = Module._gdspx_sprite_is_flip_h; 
-	var _retValue = AllocGdBool();
+gdspx_sprite_get_render_scale(obj) {
+	var _gdFuncPtr = Module._gdspx_sprite_get_render_scale; 
+	var _retValue = AllocGdVec2();
 	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	var _finalRetValue = ToJsBool(_retValue);
-	FreeGdBool(_retValue); 
+	var _finalRetValue = ToJsVec2(_retValue);
+	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
 gdspx_sprite_set_color(obj,color) {
@@ -1775,6 +1775,46 @@ gdspx_sprite_get_anim_offset(obj) {
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
+	return _finalRetValue
+}
+gdspx_sprite_set_anim_flip_h(obj,p_flip) {
+	var _gdFuncPtr = Module._gdspx_sprite_set_anim_flip_h; 
+	
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdBool(p_flip);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdBool(_arg1); 
+
+}
+gdspx_sprite_is_anim_flipped_h(obj) {
+	var _gdFuncPtr = Module._gdspx_sprite_is_anim_flipped_h; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
+	_gdFuncPtr(_arg0, _retValue);
+	FreeGdObj(_arg0); 
+	var _finalRetValue = ToJsBool(_retValue);
+	FreeGdBool(_retValue); 
+	return _finalRetValue
+}
+gdspx_sprite_set_anim_flip_v(obj,p_flip) {
+	var _gdFuncPtr = Module._gdspx_sprite_set_anim_flip_v; 
+	
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdBool(p_flip);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdBool(_arg1); 
+
+}
+gdspx_sprite_is_anim_flipped_v(obj) {
+	var _gdFuncPtr = Module._gdspx_sprite_is_anim_flipped_v; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
+	_gdFuncPtr(_arg0, _retValue);
+	FreeGdObj(_arg0); 
+	var _finalRetValue = ToJsBool(_retValue);
+	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
 gdspx_sprite_get_current_anim_name(obj) {
