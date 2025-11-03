@@ -8,6 +8,67 @@
  * @module Engine
  * @header Web export JavaScript reference
  */
+
+/* -------------------------
+   TimeProfiler utility class
+   ------------------------- */
+class TimeProfiler {
+	static enabled = false;
+	static marks = {};
+
+	static mark(label) {
+		if (!this.enabled) return;
+		try {
+			this.marks[label] = performance.now();
+		} catch (e) {
+			// ignore
+		}
+	}
+	static measure(startLabel, endLabel) {
+		if (!this.enabled) return;
+		const s = this.marks[startLabel];
+		const e = this.marks[endLabel];
+		if (s != null && e != null) {
+			const cost = (e - s).toFixed(2);
+			console.log(`[Perf] ${startLabel} → ${endLabel}: ${cost} ms`);
+			return cost;
+		}
+		return null;
+	}
+    static async profile(label, fn) {
+        if (!this.enabled) return await fn();
+        const start = performance.now();
+        try {
+            const result = await fn();
+            const end = performance.now();
+            console.log(`[Perf] ${label}: ${(end - start).toFixed(2)} ms`);
+            return result;
+        } catch (err) {
+            const end = performance.now();
+            console.warn(`[Perf] ${label} failed after ${(end - start).toFixed(2)} ms`);
+            throw err;
+        }
+    }
+	static summary(labels, note = '') {
+		if (!this.enabled) return;
+		console.log(`==== Perf(${note}) Summary ====`);
+		for (let i = 0; i + 1 < labels.length; i++) {
+			const a = labels[i], b = labels[i + 1];
+			this.measure(a, b);
+		}
+		console.log("======================");
+	}
+}
+
+const globalScope = typeof window !== 'undefined' ? window :
+                    typeof self !== 'undefined' ? self :
+                    globalThis;
+
+globalScope.profiler = TimeProfiler;
+
+/* -------------------------
+   Engine implementation (instrumented)
+   ------------------------- */
 const Engine = (function () {
 	const preloader = new Preloader();
 
@@ -41,11 +102,20 @@ const Engine = (function () {
 	 * @function Engine.load
 	 */
 	Engine.load = function (basePath, size) {
+		TimeProfiler.mark("Engine.load.start");
 		if (loadPromise == null) {
 			loadPath = basePath;
 			loadPromise = preloader.loadPromise(`${loadPath}.wasm`, size, true);
 			requestAnimationFrame(preloader.animateProgress);
 		}
+		loadPromise.then(function () {
+			TimeProfiler.mark("Engine.load.end");
+		}).catch(function (e) {
+			// still mark end on error for visibility
+			TimeProfiler.mark("Engine.load.end");
+			console.error("[Engine.load] error:", e);
+		});
+		TimeProfiler.measure("Engine.load.start", "Engine.load.end");
 		return loadPromise;
 	};
 
@@ -75,35 +145,53 @@ const Engine = (function () {
 			 * @return {Promise} A ``Promise`` that resolves once the engine is loaded and initialized.
 			 */
 			init: function () {
-				if(initPromise != null){
+				if (initPromise != null) {
+					// already initializing or initialized
 					return Promise.resolve();
 				}
 				loadPath = this.config.executable;
-				if(typeof miniEngine !== 'undefined' && miniEngine){
-					loadPath = "js/"+loadPath;
+				if (typeof miniEngine !== 'undefined' && miniEngine) {
+					loadPath = "js/" + loadPath;
 				}
 				const me = this;
+
 				function doInit() {
 					// Care! Promise chaining is bogus with old emscripten versions.
 					// This caused a regression with the Mono build (which uses an older emscripten version).
 					// Make sure to test that when refactoring.
 					return new Promise(function (resolve, reject) {
+						TimeProfiler.mark("Engine.init.doInit.start");
 						// Now proceed with Godot and other logic
 						let gdmodule = me.config.getModuleConfig(loadPath, me.config.wasmEngine);
 						Godot(gdmodule).then(function (module) {
+							TimeProfiler.mark("Godot(gdmodule) loaded");
+							TimeProfiler.measure("Engine.init.doInit.start", "Godot(gdmodule) loaded");
 							const paths = me.config.persistentPaths;
-							if (typeof miniEngine === 'undefined' || !miniEngine){
+							if (typeof miniEngine === 'undefined' || !miniEngine) {
+								TimeProfiler.mark("Engine.init.initFS.start");
 								module['initFS'](paths).then(function (err) {
+									TimeProfiler.mark("Engine.init.initFS.end");
+									TimeProfiler.measure("Engine.init.initFS.start", "Engine.init.initFS.end");
 									me.rtenv = module;
 									if (me.config.unloadAfterInit) {
 										Engine.unload();
 									}
+									TimeProfiler.mark("Engine.init.doInit.end");
+									TimeProfiler.measure("Engine.init.doInit.start", "Engine.init.doInit.end");
 									resolve();
+								}).catch(function (e) {
+									console.error("[Engine.init] initFS failed", e);
+									reject(e);
 								});
-							}else{
+							} else {
 								me.rtenv = module;
+								TimeProfiler.mark("Engine.init.doInit.end");
+								TimeProfiler.measure("Engine.init.doInit.start", "Engine.init.doInit.end");
 								resolve();
 							}
+						}).catch(function (e) {
+							console.error("[Engine.init] Godot(gdmodule) promise rejected", e);
+							reject(e);
 						});
 					});
 				}
@@ -131,23 +219,29 @@ const Engine = (function () {
 			preloadFile: function (file, path) {
 				return preloader.preload(file, path, this.config.fileSizes[file]);
 			},
-			getPThread:function () {
-				return this.rtenv['getPThread']()
+			getPThread: function () {
+				return this.rtenv['getPThread']();
 			},
-			unpackGameData:async function (dir,projectName, projectData, pckName, pckData) {
+			unpackGameData: async function (dir, projectName, projectData, pckName, pckData) {
+				TimeProfiler.mark("Engine.unpackGameData.start");
 				let datas = []
-				datas.push({ "path": projectName, "data": projectData})	
-				if ( pckName != "" ){
+				datas.push({ "path": projectName, "data": projectData })
+				if (pckName != "") {
 					datas.push({ "path": pckName, "data": pckData })
-				} 
+				}
 				// write project data to file	
 				let files = []
 				this.rtenv['deleteDirFS'](dir);
 				for (let info of datas) {
 					files.push(info.path)
+					TimeProfiler.mark(`Engine.unpackGameData.copy.start:${info.path}`);
 					this.rtenv['copyToFS'](dir + "/" + info.path, info.data);
+					TimeProfiler.mark(`Engine.unpackGameData.copy.end:${info.path}`);
+					TimeProfiler.measure(`Engine.unpackGameData.copy.start:${info.path}`, `Engine.unpackGameData.copy.end:${info.path}`);
 				}
 				this.rtenv['updateGameDatas'](dir, files);
+				TimeProfiler.mark("Engine.unpackGameData.end");
+				TimeProfiler.measure("Engine.unpackGameData.start", "Engine.unpackGameData.end");
 			},
 
 			downloadRecordedVideo: function (fileName) {
@@ -161,11 +255,11 @@ const Engine = (function () {
 						+ 'Enable "Web Recorder" for your export preset and/or build your custom template with "web_recorder_enabled=yes".'));
 				}
 			},
-			
+
 			getRecordedVideoBlob: function () {
 				if (this.rtenv == null) {
 					throw new Error('Engine must be inited before getting web recorder');
-				}			
+				}
 				if (this.rtenv['getRecordedVideoBlob']) {
 					return this.rtenv['getRecordedVideoBlob']();
 				} else {
@@ -187,27 +281,37 @@ const Engine = (function () {
 			 * @return {Promise} Promise that resolves once the engine started.
 			 */
 			start: function (override) {
+				TimeProfiler.mark("Engine.start.start");
 				this.config.update(override);
 				const me = this;
-				
+
 				return me.init().then(function () {
 					if (!me.rtenv) {
 						return Promise.reject(new Error('The engine must be initialized before it can be started'));
 					}
-					
+
+					TimeProfiler.mark("Engine.start.setRecorderCanvas.start");
 					me.rtenv['setRecorderCanvas'](me.config.canvas);
+					TimeProfiler.mark("Engine.start.setRecorderCanvas.end");
+					TimeProfiler.measure("Engine.start.setRecorderCanvas.start", "Engine.start.setRecorderCanvas.end");
 
 					initPromise = null
 					let config = {};
 					try {
+						TimeProfiler.mark("Engine.start.getGodotConfig.start");
 						config = me.config.getGodotConfig(function () {
 							me.rtenv = null;
 						});
+						TimeProfiler.mark("Engine.start.getGodotConfig.end");
+						TimeProfiler.measure("Engine.start.getGodotConfig.start", "Engine.start.getGodotConfig.end");
 					} catch (e) {
 						return Promise.reject(e);
 					}
 					// Godot configuration.
+					TimeProfiler.mark("Engine.start.initConfig.start");
 					me.rtenv['initConfig'](config);
+					TimeProfiler.mark("Engine.start.initConfig.end");
+					TimeProfiler.measure("Engine.start.initConfig.start", "Engine.start.initConfig.end");
 
 					// Preload GDExtension libraries.
 					if (me.config.gdextensionLibs.length > 0 && !me.rtenv['loadDynamicLibrary']) {
@@ -225,18 +329,39 @@ const Engine = (function () {
 					});
 					function executeMainLogic() {
 						return new Promise(function (resolve, reject) {
+							TimeProfiler.mark("Engine.start.copyPreloaded.start");
 							preloader.preloadedFiles.forEach(function (file) {
 								me.rtenv['copyToFS'](file.path, file.buffer);
 							});
+							TimeProfiler.mark("Engine.start.copyPreloaded.end");
+							TimeProfiler.measure("Engine.start.copyPreloaded.start", "Engine.start.copyPreloaded.end");
+
 							preloader.preloadedFiles.length = 0; // Clear memory
+
+							TimeProfiler.mark("Engine.start.callMain.start");
 							me.rtenv['callMain'](me.config.args);
+							TimeProfiler.mark("Engine.start.callMain.end");
+							TimeProfiler.measure("Engine.start.callMain.start", "Engine.start.callMain.end");
+
 							initPromise = null;
+							TimeProfiler.mark("Engine.start.end");
+							TimeProfiler.measure("Engine.start.start", "Engine.start.end");
+
+							// Optional summary for main stages
+							TimeProfiler.summary([
+								"Engine.load.start",
+								"Engine.load.end",
+								"Engine.init.doInit.start",
+								"Engine.init.doInit.end",
+								"Engine.start.start",
+								"Engine.start.end"
+							], "engine");
+							
 							me.installServiceWorker();
 							resolve();
 						});
 					}
 					return executeMainLogic();
-					
 				});
 			},
 
@@ -279,21 +404,32 @@ const Engine = (function () {
 				if (this.rtenv == null) {
 					throw new Error('Engine must be inited before copying files');
 				}
+				TimeProfiler.mark(`Engine.copyToFS.start:${path}`);
 				this.rtenv['copyToFS'](path, buffer);
+				TimeProfiler.mark(`Engine.copyToFS.end:${path}`);
+				TimeProfiler.measure(`Engine.copyToFS.start:${path}`, `Engine.copyToFS.end:${path}`);
 			},
 
-            copyFSToAdapter: function (adapter) {
-                if (this.rtenv == null) {
-                    throw new Error('Engine must be inited before copying files');
-                }
-                const me = this;
-                var promises = [];
-                this.config.persistentPaths.forEach(function (path) {
-                    promises.push(me.rtenv['copyToAdapter'](path, adapter));
-                });
-                return Promise.all(promises);
-            },
-			
+			copyFSToAdapter: function (adapter) {
+				if (this.rtenv == null) {
+					throw new Error('Engine must be inited before copying files');
+				}
+				const me = this;
+				var promises = [];
+				this.config.persistentPaths.forEach(function (path) {
+					TimeProfiler.mark(`Engine.copyFSToAdapter.start:${path}`);
+					const p = me.rtenv['copyToAdapter'](path, adapter);
+					if (p && typeof p.then === 'function') {
+						p.then(function () {
+							TimeProfiler.mark(`Engine.copyFSToAdapter.end:${path}`);
+							TimeProfiler.measure(`Engine.copyFSToAdapter.start:${path}`, `Engine.copyFSToAdapter.end:${path}`);
+						});
+					}
+					promises.push(p);
+				});
+				return Promise.all(promises);
+			},
+
 			getAudioContext: function () {
 				if (this.rtenv == null) {
 					throw new Error('Engine must be inited before getting audio context');
