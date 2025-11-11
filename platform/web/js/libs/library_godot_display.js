@@ -306,14 +306,14 @@ const GodotDisplayScreen = {
 			}
 			
 			const scale = GodotDisplayScreen.getPixelRatio();
-			if (isFullscreen || wantsFullWindow) {
+			const fullscreen = isFullscreen || wantsFullWindow;
+			if (fullscreen) {
 				// We need to match screen size.
-				width = window.innerWidth * scale ;
-				height = window.innerHeight * scale;
+				width = Math.floor(window.innerWidth * scale);
+				height = Math.floor(window.innerHeight * scale);
 			}
-
-			let csw = `${width / scale}px`;
-			let csh = `${height / scale}px`;
+			const csw = fullscreen ? `${window.innerWidth}px` : `${Math.floor(width / scale)}px`;
+			const csh = fullscreen ? `${window.innerHeight}px` : `${Math.floor(height / scale)}px`;
 
 			this.wait_resize_frame_time--;
 			let is_size_changed = canvas.style.width !== csw || canvas.style.height !== csh || canvas.width !== width || canvas.height !== height;
