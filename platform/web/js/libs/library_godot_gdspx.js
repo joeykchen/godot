@@ -29,6 +29,12 @@ const GodotGdspx = {
 		FFI.gdspx_on_engine_destroy();
 	},
 
+	godot_js_spx_on_engine_reset__sig: 'v',
+	godot_js_spx_on_engine_reset: function () {
+		if (!FFI) return;
+		FFI.gdspx_on_engine_reset();
+	},
+
 	godot_js_spx_on_engine_pause__proxy: 'sync',
 	godot_js_spx_on_engine_pause__sig: 'vi',
 	godot_js_spx_on_engine_pause : function (is_on) {

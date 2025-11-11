@@ -42,6 +42,12 @@ void SpxInputMgr::on_start() {
 	input_proxy->ready();
 }
 
+void SpxInputMgr::on_reset() {
+	if(input_proxy) {
+		input_proxy->queue_free();
+	}
+}
+
 // input
 GdVec2 SpxInputMgr::get_global_mouse_pos() {
 	auto mouse_pos = cameraMgr->get_global_mouse_position();

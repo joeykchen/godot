@@ -62,6 +62,14 @@ void SpxExtMgr::request_exit(GdInt exit_code) {
 	get_tree()->quit(exit_code);
 }
 
+void SpxExtMgr::request_reset() {
+	Spx::reset();
+}
+
+void SpxExtMgr::request_restart() {
+	Spx::restart();
+}
+
 void SpxExtMgr::on_runtime_panic(GdString msg) {
 	auto msg_str = SpxStr(msg);
 	auto callback = SpxEngine::get_singleton()->get_on_runtime_panic();
@@ -70,8 +78,6 @@ void SpxExtMgr::on_runtime_panic(GdString msg) {
 		callback(str);
 	}
 }
-
-
 
 // Pause API implementations - delegate to Spx layer
 void SpxExtMgr::pause() {

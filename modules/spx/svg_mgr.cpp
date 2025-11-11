@@ -168,9 +168,13 @@ Ref<ImageTexture> SvgManager::_load_image(const String& path/*engine path*/, int
 }
 
 void SvgManager::destroy() {
+	reset();
+	singleton = nullptr;
+}
+
+void SvgManager::reset() {
 	svg_image_cache.clear();
 	svg_animation_cache.clear();
-	singleton = nullptr;
 }
 
 int SvgManager::calculate_svg_scale(Vector2 required_scale) {

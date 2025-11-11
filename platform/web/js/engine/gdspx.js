@@ -303,6 +303,18 @@ gdspx_ext_request_exit(exit_code) {
 	FreeGdInt(_arg0); 
 
 }
+gdspx_ext_request_reset() {
+	var _gdFuncPtr = Module._gdspx_ext_request_reset; 
+	
+	_gdFuncPtr();
+
+}
+gdspx_ext_request_restart() {
+	var _gdFuncPtr = Module._gdspx_ext_request_restart; 
+	
+	_gdFuncPtr();
+
+}
 gdspx_ext_on_runtime_panic(msg) {
 	var _gdFuncPtr = Module._gdspx_ext_on_runtime_panic; 
 	

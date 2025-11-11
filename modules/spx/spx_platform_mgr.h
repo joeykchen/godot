@@ -41,6 +41,7 @@ public:
 	virtual ~SpxPlatformMgr() = default; // Added virtual destructor to fix -Werror=non-virtual-dtor
 
 	void on_awake() override;
+	void on_reset() override;
 	void _set_persistant_data_dir(String path);
 	String _get_persistant_data_dir();
 	

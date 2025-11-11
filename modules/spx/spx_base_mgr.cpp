@@ -70,12 +70,10 @@ void SpxBaseMgr::on_awake() {
 }
 
 void SpxBaseMgr::on_start() {
+	
 }
 
 void SpxBaseMgr::on_update(float delta) {
-}
-
-void SpxBaseMgr::on_exit(int exit_code) {
 }
 
 void SpxBaseMgr::on_fixed_update(float delta) {
@@ -86,6 +84,12 @@ void SpxBaseMgr::on_destroy() {
 		owner->queue_free();
 		owner = nullptr;
 	}
+}
+
+void SpxBaseMgr::on_reset() {
+}
+
+void SpxBaseMgr::on_exit(int exit_code) {
 }
 
 void SpxBaseMgr::on_pause() {

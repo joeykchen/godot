@@ -64,6 +64,7 @@ private:
 
 public:
 	void on_awake() override;
+	void on_reset() override;
 	Ref<Texture2D> load_texture(String path, GdBool direct = false);
 	Ref<AudioStream> load_audio(String path, GdBool direct = false);
 	Ref<Texture2D> _reload_texture(String path);

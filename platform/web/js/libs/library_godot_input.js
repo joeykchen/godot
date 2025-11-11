@@ -721,7 +721,8 @@ const GodotInput = {
 			const args = files || [];
 			if (!args.length) {
 				return;
-			}			const ptr = GodotRuntime.allocString(path);
+			}			
+			const ptr = GodotRuntime.allocString(path);
 			const argc = args.length;
 			const argv = GodotRuntime.allocStringArray(args);
 			func(ptr, argv, argc);

@@ -56,6 +56,9 @@ void SpxDebugMgr::on_destroy() {
 	SpxBaseMgr::on_destroy();
 }
 
+void SpxDebugMgr::on_reset() {
+	_clear_debug_shapes();
+}
 
 void SpxDebugMgr::_clear_debug_shapes() {
 	for (const DebugShape& shape : debug_shapes) {

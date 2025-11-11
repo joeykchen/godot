@@ -105,6 +105,9 @@ void SpxSceneMgr::on_destroy() {
 	SpxBaseMgr::on_destroy();
 }
 
+void SpxSceneMgr::on_reset() {
+	clear_pure_sprites();
+}
 
 void SpxSceneMgr::clear_pure_sprites(){
 	id_pure_sprites.clear();

@@ -46,6 +46,7 @@ private:
 	Camera2D *camera = nullptr;
 public:
 	void on_awake() override;
+	void on_reset() override;
 	Camera2D *get_camera(){ return camera; }
 	Vector2 get_global_mouse_position();
 	void set_stretch_clear_color();

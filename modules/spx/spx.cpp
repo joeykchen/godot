@@ -74,7 +74,7 @@ void Spx::register_types() {
 	ClassDB::register_class<SpxInputProxy>();
 }
 
-void Spx::on_start(void *p_tree) {
+void Spx::unpack_game_data() {
 	if (!project_data_path.is_empty()) {
 #ifdef MINIZIP_ENABLED
 		Ref<ZIPReader> zip = memnew(ZIPReader);
@@ -99,6 +99,10 @@ void Spx::on_start(void *p_tree) {
 		print_line("Minizip is not enabled, project data zip is not supported");
 #endif
 	}
+}
+
+void Spx::on_start(void *p_tree) {
+	unpack_game_data();
 	initialed = true;
 	if (!SpxEngine::has_initialed()) {
 		return;
@@ -119,35 +123,48 @@ void Spx::on_start(void *p_tree) {
 }
 
 void Spx::on_fixed_update(double delta) {
-	if (!initialed) {
+	if (!initialed || !SpxEngine::has_initialed()) {
 		return;
 	}
-	if (!SpxEngine::has_initialed()) {
-		return;
-	}
+
 	SPX_ENGINE->on_fixed_update(delta);
 }
 
 void Spx::on_update(double delta) {
-	if (!initialed) {
+	if (!initialed || !SpxEngine::has_initialed()) {
 		return;
 	}
-	if (!SpxEngine::has_initialed()) {
-		return;
-	}
+
 	SPX_ENGINE->on_update(delta);
 }
 
 void Spx::on_destroy() {
-	if (!initialed) {
+	if (!initialed || !SpxEngine::has_initialed()) {
 		return;
 	}
-	if (!SpxEngine::has_initialed()) {
-		return;
-	}
+
 	print_verbose("Spx::on_destroy");
 	SPX_ENGINE->on_destroy();
 	initialed = false;
+}
+
+void Spx::reset() {
+	if (!initialed || !SpxEngine::has_initialed()) {
+		return;
+	}
+
+	print_verbose("Spx::reset");
+
+	SPX_ENGINE->on_reset();
+}
+
+void Spx::restart() {
+	if (!initialed || !SpxEngine::has_initialed()) {
+		return;
+	}
+	print_verbose("Spx::restart");
+	unpack_game_data();
+	SPX_ENGINE->restart();
 }
 
 void Spx::pause() {

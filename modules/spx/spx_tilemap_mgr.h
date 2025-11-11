@@ -40,12 +40,13 @@ class SpxTilemapMgr : SpxBaseMgr {
 	SPXCLASS(SpxTilemapMgr, SpxBaseMgr)
 public:
 	virtual ~SpxTilemapMgr() = default;
+	void on_destroy() override;
+	void on_reset() override;
 
 private:
 	SpxDrawTiles* draw_tiles = nullptr;
 
 public:
-	void on_destroy() override;
 
 	void open_draw_tiles_with_size(GdInt tile_size);
 	void open_draw_tiles();

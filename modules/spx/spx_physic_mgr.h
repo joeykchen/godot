@@ -78,6 +78,7 @@ private:
 public:
 	bool is_collision_by_pixel;
 	void on_awake() override;
+	void on_reset() override;
 	
 
 public:

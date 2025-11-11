@@ -114,6 +114,7 @@ const GodotFS = {
 		'Module["copyToFS"] = GodotFS.copy_to_fs;',
 		'Module["getPThread"] = GodotFS.getPThread;',
 		'Module["deleteDirFS"] = GodotFS.rm_dir;',
+		'Module["deleteDirRecursive"] = GodotFS.rm_dir_recursive;',
 		'Module["copyToAdapter"] = GodotFS.copy_to_adapter;',
 		'Module["updateGameDatas"] = GodotFS.update_game_datas;',
 		'Module["readAllFS"] = GodotFS.read_all;',
@@ -270,6 +271,45 @@ const GodotFS = {
 			const analysis = FS.analyzePath(path);
 			if (analysis.exists && analysis.object && FS.isDir(analysis.object.mode)) {
 			  FS.rmdir(path);
+			}
+		},
+		rm_dir_recursive: function (path) {
+			try {
+				const stat = FS.stat(path);
+				if (FS.isDir(stat.mode)) {
+					const entries = FS.readdir(path).filter(name => name !== "." && name !== "..");
+					for (const name of entries) {
+						const childPath = `${path}/${name}`;
+						const childStat = FS.stat(childPath);
+						if (FS.isDir(childStat.mode)) {
+							GodotFS.rm_dir_recursive(childPath);
+						} else {
+							try {
+								console.log("FS.unlink childPath:", childPath);
+								FS.unlink(childPath);
+							} catch (e) {
+								console.warn("[GodotFS] unlink failed:", childPath, e);
+							}
+						}
+					}
+					try {
+						console.log("FS.rmdir:", path);
+						FS.rmdir(path);
+					} catch (e) {
+						console.warn("[GodotFS] rmdir failed:", path, e);
+					}
+				} else {
+					try {
+						console.log("FS.unlink:", path);
+						FS.unlink(path);
+					} catch (e) {
+						console.warn("[GodotFS] unlink failed:", path, e);
+					}
+				}
+			} catch (e) {
+				if (e.errno !== GodotFS.ENOENT) {
+					console.warn("[GodotFS] rm_dir_recursive error:", path, e);
+				}
 			}
 		},
 

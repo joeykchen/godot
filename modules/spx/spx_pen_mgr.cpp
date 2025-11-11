@@ -66,7 +66,14 @@ void SpxPenMgr::on_destroy() {
 	SpxBaseMgr::on_destroy();
 }
 
-
+void SpxPenMgr::on_reset() {
+	lock.lock();
+	for (auto pen : id_pens) {
+		pen.value->on_destroy();
+	}
+	id_pens.clear();
+	lock.unlock();
+}
 
 SpxPen *SpxPenMgr::_get_pen(GdObj obj) {
 	if (id_pens.has(obj)) {

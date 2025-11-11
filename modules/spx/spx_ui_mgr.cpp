@@ -94,6 +94,14 @@ void SpxUiMgr::on_awake() {
 	get_spx_root()->add_child(owner);
 }
 
+void SpxUiMgr::on_reset() {
+	owner->queue_free();
+	owner = memnew(CanvasLayer);
+	owner->set_name(get_class_name());
+	get_spx_root()->add_child(owner);
+	id_objects.clear();
+}
+
 void SpxUiMgr::on_node_destroy(SpxUi *node) {
 	if (id_objects.erase(node->get_gid())) {
 		SPX_CALLBACK->func_on_ui_destroyed(node->get_gid());

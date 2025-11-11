@@ -162,6 +162,12 @@ static void gdextension_spx_debug_debug_draw_line(GdVec2 from,GdVec2 to,GdColor 
 static void gdextension_spx_ext_request_exit(GdInt exit_code) {
 	 extMgr->request_exit(exit_code);
 }
+static void gdextension_spx_ext_request_reset() {
+	 extMgr->request_reset();
+}
+static void gdextension_spx_ext_request_restart() {
+	 extMgr->request_restart();
+}
 static void gdextension_spx_ext_on_runtime_panic(GdString msg) {
 	 extMgr->on_runtime_panic(msg);
 }
@@ -979,6 +985,8 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_debug_debug_draw_rect);
 	REGISTER_SPX_INTERFACE_FUNC(spx_debug_debug_draw_line);
 	REGISTER_SPX_INTERFACE_FUNC(spx_ext_request_exit);
+	REGISTER_SPX_INTERFACE_FUNC(spx_ext_request_reset);
+	REGISTER_SPX_INTERFACE_FUNC(spx_ext_request_restart);
 	REGISTER_SPX_INTERFACE_FUNC(spx_ext_on_runtime_panic);
 	REGISTER_SPX_INTERFACE_FUNC(spx_ext_pause);
 	REGISTER_SPX_INTERFACE_FUNC(spx_ext_resume);

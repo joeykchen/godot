@@ -51,8 +51,13 @@
 #include "spx_physic_mgr.h"
 
 #include <cmath>
+
 void SpxTilemapMgr::on_destroy() {
 	SpxBaseMgr::on_destroy();
+}
+
+void SpxTilemapMgr::on_reset() {
+	close_draw_tiles();
 }
 
 void SpxTilemapMgr::open_draw_tiles() {
