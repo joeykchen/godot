@@ -108,6 +108,7 @@ private:
 	GDExtensionSpxGlobalRuntimePanicCallback on_runtime_panic;
 	GDExtensionSpxGlobalRuntimeExitCallback on_runtime_exit;
 	bool has_exit;
+	bool is_spx_reset;
 	bool is_spx_paused;
 	bool is_defer_call_pause;
 	bool defer_pause_value;
@@ -128,7 +129,11 @@ public:
 	void on_fixed_update(float delta) override;
 	void on_update(float delta) override;
 	void on_destroy() override;
+	void on_reset() override;
 	void on_exit(int exit_code) override;
+
+	bool is_reset();
+	void restart();
 
 	// SPX Pause functionality - simplified interface
 	void pause();

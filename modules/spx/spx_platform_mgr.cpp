@@ -40,6 +40,10 @@ void SpxPlatformMgr::on_awake() {
 	persistant_data_dir = ::OS::get_singleton()->get_user_data_dir();
 }
 
+void SpxPlatformMgr::on_reset() {
+	set_stretch_mode(false);
+}
+
 void SpxPlatformMgr::set_stretch_mode(GdBool enable) {
     if (auto root = get_root()) {
         auto target_mode = enable
@@ -52,7 +56,6 @@ void SpxPlatformMgr::set_stretch_mode(GdBool enable) {
     }
 
 	set_stretch_aspect(false);
-	//if (enable) cameraMgr->set_stretch_clear_color();
 }
 
 void SpxPlatformMgr::set_stretch_aspect(GdBool is_keep) {

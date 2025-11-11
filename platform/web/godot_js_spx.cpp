@@ -203,6 +203,14 @@ void gdspx_ext_request_exit(GdInt* exit_code) {
 	 extMgr->request_exit(*exit_code);
 }
 EMSCRIPTEN_KEEPALIVE
+void gdspx_ext_request_reset() {
+	 extMgr->request_reset();
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_ext_request_restart() {
+	 extMgr->request_restart();
+}
+EMSCRIPTEN_KEEPALIVE
 void gdspx_ext_on_runtime_panic(GdString* msg) {
 	 extMgr->on_runtime_panic(*msg);
 }

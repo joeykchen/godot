@@ -59,6 +59,7 @@ public:
 	void on_awake() override;
 	void on_update(float delta) override;
 	void on_destroy() override;
+	void on_reset() override;
 
 	void collect_sortable_sprites(Vector<ISortableSprite*>& out);
 

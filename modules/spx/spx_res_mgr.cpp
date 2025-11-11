@@ -65,6 +65,13 @@ void SpxResMgr::on_awake() {
 	anim_frames.instantiate();
 }
 
+void SpxResMgr::on_reset() {
+	cached_texture.clear();
+	cached_audio.clear();
+	animation_frame_offsets.clear();
+	anim_frames->clear_all();
+}
+
 bool SpxResMgr::is_dynamic_anim_mode() const {
 	return is_dynamic_anim;
 }

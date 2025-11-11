@@ -141,6 +141,16 @@ void SpxSpriteMgr::on_update(float delta) {
 	SpxLayerSorter::instance().update(all_sortables);
 }
 
+void SpxSpriteMgr::on_reset() {
+	default_texture_anim = "default";
+	dont_destroy_root->queue_free();
+	dont_destroy_root = memnew(Node2D);
+	dont_destroy_root->set_name("dont_destroy_root");
+	get_spx_root()->add_child(dont_destroy_root);
+	
+	destroy_all_sprites();
+}
+
 void SpxSpriteMgr::collect_sortable_sprites(Vector<ISortableSprite*>& out) {
 	for (auto& pair : id_objects) {
 		if (pair.value) {
@@ -316,7 +326,7 @@ GdInt SpxSpriteMgr::clone_sprite(GdObj obj) {
 	check_and_get_sprite_r(NULL_OBJECT_ID)
 	sprite = dynamic_cast<SpxSprite *>(sprite->duplicate());
 	sprite->set_gid(get_unique_id());
-	get_spx_root()->add_child(sprite);
+	sprite_root->add_child(sprite);
 	sprite->on_start();
 	SPX_CALLBACK->func_on_sprite_ready(sprite->get_gid());
 	return sprite->get_gid();

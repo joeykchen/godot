@@ -51,6 +51,10 @@ void SpxCameraMgr::on_awake() {
 	//RenderingServer::get_singleton()->set_default_clear_color(Color(1,1,1,1));
 }
 
+void SpxCameraMgr::on_reset() {
+	if(camera) camera->set_position(Point2(0.0, 0.0));
+}
+
 Vector2 SpxCameraMgr::get_global_mouse_position() {
 	return camera->get_global_mouse_position();
 }

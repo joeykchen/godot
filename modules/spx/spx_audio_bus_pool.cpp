@@ -65,6 +65,13 @@ void SpxAudioBusPool::init() {
 	SpxAudioBusPool::STR_BUS_MUSIC = "Music";
 
 	singleton = memnew(SpxAudioBusPool);
+	reset();
+}
+
+void SpxAudioBusPool::reset() {
+	singleton->free_buses.clear();
+	singleton->active_buses.clear();
+	
 	// Start with DEFAULT_BUS_COUNT buses (includes master)
 	AudioServer::get_singleton()->set_bus_count(DEFAULT_BUS_COUNT);
 	// Master bus is at index 0, so we start from 1

@@ -33,6 +33,8 @@ public:
 	int calculate_svg_scale(Vector2 required_scale);
 
 	void destroy();
+	void reset();
+	
 private:
 	String _make_image_key(const String& path, int scale);     // "scale@path"
 	String _make_animation_key(const String& name, int scale); // "scale@name"

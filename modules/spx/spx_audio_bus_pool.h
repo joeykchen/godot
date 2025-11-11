@@ -60,6 +60,7 @@ private:
 public:
 	static SpxAudioBusPool *get_singleton();
 	static void init();
+	static void reset();
 	int alloc();
 	void free(int id);
 	void set_volume(int id, GdFloat volume);

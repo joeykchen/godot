@@ -65,6 +65,7 @@ static SpxCallbackInfo get_default_spx_callbacks() {
 	callbacks.func_on_engine_fixed_update = [](GdFloat delta){};
 	callbacks.func_on_engine_update = [](GdFloat delta){};
 	callbacks.func_on_engine_destroy = [](){};
+	callbacks.func_on_engine_reset = [](){};
 	callbacks.func_on_engine_pause = [](GdBool is_paused){};
 	callbacks.func_on_scene_sprite_instantiated = [](GdObj obj,GdString type_name){};
 	callbacks.func_on_sprite_ready = [](GdObj obj){};
@@ -286,6 +287,44 @@ void SpxEngine::on_destroy() {
 	memdelete(tilemap);
 	mgrs.clear();
 	singleton = nullptr;
+}
+
+bool SpxEngine::is_reset() {
+	return is_spx_reset;
+}
+
+void SpxEngine::restart() {
+	if (!is_spx_reset) {
+		return;
+	}
+
+	resume();
+	is_spx_reset = false;
+	for (auto mgr : mgrs) {
+		mgr->on_start();
+	}
+
+	if (callbacks.func_on_engine_start != nullptr) {
+		callbacks.func_on_engine_start();
+	}
+}
+
+void SpxEngine::on_reset() {
+	if (is_spx_reset) {
+		return;
+	}
+	
+	if(callbacks.func_on_engine_reset != nullptr){
+		callbacks.func_on_engine_reset();
+	}
+
+	is_spx_reset = true;
+	for (auto mgr : mgrs) {
+		mgr->on_reset();
+	}
+
+	SvgManager::get_singleton()->reset();
+	pause();
 }
 
 // SPX Pause functionality implementation with thread safety

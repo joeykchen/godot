@@ -85,11 +85,7 @@ void SpxAudio::stop_all() {
 }
 
 void SpxAudio::on_destroy() {
-	stop_all();
-	// free the bus
-	if (bus_id != SpxAudioBusPool::BUS_SFX) {
-		audioPool->free(bus_id);
-	}
+	on_reset();
 }
 
 void SpxAudio::on_update(float delta) {
@@ -117,6 +113,14 @@ void SpxAudio::on_update(float delta) {
 			audio->play();
 		}
 		item = next;
+	}
+}
+
+void SpxAudio::on_reset() {
+	stop_all();
+	// free the bus
+	if (bus_id != SpxAudioBusPool::BUS_SFX) {
+		audioPool->free(bus_id);
 	}
 }
 

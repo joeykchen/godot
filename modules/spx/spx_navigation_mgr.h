@@ -39,6 +39,7 @@ class SpxNavigationMgr : SpxBaseMgr {
 	SPXCLASS(SpxNavigationMgr, SpxBaseMgr)
 public:
 	virtual ~SpxNavigationMgr() = default;
+	void on_reset() override;
 
 private:
 	Ref<SpxPathFinder> path_finder;
