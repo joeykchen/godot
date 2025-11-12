@@ -285,7 +285,6 @@ const GodotFS = {
 							GodotFS.rm_dir_recursive(childPath);
 						} else {
 							try {
-								console.log("FS.unlink childPath:", childPath);
 								FS.unlink(childPath);
 							} catch (e) {
 								console.warn("[GodotFS] unlink failed:", childPath, e);
@@ -293,14 +292,12 @@ const GodotFS = {
 						}
 					}
 					try {
-						console.log("FS.rmdir:", path);
 						FS.rmdir(path);
 					} catch (e) {
 						console.warn("[GodotFS] rmdir failed:", path, e);
 					}
 				} else {
 					try {
-						console.log("FS.unlink:", path);
 						FS.unlink(path);
 					} catch (e) {
 						console.warn("[GodotFS] unlink failed:", path, e);
