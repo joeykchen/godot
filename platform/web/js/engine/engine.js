@@ -218,7 +218,6 @@ const Engine = (function () {
 					this.rtenv['copyToFS'](gameZipPath, projectData);
 					this.rtenv['updateGameDatas'](dir, [projectName]);
 
-					console.log(`[GodotFS] game.zip and its folder reloaded.`);
 				} catch (e) {
 					console.error(`[GodotFS] unpackGameData failed: ${e.message}`);
 				}
