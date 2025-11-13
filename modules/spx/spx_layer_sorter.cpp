@@ -40,7 +40,7 @@
 
 void SpxLayerSorter::set_mode(LayerSortMode mode) {
     sort_mode = mode;
-	_create_debug_drawer();
+	_create_drawer();
 }
 
 void SpxLayerSorter::update(const Vector<ISortableSprite *> &sortables) {
@@ -64,7 +64,7 @@ void SpxLayerSorter::update(const Vector<ISortableSprite *> &sortables) {
 
     _apply_z_index_merged();
 
-    if(Spx::debug_mode && !drawer) _create_debug_drawer();
+    if(Spx::debug_mode && !drawer) _create_drawer();
     if(drawer) drawer->update();
 }
 
@@ -94,7 +94,6 @@ void SpxLayerSorter::remove_static_sprite(ISortableSprite *sp) {
             [id](const SortInfo& s) { return s.id == id; }),
         static_sorted.end());
 }
-
 
 void SpxLayerSorter::_mark_dirty(ISortableSprite *sp) {
     if (!sp) return;
@@ -234,7 +233,7 @@ void SpxLayerSorter::_apply_z_index_merged() {
     }
 }
 
-void SpxLayerSorter::_create_debug_drawer() {
+void SpxLayerSorter::_create_drawer() {
 	if (Spx::debug_mode && !drawer) {
 		Node* root = nullptr;
 		if (SpxEngine::get_singleton()) {
@@ -250,11 +249,15 @@ void SpxLayerSorter::_create_debug_drawer() {
 	}
 }
 
-SpxLayerSorter::~SpxLayerSorter() {
+void SpxLayerSorter::_clear_drawer() {
     if(drawer){
         drawer->queue_free();
         drawer = nullptr;
     }
+}
+
+SpxLayerSorter::~SpxLayerSorter() {
+    _clear_drawer();
 }
 
 void LayerSorterDebugDrawer::_bind_methods() {
@@ -317,6 +320,6 @@ void LayerSorterDebugDrawer::_draw() {
 
 void LayerSorterDebugDrawer::_exit_tree() {
     if(sorter){
-        sorter->clear_drawer();
+        sorter->unlink_drawer();
     }
 }
