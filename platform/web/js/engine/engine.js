@@ -210,16 +210,40 @@ const Engine = (function () {
 			unpackGameData: async function (dir, projectName, projectData) {
 				try {
 					const gameZipPath = `${dir}/${projectName}`;
-					const gameExtractedDir = gameZipPath.replace(/\.zip$/i, "");
 				
 					this.rtenv['deleteDirRecursive'](gameZipPath);
-					this.rtenv['deleteDirRecursive'](gameExtractedDir);
 
 					this.rtenv['copyToFS'](gameZipPath, projectData);
 					this.rtenv['updateGameDatas'](dir, [projectName]);
 
 				} catch (e) {
 					console.error(`[GodotFS] unpackGameData failed: ${e.message}`);
+				}
+			},
+
+			updateAssetData: async function (dir, assetName, assetData) {
+				try {
+					const assetPath = `${dir}/${assetName}`;
+				
+					this.rtenv['deleteDirRecursive'](assetPath);
+
+					this.rtenv['copyToFS'](assetPath, assetData);
+					this.rtenv['updateGameDatas'](dir, [assetName]);
+
+				} catch (e) {
+					console.error(`[GodotFS] updateAssetData failed: ${e.message}`);
+				}
+			},
+
+			deleteAssetData: async function (dir, assetName) {
+				try {
+					const assetPath = `${dir}/${assetName}`;
+				
+					this.rtenv['deleteDirRecursive'](assetPath);
+					this.rtenv['updateGameDatas'](dir, [assetName]);
+
+				} catch (e) {
+					console.error(`[GodotFS] deleteAssetData failed: ${e.message}`);
 				}
 			},
 
