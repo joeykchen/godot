@@ -41,6 +41,7 @@
 #include "spx_ui.h"
 #include "core/io/dir_access.h"
 
+//#define MINIZIP_ENABLED
 #ifdef MINIZIP_ENABLED
 #include "modules/zip/zip_reader.h"
 #endif
@@ -81,7 +82,6 @@ void Spx::unpack_game_data() {
 		if (zip->open(project_data_path) == OK) {
 			String target_dir = project_data_path.get_base_dir();
 			DirAccess::make_dir_recursive_absolute(target_dir);
-
 			PackedStringArray zfiles = zip->get_files();
 			for (int i = 0; i < zfiles.size(); ++i) {
 				String zfile = zfiles[i];
@@ -163,7 +163,6 @@ void Spx::restart() {
 		return;
 	}
 	print_verbose("Spx::restart");
-	unpack_game_data();
 	SPX_ENGINE->restart();
 }
 
