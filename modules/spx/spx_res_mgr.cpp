@@ -66,11 +66,13 @@ void SpxResMgr::on_awake() {
 }
 
 void SpxResMgr::on_reset() {
-	cached_texture.clear();
-	cached_audio.clear();
+	//cached_texture.clear();
+	//cached_audio.clear();
 	animation_frame_offsets.clear();
 	anim_frames->clear_all();
 }
+
+
 
 bool SpxResMgr::is_dynamic_anim_mode() const {
 	return is_dynamic_anim;
@@ -197,7 +199,6 @@ void SpxResMgr::reload_texture(GdString path) {
 	_reload_texture(path_str);
 }
 
-
 Ref<Texture2D> SpxResMgr::load_texture(String path, GdBool direct) {
 
 	// If SVG file, use SVG manager
@@ -222,6 +223,20 @@ void SpxResMgr::set_game_datas(String path, Vector<String> files) {
 	print_line("SpxResMgr::set_game_datas", path);
 	game_data_root = path;
 	platformMgr->_set_persistant_data_dir(path);
+	update_caches(files);
+}
+
+void SpxResMgr::update_caches(const Vector<String>& files) {
+	for(auto& file : files){
+		print_line("update_caches file_path=", file);
+		auto path = _to_engine_path(file);
+		if (cached_texture.has(path)) {
+			cached_texture.erase(path);
+		}
+		if (cached_audio.has(path)) {
+			cached_audio.erase(path);
+		}
+	}
 }
 
 Ref<AudioStream> SpxResMgr::load_audio(String path, GdBool direct) {
