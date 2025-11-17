@@ -41,6 +41,7 @@
 #include "spx_ui.h"
 #include "core/io/dir_access.h"
 
+//#define MINIZIP_ENABLED
 #ifdef MINIZIP_ENABLED
 #include "modules/zip/zip_reader.h"
 #endif
@@ -53,11 +54,6 @@ class SpxEngineNode : public Node {
 
    
 #define SPX_ENGINE SpxEngine::get_singleton()
-bool Spx::initialed = false;
-bool Spx::debug_mode = false;
-String Spx::project_data_path;
-
-
 
 void Spx::register_extension_functions() {
 	SpxUtil::register_func = &gdextension_spx_setup_interface;
@@ -75,13 +71,12 @@ void Spx::register_types() {
 }
 
 void Spx::unpack_game_data() {
-	if (!project_data_path.is_empty()) {
+	if (!project_data_path.is_empty() && !unzip_game_date_on_start) {
 #ifdef MINIZIP_ENABLED
 		Ref<ZIPReader> zip = memnew(ZIPReader);
 		if (zip->open(project_data_path) == OK) {
 			String target_dir = project_data_path.get_base_dir();
 			DirAccess::make_dir_recursive_absolute(target_dir);
-
 			PackedStringArray zfiles = zip->get_files();
 			for (int i = 0; i < zfiles.size(); ++i) {
 				String zfile = zfiles[i];
@@ -94,6 +89,7 @@ void Spx::unpack_game_data() {
 				}
 			}
 			zip->close();
+			unzip_game_date_on_start = true;
 		} 
 #else
 		print_line("Minizip is not enabled, project data zip is not supported");
@@ -163,7 +159,6 @@ void Spx::restart() {
 		return;
 	}
 	print_verbose("Spx::restart");
-	unpack_game_data();
 	SPX_ENGINE->restart();
 }
 

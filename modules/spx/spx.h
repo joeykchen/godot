@@ -34,9 +34,10 @@
 
 class Spx {
 public:
-	static bool initialed;
-	static bool debug_mode;
-	static String project_data_path;
+	static inline bool initialed;
+	static inline bool debug_mode;
+	static inline bool unzip_game_date_on_start;
+	static inline String project_data_path;
 public:
 	static void register_extension_functions();
 	static void set_debug_mode(bool enable);
