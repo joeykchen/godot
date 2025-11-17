@@ -108,7 +108,7 @@ private:
 	GDExtensionSpxGlobalRuntimePanicCallback on_runtime_panic;
 	GDExtensionSpxGlobalRuntimeExitCallback on_runtime_exit;
 	bool has_exit;
-	bool is_spx_reset;
+	bool is_spx_reset = true;
 	bool is_spx_paused;
 	bool is_defer_call_pause;
 	bool defer_pause_value;

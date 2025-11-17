@@ -54,11 +54,6 @@ class SpxEngineNode : public Node {
 
    
 #define SPX_ENGINE SpxEngine::get_singleton()
-bool Spx::initialed = false;
-bool Spx::debug_mode = false;
-String Spx::project_data_path;
-
-
 
 void Spx::register_extension_functions() {
 	SpxUtil::register_func = &gdextension_spx_setup_interface;
@@ -76,7 +71,7 @@ void Spx::register_types() {
 }
 
 void Spx::unpack_game_data() {
-	if (!project_data_path.is_empty()) {
+	if (!project_data_path.is_empty() && !unzip_game_date_on_start) {
 #ifdef MINIZIP_ENABLED
 		Ref<ZIPReader> zip = memnew(ZIPReader);
 		if (zip->open(project_data_path) == OK) {
@@ -94,6 +89,7 @@ void Spx::unpack_game_data() {
 				}
 			}
 			zip->close();
+			unzip_game_date_on_start = true;
 		} 
 #else
 		print_line("Minizip is not enabled, project data zip is not supported");
