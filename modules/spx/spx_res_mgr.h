@@ -69,6 +69,7 @@ public:
 	Ref<AudioStream> load_audio(String path, GdBool direct = false);
 	Ref<Texture2D> _reload_texture(String path);
 	void set_game_datas(String path, Vector<String> files);
+	void update_caches(const Vector<String>& files);
 	Ref<SpriteFrames> get_anim_frames(const String& anim_name);
 	String get_anim_key_name(const String& sprite_type_name,const String& anim_name);
 	bool is_dynamic_anim_mode() const;

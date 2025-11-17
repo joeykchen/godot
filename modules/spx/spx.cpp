@@ -150,7 +150,6 @@ void Spx::reset() {
 	}
 
 	print_verbose("Spx::reset");
-
 	SPX_ENGINE->on_reset();
 }
 
@@ -159,6 +158,7 @@ void Spx::restart() {
 		return;
 	}
 	print_verbose("Spx::restart");
+	unpack_game_data();
 	SPX_ENGINE->restart();
 }
 

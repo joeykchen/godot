@@ -210,8 +210,6 @@ const Engine = (function () {
 			unpackGameData: async function (dir, projectName, projectData) {
 				try {
 					const gameZipPath = `${dir}/${projectName}`;
-				
-					this.rtenv['deleteDirRecursive'](gameZipPath);
 
 					this.rtenv['copyToFS'](gameZipPath, projectData);
 					this.rtenv['updateGameDatas'](dir, [projectName]);
@@ -221,32 +219,39 @@ const Engine = (function () {
 				}
 			},
 
-			updateAssetData: async function (dir, assetName, assetData) {
+			updateAssetsData: async function (dir, assetList) {
 				try {
-					const assetPath = `${dir}/${assetName}`;
-				
-					this.rtenv['deleteDirRecursive'](assetPath);
+					const updatedPaths = [];
 
-					this.rtenv['copyToFS'](assetPath, assetData);
-					this.rtenv['updateGameDatas'](dir, [assetName]);
+					for (const { name, data } of assetList) {
+						const assetPath = `${dir}/${name}`;
+						this.rtenv['copyToFS'](assetPath, data);
+						updatedPaths.push(name);
+					}
+
+					this.rtenv['updateGameDatas'](dir, updatedPaths);
 
 				} catch (e) {
-					console.error(`[GodotFS] updateAssetData failed: ${e.message}`);
+					console.error(`[GodotFS] updateAssetsData failed: ${e.message}`);
 				}
 			},
 
-			deleteAssetData: async function (dir, assetName) {
+			deleteAssetsData: async function (dir, assetNames) {
 				try {
-					const assetPath = `${dir}/${assetName}`;
-				
-					this.rtenv['deleteDirRecursive'](assetPath);
-					this.rtenv['updateGameDatas'](dir, [assetName]);
+					const deletedPaths = [];
+
+					for (const name of assetNames) {
+						const assetPath = `${dir}/${name}`;
+						this.rtenv['deleteDirRecursive'](assetPath);
+						deletedPaths.push(name);
+					}
+
+					this.rtenv['updateGameDatas'](dir, deletedPaths);
 
 				} catch (e) {
-					console.error(`[GodotFS] deleteAssetData failed: ${e.message}`);
+					console.error(`[GodotFS] deleteAssetsData failed: ${e.message}`);
 				}
 			},
-
 
 			downloadRecordedVideo: function (fileName) {
 				if (this.rtenv == null) {
