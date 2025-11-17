@@ -74,6 +74,8 @@ public:
         dynamic_sorted.clear();
         dynamic_dirty.clear();
         dynamic_dirty_ids.clear();
+        visible_ids.clear();
+        _clear_drawer();
     }
     _FORCE_INLINE_ void set_screen_rect(const Rect2 &rect) { 
         screen_rect = rect; 
@@ -81,10 +83,6 @@ public:
     _FORCE_INLINE_ void set_visibility_callback(VisibilityCallback cb) {
          visibility_callback = std::move(cb); 
     }
-
-    _FORCE_INLINE_ void clear_drawer(){
-        drawer = nullptr;
-    };
 
 private:
     std::vector<SortInfo> static_sorted; // never frequently re-sorted
@@ -116,7 +114,8 @@ private:
     void _full_sort_dynamic();
     void _apply_z_index_merged();
 
-    void _create_debug_drawer();
+    void _create_drawer();
+    void _clear_drawer();
 
 private:
     SpxLayerSorter(){
@@ -128,15 +127,18 @@ private:
     SpxLayerSorter &operator=(const SpxLayerSorter &) = delete;
 
 public:
-    const Rect2& get_screen_rect() const{
+    _FORCE_INLINE_ const Rect2& get_screen_rect() const{
         return screen_rect;
     }
-    const std::vector<SortInfo> &get_static_sorted() const {
+    _FORCE_INLINE_ const std::vector<SortInfo> &get_static_sorted() const {
         return static_sorted;
     }
-    const std::vector<SortInfo> &get_dynamic_sorted() const {
+    _FORCE_INLINE_ const std::vector<SortInfo> &get_dynamic_sorted() const {
         return dynamic_sorted;
     }
+    _FORCE_INLINE_ void unlink_drawer(){
+        drawer = nullptr;
+    };
 };
 
 class LayerSorterDebugDrawer : public Node2D {
