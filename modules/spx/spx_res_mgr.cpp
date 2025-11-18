@@ -228,7 +228,6 @@ void SpxResMgr::set_game_datas(String path, Vector<String> files) {
 
 void SpxResMgr::update_caches(const Vector<String>& files) {
 	for(auto& file : files){
-		print_line("update_caches file_path=", file);
 		auto path = _to_engine_path(file);
 		if (cached_texture.has(path)) {
 			cached_texture.erase(path);
