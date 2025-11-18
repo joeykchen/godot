@@ -98,7 +98,6 @@ void Spx::unpack_game_data() {
 }
 
 void Spx::on_start(void *p_tree) {
-	unpack_game_data();
 	initialed = true;
 	if (!SpxEngine::has_initialed()) {
 		return;
@@ -158,7 +157,6 @@ void Spx::restart() {
 		return;
 	}
 	print_verbose("Spx::restart");
-	unpack_game_data();
 	SPX_ENGINE->restart();
 }
 
