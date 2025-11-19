@@ -150,6 +150,13 @@ const Engine = (function () {
 						let gdmodule = me.config.getModuleConfig(loadPath, me.config.wasmEngine);
 						Godot(gdmodule).then(function (module) {
 							const paths = me.config.persistentPaths;
+							// ---- WASM Crash Hook ----
+							module.onAbort = function (msg) {
+								console.error("[Godot WASM Crashed] ", msg);
+								window.dispatchEvent(new CustomEvent("godot-wasm-crash", {
+									detail: msg
+								}));
+							};
 							if (typeof miniEngine === 'undefined' || !miniEngine){
 								module['initFS'](paths).then(function (err) {
 									me.rtenv = module;
@@ -205,18 +212,6 @@ const Engine = (function () {
 					this.rtenv['copyToFS'](dir + "/" + info.path, info.data);
 				}
 				this.rtenv['updateGameDatas'](dir, files);
-			},
-
-			unpackGameData: async function (dir, projectName, projectData) {
-				try {
-					const gameZipPath = `${dir}/${projectName}`;
-
-					this.rtenv['copyToFS'](gameZipPath, projectData);
-					this.rtenv['updateGameDatas'](dir, [projectName]);
-
-				} catch (e) {
-					console.error(`[GodotFS] unpackGameData failed: ${e.message}`);
-				}
 			},
 
 			updateAssetsData: async function (dir, assetList) {

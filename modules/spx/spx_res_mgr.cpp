@@ -227,14 +227,13 @@ void SpxResMgr::set_game_datas(String path, Vector<String> files) {
 }
 
 void SpxResMgr::update_caches(const Vector<String>& files) {
+	if (cached_texture.is_empty() && cached_audio.is_empty()) {
+        return;
+    }
 	for(auto& file : files){
 		auto path = _to_engine_path(file);
-		if (cached_texture.has(path)) {
-			cached_texture.erase(path);
-		}
-		if (cached_audio.has(path)) {
-			cached_audio.erase(path);
-		}
+		cached_texture.erase(path);
+		cached_audio.erase(path);
 	}
 }
 
