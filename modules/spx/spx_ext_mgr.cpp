@@ -62,8 +62,8 @@ void SpxExtMgr::request_exit(GdInt exit_code) {
 	get_tree()->quit(exit_code);
 }
 
-void SpxExtMgr::request_reset() {
-	Spx::reset();
+void SpxExtMgr::request_reset(GdInt exit_code) {
+	Spx::reset(exit_code);
 }
 
 void SpxExtMgr::request_restart() {
