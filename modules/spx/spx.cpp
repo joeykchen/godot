@@ -148,7 +148,8 @@ void Spx::reset(int exit_code) {
 		return;
 	}
 
-	print_verbose("Spx::reset, the exit code " + exit_code);
+	String msg = vformat("Spx::reset called with exit code: %d", exit_code);
+	print_verbose(msg);
 	SPX_ENGINE->on_reset();
 }
 
