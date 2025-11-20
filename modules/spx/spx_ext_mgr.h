@@ -44,7 +44,7 @@ public:
 public:
 	// engine API
 	void request_exit(GdInt exit_code);
-	void request_reset();
+	void request_reset(GdInt exit_code);
 	void request_restart();
 	void on_runtime_panic(GdString msg);
 	// pause API

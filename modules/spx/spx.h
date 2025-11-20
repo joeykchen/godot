@@ -49,7 +49,7 @@ public:
 	static void on_update(double delta);
 	static void on_destroy();
 
-	static void reset();
+	static void reset(int exit_code);
 	static void restart();
 	
 	// Pause functionality - public interface

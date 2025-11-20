@@ -162,8 +162,8 @@ static void gdextension_spx_debug_debug_draw_line(GdVec2 from,GdVec2 to,GdColor 
 static void gdextension_spx_ext_request_exit(GdInt exit_code) {
 	 extMgr->request_exit(exit_code);
 }
-static void gdextension_spx_ext_request_reset() {
-	 extMgr->request_reset();
+static void gdextension_spx_ext_request_reset(GdInt exit_code) {
+	 extMgr->request_reset(exit_code);
 }
 static void gdextension_spx_ext_request_restart() {
 	 extMgr->request_restart();

@@ -143,12 +143,12 @@ void Spx::on_destroy() {
 	initialed = false;
 }
 
-void Spx::reset() {
+void Spx::reset(int exit_code) {
 	if (!initialed || !SpxEngine::has_initialed()) {
 		return;
 	}
 
-	print_verbose("Spx::reset");
+	print_verbose("Spx::reset, the exit code " + exit_code);
 	SPX_ENGINE->on_reset();
 }
 
