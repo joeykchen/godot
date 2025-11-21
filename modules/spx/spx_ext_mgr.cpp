@@ -64,6 +64,10 @@ void SpxExtMgr::request_exit(GdInt exit_code) {
 
 void SpxExtMgr::request_reset(GdInt exit_code) {
 	Spx::reset(exit_code);
+	auto callback = SpxEngine::get_singleton()->get_on_runtime_reset();
+	if (callback != nullptr) {
+		callback(exit_code);		
+	}
 }
 
 void SpxExtMgr::request_restart() {

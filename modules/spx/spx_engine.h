@@ -55,6 +55,7 @@ class SpxTilemapMgr;
 
 typedef void (*GDExtensionSpxGlobalRuntimePanicCallback)(GdString msg);
 typedef void (*GDExtensionSpxGlobalRuntimeExitCallback)(GdInt code);
+typedef void (*GDExtensionSpxGlobalRuntimeResetCallback)(GdInt code);
 
 class SpxEngine : SpxBaseMgr {
 	static SpxEngine *singleton;
@@ -65,6 +66,7 @@ public:
 	static void register_callbacks(GDExtensionSpxCallbackInfoPtr callback);
 	static void register_runtime_panic_callbacks(GDExtensionSpxGlobalRuntimePanicCallback callback);
 	static void register_runtime_exit_callbacks(GDExtensionSpxGlobalRuntimeExitCallback callback);
+	static void register_runtime_reset_callbacks(GDExtensionSpxGlobalRuntimeResetCallback callback);
 	virtual ~SpxEngine() = default;
 
 private:
@@ -107,6 +109,7 @@ private:
 	SpxCallbackInfo callbacks;
 	GDExtensionSpxGlobalRuntimePanicCallback on_runtime_panic;
 	GDExtensionSpxGlobalRuntimeExitCallback on_runtime_exit;
+	GDExtensionSpxGlobalRuntimeResetCallback on_runtime_reset;
 	bool has_exit;
 	bool is_spx_reset = true;
 	bool is_spx_paused;
@@ -117,6 +120,7 @@ public:
 	SpxCallbackInfo *get_callbacks() ;
 	GDExtensionSpxGlobalRuntimePanicCallback get_on_runtime_panic() { return on_runtime_panic; }
 	GDExtensionSpxGlobalRuntimeExitCallback get_on_runtime_exit() { return on_runtime_exit; }
+	GDExtensionSpxGlobalRuntimeResetCallback get_on_runtime_reset() { return on_runtime_reset; }
 
 public:
 	GdInt get_unique_id() override;

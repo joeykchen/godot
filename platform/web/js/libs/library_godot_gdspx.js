@@ -29,10 +29,20 @@ const GodotGdspx = {
 		FFI.gdspx_on_engine_destroy();
 	},
 
+	godot_js_spx_on_engine_reset__proxy: 'sync',
 	godot_js_spx_on_engine_reset__sig: 'v',
 	godot_js_spx_on_engine_reset: function () {
 		if (!FFI) return;
 		FFI.gdspx_on_engine_reset();
+	},
+
+	godot_js_spx_on_reset_done__proxy: 'sync',
+	godot_js_spx_on_reset_done__sig: 'vi',
+	godot_js_spx_on_reset_done: function (code) {
+		if (!FFI || !FFI.gdspx_on_runtime_reset) {
+			return;
+		}
+		FFI.gdspx_on_runtime_reset(code);
 	},
 
 	godot_js_spx_on_engine_pause__proxy: 'sync',
@@ -62,7 +72,6 @@ const GodotGdspx = {
 		}
 		FFI.gdspx_on_runtime_exit(code);
 	},
-
 
 	godot_js_spx_on_sprite_ready__sig: 'vi',
 	godot_js_spx_on_sprite_ready: function (obj) {
