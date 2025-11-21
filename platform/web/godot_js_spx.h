@@ -13,6 +13,7 @@ typedef uint8_t GdBool ;
 // GDExtention
 extern void godot_js_spx_on_runtime_panic(GdString msg);
 extern void godot_js_spx_on_runtime_exit(int code);
+extern void godot_js_spx_on_reset_done(int code);
 // Gdspx 
 extern void godot_js_spx_on_engine_start();
 extern void godot_js_spx_on_engine_update(GdFloat delta);

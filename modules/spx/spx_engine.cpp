@@ -59,6 +59,10 @@ void SpxEngine::register_runtime_exit_callbacks(GDExtensionSpxGlobalRuntimeExitC
 	singleton->on_runtime_exit = callback;
 }
 
+void SpxEngine::register_runtime_reset_callbacks(GDExtensionSpxGlobalRuntimeResetCallback callback) {
+	singleton->on_runtime_reset = callback;
+}
+
 static SpxCallbackInfo get_default_spx_callbacks() {
 	SpxCallbackInfo callbacks;
 	callbacks.func_on_engine_start = [](){};
