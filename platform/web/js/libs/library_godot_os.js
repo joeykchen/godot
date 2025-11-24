@@ -345,11 +345,13 @@ const GodotOS = {
 	$GodotOS__deps: ['$GodotRuntime', '$GodotConfig', '$GodotFS'],
 	$GodotOS__postset: [
 		'Module["request_quit"] = function() { GodotOS.request_quit() };',
+		'Module["request_reset"] = function() { GodotOS.request_reset() };',
 		'Module["onExit"] = GodotOS.cleanup;',
 		'GodotOS._fs_sync_promise = Promise.resolve();',
 	].join(''),
 	$GodotOS: {
 		request_quit: function () {},
+		request_reset: function () {},
 		_async_cbs: [],
 		_fs_sync_promise: null,
 
@@ -395,6 +397,12 @@ const GodotOS = {
 	godot_js_os_request_quit_cb__sig: 'vi',
 	godot_js_os_request_quit_cb: function (p_callback) {
 		GodotOS.request_quit = GodotRuntime.get_func(p_callback);
+	},
+
+	godot_js_os_request_reset_cb__proxy: 'sync',
+	godot_js_os_request_reset_cb__sig: 'vi',
+	godot_js_os_request_reset_cb: function (p_callback) {
+		GodotOS.request_reset = GodotRuntime.get_func(p_callback);
 	},
 
 	godot_js_os_fs_is_persistent__proxy: 'sync',

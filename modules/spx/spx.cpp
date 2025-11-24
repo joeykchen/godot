@@ -151,6 +151,11 @@ void Spx::reset(int exit_code) {
 	String msg = vformat("Spx::reset called with exit code: %d", exit_code);
 	print_verbose(msg);
 	SPX_ENGINE->on_reset();
+
+	auto callback = SPX_ENGINE->get_on_runtime_reset();
+	if (callback != nullptr) {
+		callback(exit_code);		
+	}
 }
 
 void Spx::restart() {

@@ -413,6 +413,18 @@ const Engine = (function () {
 			},
 
 			/**
+			 * Request that the current instance reset.
+			 *
+			 * This will restart the engine as if it was just started.
+			 *
+			 */
+			requestReset: function () {
+				if (this.rtenv) {
+					this.rtenv['request_reset']();
+				}
+			},
+
+			/**
 			 * Install the progressive-web app service worker.
 			 * @returns {Promise} The service worker registration promise.
 			 */
