@@ -138,6 +138,8 @@ private:
 	static void _ime_callback(int p_type, const String &p_text);
 	WASM_EXPORT static void request_quit_callback();
 	static void _request_quit_callback();
+	WASM_EXPORT static void request_reset_callback();
+	static void _request_reset_callback();
 	WASM_EXPORT static void window_blur_callback();
 	static void _window_blur_callback();
 	WASM_EXPORT static void update_voices_callback(int p_size, const char **p_voice);

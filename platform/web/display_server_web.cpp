@@ -150,6 +150,14 @@ void DisplayServerWeb::_request_quit_callback() {
 	}
 }
 
+void DisplayServerWeb::request_reset_callback() {
+	_request_reset_callback();
+}
+
+void DisplayServerWeb::_request_reset_callback() {
+	Spx::reset(0);
+}
+
 // Keys
 
 void DisplayServerWeb::dom2godot_mod(Ref<InputEventWithModifiers> ev, int p_mod, Key p_keycode) {
@@ -1129,6 +1137,8 @@ DisplayServerWeb::DisplayServerWeb(const String &p_rendering_driver, WindowMode 
 
 	// Expose method for requesting quit.
 	godot_js_os_request_quit_cb(request_quit_callback);
+	// Expose method for requesting reset.
+	godot_js_os_request_reset_cb(request_reset_callback);
 
 #ifdef GLES3_ENABLED
 	bool webgl2_inited = false;
