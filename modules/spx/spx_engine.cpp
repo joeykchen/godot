@@ -327,7 +327,7 @@ void SpxEngine::on_reset() {
 		mgr->on_reset();
 	}
 
-	SvgManager::get_singleton()->reset();
+	SvgManager::get_singleton()->reset(false);
 	pause();
 }
 

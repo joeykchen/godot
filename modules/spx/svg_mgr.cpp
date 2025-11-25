@@ -3,6 +3,7 @@
 #include "core/io/image_loader.h"
 #include "spx_res_mgr.h"
 #include "spx_engine.h"
+#include "spx.h"
 
 SvgManager *SvgManager::singleton = nullptr;
 
@@ -40,7 +41,7 @@ Ref<ImageTexture> SvgManager::get_svg_image(const String& image_path, int scale)
 		return Ref<ImageTexture>();
 	}
 	
-	String path = SpxEngine::get_singleton()->get_res()->_to_engine_path(image_path);
+	String path = resMgr->_to_engine_path(image_path);
 	return _load_image(path, scale);
 }
 
@@ -162,8 +163,11 @@ Ref<ImageTexture> SvgManager::_load_image(const String& path/*engine path*/, int
 		svg_image_cache[key] = texture;
 		return texture;
 	}
-	
-	print_error("[SvgManager] Failed to load SVG image: " + path + " at scale " + String::num(scale));
+
+	auto msg = "[SvgManager] Failed to load SVG image: " + path + " at scale " + String::num(scale);
+	if(Spx::debug_mode) print_error(msg);
+	else print_line(msg);
+
 	return Ref<ImageTexture>();
 }
 
@@ -172,9 +176,19 @@ void SvgManager::destroy() {
 	singleton = nullptr;
 }
 
-void SvgManager::reset() {
-	svg_image_cache.clear();
+void SvgManager::reset(bool p_clear_image_cache) {
+	if(p_clear_image_cache) svg_image_cache.clear();
 	svg_animation_cache.clear();
+}
+
+void SvgManager::update_caches(const Vector<String> &files) {
+	if (svg_image_cache.is_empty()) {
+        return;
+    }
+	for(auto& file : files){
+		String path = resMgr->_to_engine_path(file);
+		svg_image_cache.erase(path);
+	}
 }
 
 int SvgManager::calculate_svg_scale(Vector2 required_scale) {
