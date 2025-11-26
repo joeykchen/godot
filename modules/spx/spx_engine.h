@@ -134,6 +134,7 @@ public:
 	void on_update(float delta) override;
 	void on_destroy() override;
 	void on_reset() override;
+
 	void on_exit(int exit_code) override;
 
 	bool is_reset();
@@ -147,6 +148,9 @@ public:
 	
 	// Internal methods for Godot pause synchronization
 	void _on_godot_pause_changed(bool is_godot_paused);
+
+	void _pause_pure();
+	void _resume_pure();
 };
 
 #endif // SPX_ENGINE_H

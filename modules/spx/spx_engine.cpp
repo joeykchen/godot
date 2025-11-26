@@ -302,15 +302,7 @@ void SpxEngine::restart() {
 		return;
 	}
 
-	if (tree != nullptr) {
-		if (Thread::is_main_thread()) {
-			tree->set_pause(false);
-		} else {
-			tree->call_deferred("set_pause", false);
-		}
-	}
-
-	is_spx_paused = false;
+	_resume_pure();
 	is_spx_reset = false;
 	for (auto mgr : mgrs) {
 		mgr->on_start();
@@ -334,16 +326,7 @@ void SpxEngine::on_reset() {
 	for (auto mgr : mgrs) {
 		mgr->on_reset();
 	}
-
-	SvgManager::get_singleton()->reset(false);
-	if (tree != nullptr) {
-		if (Thread::is_main_thread()) {
-			tree->set_pause(true);
-		} else {
-			tree->call_deferred("set_pause", true);
-		}
-	}
-	is_spx_paused = true;
+	_pause_pure();
 }
 
 // SPX Pause functionality implementation with thread safety
@@ -424,4 +407,28 @@ void SpxEngine::_on_godot_pause_changed(bool is_godot_paused) {
 			callbacks.func_on_engine_pause(is_spx_paused);
 		}
 	}
+}
+
+void SpxEngine::_pause_pure() {
+	SvgManager::get_singleton()->reset(false);
+	if (tree != nullptr) {
+		if (Thread::is_main_thread()) {
+			tree->set_pause(true);
+		} else {
+			tree->call_deferred("set_pause", true);
+		}
+	}
+	is_spx_paused = true;
+}
+
+void SpxEngine::_resume_pure() {
+	if (tree != nullptr) {
+		if (Thread::is_main_thread()) {
+			tree->set_pause(false);
+		} else {
+			tree->call_deferred("set_pause", false);
+		}
+	}
+
+	is_spx_paused = false;
 }
