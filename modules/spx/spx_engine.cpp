@@ -331,7 +331,6 @@ void SpxEngine::on_reset() {
 		callbacks.func_on_engine_reset();
 	}
 
-	callbacks = get_default_spx_callbacks();
 	is_spx_reset = true;
 	for (auto mgr : mgrs) {
 		mgr->on_reset();
