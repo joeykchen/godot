@@ -224,6 +224,7 @@ void SpxResMgr::set_game_datas(String path, Vector<String> files) {
 	game_data_root = path;
 	platformMgr->_set_persistant_data_dir(path);
 	update_caches(files);
+	svgMgr->update_caches(files);
 }
 
 void SpxResMgr::update_caches(const Vector<String>& files) {
@@ -232,6 +233,7 @@ void SpxResMgr::update_caches(const Vector<String>& files) {
     }
 	for(auto& file : files){
 		auto path = _to_engine_path(file);
+
 		cached_texture.erase(path);
 		cached_audio.erase(path);
 	}

@@ -33,7 +33,8 @@ public:
 	int calculate_svg_scale(Vector2 required_scale);
 
 	void destroy();
-	void reset();
+	void reset(bool p_clear_image_cache = true);
+	void update_caches(const Vector<String>& files);
 	
 private:
 	String _make_image_key(const String& path, int scale);     // "scale@path"
