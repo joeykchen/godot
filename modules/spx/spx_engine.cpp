@@ -302,7 +302,16 @@ void SpxEngine::restart() {
 		return;
 	}
 
-	resume();
+	if (tree != nullptr) {
+		if (Thread::is_main_thread()) {
+			tree->set_pause(false);
+		} else {
+			tree->call_deferred("set_pause", false);
+			is_defer_call_pause = true;
+			defer_pause_value = false;
+		}
+	}
+
 	is_spx_reset = false;
 	for (auto mgr : mgrs) {
 		mgr->on_start();
@@ -322,6 +331,7 @@ void SpxEngine::on_reset() {
 		callbacks.func_on_engine_reset();
 	}
 
+	callbacks = get_default_spx_callbacks();
 	is_spx_reset = true;
 	for (auto mgr : mgrs) {
 		mgr->on_reset();
