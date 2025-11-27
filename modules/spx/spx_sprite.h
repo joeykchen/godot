@@ -217,6 +217,7 @@ public:
 	void on_area_entered(Node *node);
 	void on_area_exited(Node *node);
 
+	void set_block_signals(bool p_block);
 	// animation events
 	void on_sprite_frames_set_changed();
 	void on_sprite_animation_changed();
