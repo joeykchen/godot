@@ -334,6 +334,7 @@ GdInt SpxSpriteMgr::clone_sprite(GdObj obj) {
 
 GdBool SpxSpriteMgr::destroy_sprite(GdObj obj) {
 	check_and_get_sprite_r(false)
+	sprite->set_block_signals(true);
 	sprite->queue_free();
 	return true;
 }

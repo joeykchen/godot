@@ -155,7 +155,7 @@ function _toJsString(gdstrPtr, isFree) {
 function AllocGdString() {
     return Module._gdspx_alloc_string();
 }
-function PrintGdString(ptr) {
+function PrintGdString(gdstrPtr) {
     console.log(_toJsString(gdstrPtr, false));
 }
 

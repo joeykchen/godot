@@ -29,6 +29,10 @@ public:
     }
 
     void release(T* obj) {
+        if(obj == nullptr) {
+            print_error("ObjectPool::release called with null pointer");
+            return;
+        }
         pool.push_back(obj);
     }
 

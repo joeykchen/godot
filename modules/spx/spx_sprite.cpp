@@ -288,6 +288,10 @@ void SpxSprite::on_area_exited(Node *node) {
 	}
 }
 
+void SpxSprite::set_block_signals(bool p_block) {
+	Object::set_block_signals(p_block);
+}
+
 void SpxSprite::on_sprite_frames_set_changed() {
 	if (!Spx::initialed) {
 		return;
