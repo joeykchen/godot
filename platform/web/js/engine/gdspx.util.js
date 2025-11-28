@@ -135,7 +135,7 @@ function ToGdString(str) {
 }
 
 function ToJsString(gdstrPtr) {
-    return _toJsString(gdstrPtr, true);
+    return _toJsString(gdstrPtr, false);
 }
 
 function _toJsString(gdstrPtr, isFree) {
