@@ -287,6 +287,7 @@ const char* gdspx_get_string(GdString* ptr) {
 EMSCRIPTEN_KEEPALIVE
 void gdspx_free_cstr(const char* str) {
     free((void*)str);
+    str = nullptr;
 }
 
 EMSCRIPTEN_KEEPALIVE
