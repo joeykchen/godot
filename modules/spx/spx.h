@@ -31,6 +31,7 @@
 #ifndef SPX_H
 #define SPX_H
 #include "core/string/ustring.h"
+#include "core/templates/safe_refcount.h"
 
 class Spx {
 public:
@@ -38,7 +39,12 @@ public:
 	static inline bool debug_mode;
 	static inline bool unzip_game_date_on_start;
 	static inline String project_data_path;
-	static inline bool restart_requested;
+	static inline SafeFlag restart_requested{false};
+	static inline SafeFlag reset_requested{false};
+	static inline SafeNumeric<int> reset_exit_code{0};
+	static inline SafeFlag pause_requested{false};
+	static inline SafeFlag resume_requested{false};
+	static inline SafeFlag next_frame_requested{false};
 public:
 	static void register_extension_functions();
 	static void set_debug_mode(bool enable);
