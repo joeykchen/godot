@@ -38,6 +38,8 @@
 class SceneTree;
 class Window;
 class Node;
+class TextureRect;
+class CanvasLayer;
 class SpxInputMgr;
 class SpxAudioMgr;
 class SpxPhysicMgr;
@@ -110,6 +112,12 @@ private:
 	GDExtensionSpxGlobalRuntimePanicCallback on_runtime_panic;
 	GDExtensionSpxGlobalRuntimeExitCallback on_runtime_exit;
 	GDExtensionSpxGlobalRuntimeResetCallback on_runtime_reset;
+
+	// freeze-frame support
+	CanvasLayer *freeze_layer = nullptr;
+	TextureRect *freeze_screen = nullptr;
+	bool is_frozen_frame = false;
+
 	bool has_exit;
 	bool is_spx_reset = true;
 	bool is_spx_paused;
@@ -135,6 +143,8 @@ public:
 	void on_destroy() override;
 	void on_reset() override;
 
+	void do_reset();
+
 	void on_exit(int exit_code) override;
 
 	bool is_reset();
@@ -146,11 +156,16 @@ public:
 	bool is_paused() const;
 	void next_frame();
 	
+
+	void capture_last_frame();
+	void clear_frozen_frame();
+
 	// Internal methods for Godot pause synchronization
 	void _on_godot_pause_changed(bool is_godot_paused);
 
 	void _pause_pure();
 	void _resume_pure();
+
 };
 
 #endif // SPX_ENGINE_H
