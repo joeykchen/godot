@@ -35,6 +35,10 @@
 #include "gdextension_spx_ext.h"
 #include "scene/main/window.h"
 #include "scene/main/scene_tree.h"
+#include "scene/gui/texture_rect.h"
+#include "scene/main/canvas_layer.h"
+#include "servers/rendering_server.h"
+#include "core/config/project_settings.h"
 #include "spx_input_mgr.h"
 #include "spx_audio_mgr.h"
 #include "spx_physic_mgr.h"
@@ -253,6 +257,8 @@ void SpxEngine::on_exit(int exit_code) {
 	if (has_exit) {
 		return;
 	}
+
+	capture_last_frame();
 	has_exit = true;
 	for (auto mgr : mgrs) {
 		mgr->on_exit(exit_code);
@@ -302,6 +308,7 @@ void SpxEngine::restart() {
 		return;
 	}
 
+	clear_frozen_frame();
 	_resume_pure();
 	is_spx_reset = false;
 	for (auto mgr : mgrs) {
@@ -317,12 +324,17 @@ void SpxEngine::on_reset() {
 	if (is_spx_reset) {
 		return;
 	}
-	
-	if(callbacks.func_on_engine_reset != nullptr){
+
+	is_spx_reset = true;
+	capture_last_frame();
+	do_reset();
+}
+
+void SpxEngine::do_reset() {
+	if (callbacks.func_on_engine_reset != nullptr) {
 		callbacks.func_on_engine_reset();
 	}
 
-	is_spx_reset = true;
 	for (auto mgr : mgrs) {
 		mgr->on_reset();
 	}
@@ -386,6 +398,49 @@ void SpxEngine::next_frame() {
 			should_execute_single_frame = true;
 		}
 	}
+}
+
+void SpxEngine::capture_last_frame() {
+	if (is_frozen_frame) return;
+	if (!tree) return;
+
+	Viewport *vp = tree->get_root();
+	if (!vp) return;
+
+	Ref<Image> img = vp->get_texture()->get_image();
+	if (img.is_null()) return;
+
+   	Ref<ImageTexture> tex = ImageTexture::create_from_image(img);
+    freeze_screen = memnew(TextureRect);
+    freeze_screen->set_texture(tex);
+    freeze_screen->set_stretch_mode(TextureRect::STRETCH_SCALE);
+    freeze_screen->set_anchors_and_offsets_preset(Control::PRESET_FULL_RECT);
+    freeze_screen->set_mouse_filter(Control::MOUSE_FILTER_IGNORE);
+
+	if (!freeze_layer) {
+		freeze_layer = memnew(CanvasLayer);
+		freeze_layer->set_layer(9999);
+		vp->add_child(freeze_layer);
+	}
+
+	freeze_layer->add_child(freeze_screen);
+	is_frozen_frame = true;
+}
+
+void SpxEngine::clear_frozen_frame() {
+	if (!is_frozen_frame) return;
+
+	if (freeze_screen) {
+		freeze_screen->queue_free();
+		freeze_screen = nullptr;
+	}
+
+	if (freeze_layer) {
+		freeze_layer->queue_free();
+		freeze_layer = nullptr;
+	}
+
+	is_frozen_frame = false;
 }
 
 // Internal method for Godot pause synchronization
