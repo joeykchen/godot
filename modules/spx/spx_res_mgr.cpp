@@ -149,11 +149,13 @@ Ref<AudioStream> SpxResMgr::_load_audio_direct(const String &p_path) {
 
 bool SpxResMgr::_parse_anim_json(const String &src, AnimPayload &out) {
 	JSON json;
-   	Variant root = JSON::parse_string(src);
-    if (root.is_null()) {
-        return false;
-    }
-    Dictionary dict = root;
+   	Error error = json.parse(src);
+	if (error != OK) {
+		print_error("Failed to parse JSON: " + json.get_error_message());
+		return false;
+	}
+
+    Dictionary dict = json.get_data();
 
 	if (dict.has("base_path"))
 		out.base_path = dict["base_path"];
