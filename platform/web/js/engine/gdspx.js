@@ -917,14 +917,14 @@ gdspx_platform_is_in_persistant_data_dir(path) {
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_res_create_animation(sprite_type_name,anim_name,context,fps,is_altas) {
+gdspx_res_create_animation(p_sprite_type,p_anim_name,p_json_ctx,fps,is_atlas) {
 	var _gdFuncPtr = Module._gdspx_res_create_animation; 
 	
-	var _arg0 = ToGdString(sprite_type_name);
-	var _arg1 = ToGdString(anim_name);
-	var _arg2 = ToGdString(context);
+	var _arg0 = ToGdString(p_sprite_type);
+	var _arg1 = ToGdString(p_anim_name);
+	var _arg2 = ToGdString(p_json_ctx);
 	var _arg3 = ToGdInt(fps);
-	var _arg4 = ToGdBool(is_altas);
+	var _arg4 = ToGdBool(is_atlas);
 	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _arg4);
 	FreeGdString(_arg0); 
 	FreeGdString(_arg1); 

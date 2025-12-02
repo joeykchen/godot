@@ -41,6 +41,23 @@ class AudioStreamMP3;
 class AudioStreamWAV;
 class Texture2D;
 
+struct FrameNormal {
+	String path;
+	double offset_x;
+	double offset_y;
+};
+
+struct FrameAtlas {
+	int64_t x, y, w, h;
+	double offset_x;
+	double offset_y;
+};
+
+struct AnimPayload {
+	String base_path;
+	Array frames;
+};
+
 class SpxResMgr : SpxBaseMgr {
 	SPXCLASS(SpxPlatformMgr, SpxBaseMgr)
 
@@ -62,6 +79,11 @@ private:
 	Ref<Texture2D> _load_texture_direct(const String &p_path);
 	Ref<AudioStream> _load_audio_direct(const String &p_path);
 
+	bool _parse_anim_json(const String &src, AnimPayload &out);
+	Vector2 _read_offset(const Dictionary &d);
+	void _build_normal_frames(const String &p_sprite_type, const String &anim_key, const AnimPayload &payload, Vector<Vector2> &out_offsets);
+	void _build_atlas_frames(const String &anim_key, const AnimPayload &payload, Vector<Vector2> &out_offsets);
+
 public:
 	void on_awake() override;
 	void on_reset() override;
@@ -77,7 +99,7 @@ public:
 	String _to_engine_path(const String &p_path);
 
 public:
-	void create_animation(GdString sprite_type_name,GdString anim_name, GdString context, GdInt fps, GdBool is_altas);
+	void create_animation(GdString p_sprite_type, GdString p_anim_name, GdString p_json_ctx, GdInt fps, GdBool is_atlas);
 	void set_load_mode(GdBool is_direct_mode);
 	GdBool get_load_mode();
 	GdRect2 get_bound_from_alpha(GdString p_path);
