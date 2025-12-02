@@ -45,6 +45,7 @@ struct FrameNormal {
 	String path;
 	double offset_x;
 	double offset_y;
+	int64_t bitmap;
 };
 
 struct FrameAtlas {
@@ -56,6 +57,7 @@ struct FrameAtlas {
 struct AnimPayload {
 	String base_path;
 	Array frames;
+	int64_t most_frequent_bitmap;
 };
 
 class SpxResMgr : SpxBaseMgr {
@@ -67,6 +69,7 @@ public:
 private:
 	HashMap<String, Ref<Texture2D>> cached_texture;
 	HashMap<String, Ref<AudioStream>> cached_audio;
+	HashMap<String, Ref<Texture2D>> bitmap_cache;
 	bool is_load_direct;
 	String game_data_root = "res://";
 	Ref<SpriteFrames> anim_frames;
@@ -81,6 +84,7 @@ private:
 
 	bool _parse_anim_json(const String &src, AnimPayload &out);
 	Vector2 _read_offset(const Dictionary &d);
+	bool _load_frame_texture(const String &path, Ref<Texture2D> &final_tex, int64_t bitmap, const AnimPayload &payload);
 	void _build_normal_frames(const String &p_sprite_type, const String &anim_key, const AnimPayload &payload, Vector<Vector2> &out_offsets);
 	void _build_atlas_frames(const String &anim_key, const AnimPayload &payload, Vector<Vector2> &out_offsets);
 
