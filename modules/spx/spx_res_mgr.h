@@ -57,7 +57,7 @@ struct FrameAtlas {
 struct AnimPayload {
 	String base_path;
 	Array frames;
-	int64_t most_frequent_bitmap;
+	int64_t max_bitmap;
 };
 
 class SpxResMgr : SpxBaseMgr {
@@ -84,7 +84,6 @@ private:
 
 	bool _parse_anim_json(const String &src, AnimPayload &out);
 	Vector2 _read_offset(const Dictionary &d);
-	bool _load_frame_texture(const String &path, Ref<Texture2D> &final_tex, int64_t bitmap, const AnimPayload &payload);
 	void _build_normal_frames(const String &p_sprite_type, const String &anim_key, const AnimPayload &payload, Vector<Vector2> &out_offsets);
 	void _build_atlas_frames(const String &anim_key, const AnimPayload &payload, Vector<Vector2> &out_offsets);
 

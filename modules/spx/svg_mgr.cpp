@@ -45,6 +45,11 @@ Ref<ImageTexture> SvgManager::get_svg_image(const String& image_path, int scale)
 	return _load_image(path, scale);
 }
 
+Ref<ImageTexture> SvgManager::get_svg_image(const String &image_path, float scale) {
+	int int_scale = calculate_svg_scale(scale);
+	return get_svg_image(image_path, int_scale);
+}
+
 Ref<SpriteFrames> SvgManager::get_svg_animation(const String& base_anim_key, int scale) {
 	String key = _make_animation_key(base_anim_key, scale);
 	
@@ -193,9 +198,13 @@ void SvgManager::update_caches(const Vector<String> &files) {
 
 int SvgManager::calculate_svg_scale(Vector2 required_scale) {
 	float scale = MAX(required_scale.x, required_scale.y);
+	return calculate_svg_scale(scale);
+}
+
+int SvgManager::calculate_svg_scale(float required_scale) {
 	// Use powers of 2: 1, 2, 4, 8, 16...
-	if (scale <= 1.5f) return 1;
-	if (scale <= 3.0f) return 2;
-	if (scale <= 6.0f) return 4;
+	if (required_scale <= 1.5f) return 1;
+	if (required_scale <= 3.0f) return 2;
+	if (required_scale <= 6.0f) return 4;
 	return 8;
 }
