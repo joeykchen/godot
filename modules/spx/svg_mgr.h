@@ -29,14 +29,16 @@ public:
 
 	Ref<SpriteFrames> get_svg_animation(const String& base_anim_key, int scale);
 	Ref<ImageTexture> get_svg_image(const String& image_path, int scale);
+	Ref<ImageTexture> get_svg_image(const String& image_path, float scale);
 	
 	int calculate_svg_scale(Vector2 required_scale);
+	int calculate_svg_scale(float required_scale);
 
 	void destroy();
 	void reset(bool p_clear_image_cache = true);
 	void update_caches(const Vector<String>& files);
 	
-	private:
+private:
 	String _make_image_key(const String& path, int scale);     // "scale@path"
 	String _make_animation_key(const String& name, int scale); // "scale@name"
 	
