@@ -66,13 +66,10 @@ void SpxResMgr::on_awake() {
 }
 
 void SpxResMgr::on_reset() {
-	//cached_texture.clear();
-	//cached_audio.clear();
+	bitmap_cache.clear();
 	animation_frame_offsets.clear();
 	anim_frames->clear_all();
 }
-
-
 
 bool SpxResMgr::is_dynamic_anim_mode() const {
 	return is_dynamic_anim;
@@ -165,7 +162,13 @@ bool SpxResMgr::_parse_anim_json(const String &src, AnimPayload &out) {
 		return false;
 	}
 
+	if (!dict.has("most_frequent_bitmap")) {
+		print_error("JSON missing 'most_frequent_bitmap'");
+		return false;
+	}
+
 	out.frames = dict["frames"];
+	out.most_frequent_bitmap = dict["most_frequent_bitmap"];
 	return true;
 }
 
@@ -182,6 +185,33 @@ Vector2 SpxResMgr::_read_offset(const Dictionary &d) {
 	);
 }
 
+
+bool SpxResMgr::_load_frame_texture(const String &path, Ref<Texture2D> &final_tex, int64_t bitmap, const AnimPayload &payload) {
+	String cache_key = vformat("%s@%d", path, payload.most_frequent_bitmap);
+	if (bitmap_cache.has(cache_key)) {
+		final_tex = bitmap_cache[cache_key];
+	} else {
+		Ref<Image> image;
+		image.instantiate();
+		float scale = float(payload.most_frequent_bitmap) / float(bitmap);
+		Error err = ImageLoader::load_image(path, image, nullptr, ImageFormatLoader::FLAG_NONE, (float)scale);
+		if (err == OK) {
+			Ref<ImageTexture> texture;
+			texture.instantiate();
+			texture->set_image(image);
+			texture->set_path_cache(path);
+
+			bitmap_cache[cache_key] = texture;
+			final_tex = texture;
+		} else {
+			print_error("cannot load scaled texture: " + path + ", scale: " + String::num(scale));
+			return false;
+		}
+	}
+
+	return true;
+}
+
 void SpxResMgr::_build_normal_frames(
 	const String &p_sprite_type, 
 	const String &anim_key, 
@@ -192,17 +222,26 @@ void SpxResMgr::_build_normal_frames(
 		Dictionary f = payload.frames[i];
 
 		String path = f["path"];
-		Vector2 offset = _read_offset(f);
+		int64_t bitmap = f["bitmap"];
+		Vector2 offset = _read_offset(f) / float(bitmap);
 
 		if (svgMgr->is_svg_file(path)) svg_count++;
-			
-		Ref<Texture2D> tex = load_texture(path);
-		if (!tex.is_valid()) {
+
+		Ref<Texture2D> final_tex = load_texture(path);
+		if (!final_tex.is_valid()) {
 			print_error("cannot load texture: " + path);
 			continue;
 		}
 
-		anim_frames->add_frame(anim_key, tex);
+		if (bitmap != payload.most_frequent_bitmap) {
+			/*if(!_load_frame_texture(path, final_tex, bitmap, payload))
+				continue;*/
+			float scale = float(payload.most_frequent_bitmap) / float(bitmap);
+			int svg_scale = svgMgr->calculate_svg_scale(Vector2{scale, scale});
+			final_tex = svgMgr->get_svg_image(path, svg_scale);
+		}
+
+		anim_frames->add_frame(anim_key, final_tex);
 		out_offsets.push_back(offset);
 	}
 
@@ -215,7 +254,7 @@ void SpxResMgr::_build_normal_frames(
 			svg_count,
 			payload.frames.size()
 		));
-		return ;
+		return;
 	}
 
 	svgMgr->mark_svg_animation(anim_key, svg_count > 0);

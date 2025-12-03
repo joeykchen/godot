@@ -36,12 +36,12 @@ public:
 	void reset(bool p_clear_image_cache = true);
 	void update_caches(const Vector<String>& files);
 	
-private:
+	private:
 	String _make_image_key(const String& path, int scale);     // "scale@path"
 	String _make_animation_key(const String& name, int scale); // "scale@name"
-
-	Ref<SpriteFrames> _load_animation(const String& base_anim_key, int scale);
+	
 	Ref<ImageTexture> _load_image(const String& path, int scale);
+	Ref<SpriteFrames> _load_animation(const String& base_anim_key, int scale);
 };
 
 #endif // SVG_MANAGER_H 
