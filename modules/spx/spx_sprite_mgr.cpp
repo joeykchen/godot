@@ -488,7 +488,7 @@ void SpxSpriteMgr::set_z_index(GdObj obj, GdInt z) {
 
 void SpxSpriteMgr::play_anim(GdObj obj, GdString p_name, GdFloat p_speed,GdBool isLoop, GdBool p_revert) {
 	check_and_get_sprite_v()
-	sprite->play_anim(p_name, p_speed, isLoop,p_revert);
+	sprite->play_anim(p_name, p_speed, isLoop, p_revert);
 }
 
 void SpxSpriteMgr::play_backwards_anim(GdObj obj, GdString p_name) {

@@ -33,8 +33,7 @@
 #include "core/io/image.h"
 #include "core/io/image_loader.h"
 #include "core/math/vector2.h"
-#include "svg_mgr.h"
-#include "spx_engine.h"
+#include "core/io/json.h"
 #include "modules/minimp3/audio_stream_mp3.h"
 #include "modules/modules_enabled.gen.h"
 #include "scene/2d/audio_stream_player_2d.h"
@@ -45,9 +44,10 @@
 #include "scene/resources/sprite_frames.h"
 #include "scene/theme/default_theme.h"
 #include "scene/theme/theme_db.h"
-#include "spx_engine.h"
 #include "scene/resources/audio_importer_wav.h"
 #include "spx_platform_mgr.h"
+#include "svg_mgr.h"
+#include "spx_engine.h"
 #ifdef TOOLS_ENABLED
 #include "editor/import/resource_importer_wav.h"
 #include "modules/minimp3/resource_importer_mp3.h"
@@ -145,6 +145,106 @@ Ref<AudioStream> SpxResMgr::_load_audio_direct(const String &p_path) {
 	}
 	cached_audio.insert(path, res);
 	return res;
+}
+
+bool SpxResMgr::_parse_anim_json(const String &src, AnimPayload &out) {
+	JSON json;
+   	Error error = json.parse(src);
+	if (error != OK) {
+		print_error("Failed to parse JSON: " + json.get_error_message());
+		return false;
+	}
+
+    Dictionary dict = json.get_data();
+
+	if (dict.has("base_path"))
+		out.base_path = dict["base_path"];
+
+	if (!dict.has("frames")) {
+		print_error("JSON missing 'frames'");
+		return false;
+	}
+
+	out.frames = dict["frames"];
+	return true;
+}
+
+Vector2 SpxResMgr::_read_offset(const Dictionary &d) {
+	if (!d.has("offset"))
+		return Vector2(0, 0);
+
+	Array off = d["offset"];
+	if (off.size() < 2) return Vector2(0, 0);
+
+	return Vector2(
+		double(off[0]),
+		double(off[1])
+	);
+}
+
+void SpxResMgr::_build_normal_frames(
+	const String &p_sprite_type, 
+	const String &anim_key, 
+	const AnimPayload &payload, 
+	Vector<Vector2> &out_offsets) {
+	int svg_count = 0;
+	for (int i = 0; i < payload.frames.size(); i++) {
+		Dictionary f = payload.frames[i];
+
+		String path = f["path"];
+		Vector2 offset = _read_offset(f);
+
+		if (svgMgr->is_svg_file(path)) svg_count++;
+			
+		Ref<Texture2D> tex = load_texture(path);
+		if (!tex.is_valid()) {
+			print_error("cannot load texture: " + path);
+			continue;
+		}
+
+		anim_frames->add_frame(anim_key, tex);
+		out_offsets.push_back(offset);
+	}
+
+	if (svg_count > 0 && svg_count != payload.frames.size()){
+		print_error(vformat(
+			"[SpxResMgr::create_animation][ERR_SVG_FRAME_MISMATCH] "
+			"Sprite='%s', Anim='%s', SVG_Count=%d, Frame_Count=%d — counts must match for SVG animations.",
+			p_sprite_type,
+			anim_key,
+			svg_count,
+			payload.frames.size()
+		));
+		return ;
+	}
+
+	svgMgr->mark_svg_animation(anim_key, svg_count > 0);
+}
+
+void SpxResMgr::_build_atlas_frames(const String &anim_key, const AnimPayload &payload, Vector<Vector2> &out_offsets) {
+	Ref<Texture2D> atlas = load_texture(payload.base_path);
+	if (!atlas.is_valid()) {
+		print_error("cannot load atlas: " + payload.base_path);
+		return;
+	}
+
+	for (int i = 0; i < payload.frames.size(); i++) {
+		Dictionary f = payload.frames[i];
+
+		int64_t x = f["x"];
+		int64_t y = f["y"];
+		int64_t w = f["w"];
+		int64_t h = f["h"];
+		Vector2 offset = _read_offset(f);
+
+		Ref<AtlasTexture> tex;
+		tex.instantiate();
+		tex->set_atlas(atlas);
+		tex->set_region(Rect2(x, y, w, h));
+
+		anim_frames->add_frame(anim_key, tex);
+		out_offsets.push_back(offset);
+	}
 }
 
 static void _load_image(String path, Ref<Image> p_image){
@@ -260,153 +360,46 @@ String SpxResMgr::get_anim_key_name(const String &sprite_type_name, const String
 	return sprite_type_name + "::" + anim_name;
 }
 
+void SpxResMgr::create_animation(	
+	GdString p_sprite_type,
+	GdString p_anim_name,
+	GdString p_json_ctx,
+	GdInt fps,
+	GdBool is_atlas) {
 
-void SpxResMgr::create_animation(GdString p_sprite_type_name, GdString p_anim_name, GdString p_context,GdInt fps, GdBool is_altas) {
 	is_dynamic_anim = true;
-	auto sprite_type_name = SpxStr(p_sprite_type_name);
-	auto clip_name = SpxStr(p_anim_name);
-	auto context = SpxStr(p_context);
-	auto anim_key = get_anim_key_name(sprite_type_name, clip_name);
-	auto frames = anim_frames;
-	if (frames->has_animation(anim_key)) {
-		return ;
-	}
-	frames->add_animation(anim_key);
-	frames->set_animation_speed(anim_key,fps);
-	
-	// store frame offset information
-	Vector<Vector2> frame_offsets;
-	int svg_count = 0;
-	if (!is_altas) {
-		auto strs = context.split(";");
-		for (const String &path_with_offset : strs) {
-			Vector2 offset(0, 0);  // default offset
-			String path = path_with_offset;
-			
-			// check if contains offset information (format: path|offset_x,offset_y)
-			if (path_with_offset.contains("|")) {
-				auto parts = path_with_offset.split("|");
-				if (parts.size() == 2) {
-					path = parts[0];
-					auto offset_parts = parts[1].split(",");
-					if (offset_parts.size() >= 2) {
-						offset.x = offset_parts[0].to_float();
-						offset.y = offset_parts[1].to_float();
-					}
-				}
-			}	
-			if (svgMgr->is_svg_file(path)) {
-				svg_count++;
-			}
-		
-			Ref<Texture2D> texture = load_texture(path);
-			if (!texture.is_valid()) {
-				print_error("animation parse error" + sprite_type_name + " " + anim_key + " can not find path " + path);
-				continue;
-			}
-			frames->add_frame(anim_key, texture);
-			frame_offsets.push_back(offset);
-		}
-		if (svg_count>0 && svg_count != strs.size()){
-			print_error("animation parse error " + sprite_type_name + " " + anim_key + " svg path count not match frame count");
-			return ;
-		}
-		svgMgr->mark_svg_animation(anim_key, svg_count > 0);
-	} else {
-		auto strs = context.split(";");
-		if (strs.size() < 2) {
-			print_error("create_animation context error missing \";\"? : " + context);
-			return ;
-		}
-		auto path = strs[0];
-		Ref<Texture2D> altas_texture = load_texture(path);
-		if (!altas_texture.is_valid()) {
-			print_error("animation parse error" + sprite_type_name + " " + anim_key + " can not find path " + path);
-			return ;
-		}
+	String sprite = SpxStr(p_sprite_type);
+	String clip   = SpxStr(p_anim_name);
+	String ctx    = SpxStr(p_json_ctx);
 
-		String param_str = strs[1];
-		
-		// support two formats:
-		// 1. old format: x1,y1,w1,h1,x2,y2,w2,h2
-		// 2. new format: x1,y1,w1,h1,offset_x1,offset_y1;x2,y2,w2,h2,offset_x2,offset_y2
-		
-		Vector<double> params;
-		Vector<Vector2> frame_offsets_atlas;
-		
-		if (param_str.contains(";")) {
-			// new format: each frame data is separated by semicolon, each frame can contain 6 parameters (region + offset)
-			auto frame_strs = param_str.split(";");
-			for (const String &frame_str : frame_strs) {
-				auto values = frame_str.split(",");
-				if (values.size() >= 4) {
-					for (int i = 0; i < 4; i++) {
-						params.push_back(values[i].to_float());
-					}
-					if (values.size() >= 6) {
-						Vector2 offset(values[4].to_float(), values[5].to_float());
-						frame_offsets_atlas.push_back(offset);
-					} else {
-						frame_offsets_atlas.push_back(Vector2(0, 0));
-					}
-				}
-			}
-		} else {
-			// old format: all parameters are separated by commas
-			auto paramStrs = param_str.split(",");
-			
-			if (paramStrs.size() % 4 != 0) {
-				print_error("create_animation context error, params count % 4 != 0: " + context +" size = "+ paramStrs.size() );
-				return ;
-			}
-			
-			for (const String &str : paramStrs) {
-				params.push_back(str.to_float());
-			}
-			
-			// old format use default offset
-			int frame_count = params.size() / 4;
-			for (int i = 0; i < frame_count; i++) {
-				frame_offsets_atlas.push_back(Vector2(0, 0));
-			}
-		}
-		
-		if (params.size() % 4 != 0) {
-			print_error("create_animation context error, params count % 4 != 0: " + context +" size = "+ params.size() );
-			return ;
-		}
-		
-		auto count = params.size() / 4;
-		for (int i = 0; i < count; i++) {
-			Vector2 offset(0, 0);  // default offset
-			
-			// use parsed offset
-			if (i < frame_offsets_atlas.size()) {
-				offset = frame_offsets_atlas[i];
-			}
-			
-			Ref<AtlasTexture> texture;
-			texture.instantiate();
-			texture->set_atlas(altas_texture);
-			auto offset_param = i * 4;
-			Rect2 rect2;
-			rect2.position = Vector2(params[offset_param + 0], params[offset_param + 1]);
-			rect2.size = Vector2(params[offset_param + 2], params[offset_param + 3]);
-			texture->set_region(rect2);
-			frames->add_frame(anim_key, texture);
-			frame_offsets.push_back(offset);
-		}
+	String key = get_anim_key_name(sprite, clip);
+
+	if (anim_frames->has_animation(key))
+		return;
+
+	AnimPayload payload;
+	if (!_parse_anim_json(ctx, payload)) {
+		print_error("animation JSON parse failed");
+		return;
 	}
-	
-	// store animation frame offset information
-	animation_frame_offsets[anim_key] = frame_offsets;
-	
+
+	anim_frames->add_animation(key);
+	anim_frames->set_animation_speed(key, fps);
+
+	Vector<Vector2> offsets;
+
+	if (is_atlas)
+		_build_atlas_frames(key, payload, offsets);
+	else
+		_build_normal_frames(sprite, key, payload, offsets);
+
+	animation_frame_offsets[key] = offsets;
 }
-
 
 void SpxResMgr::set_load_mode(GdBool is_direct_mode) {
 	is_load_direct = is_direct_mode;
 }
+
 GdBool SpxResMgr::get_load_mode() {
 	return is_load_direct;
 }

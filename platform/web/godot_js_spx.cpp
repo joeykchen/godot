@@ -463,8 +463,8 @@ void gdspx_platform_is_in_persistant_data_dir(GdString* path,GdBool* ret_val) {
 	*ret_val = platformMgr->is_in_persistant_data_dir(*path);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_res_create_animation(GdString* sprite_type_name,GdString* anim_name,GdString* context,GdInt* fps,GdBool* is_altas) {
-	 resMgr->create_animation(*sprite_type_name, *anim_name, *context, *fps, *is_altas);
+void gdspx_res_create_animation(GdString* p_sprite_type,GdString* p_anim_name,GdString* p_json_ctx,GdInt* fps,GdBool* is_atlas) {
+	 resMgr->create_animation(*p_sprite_type, *p_anim_name, *p_json_ctx, *fps, *is_atlas);
 }
 EMSCRIPTEN_KEEPALIVE
 void gdspx_res_set_load_mode(GdBool* is_direct_mode) {
