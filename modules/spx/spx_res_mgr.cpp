@@ -66,7 +66,6 @@ void SpxResMgr::on_awake() {
 }
 
 void SpxResMgr::on_reset() {
-	bitmap_cache.clear();
 	animation_frame_offsets.clear();
 	anim_frames->clear_all();
 }

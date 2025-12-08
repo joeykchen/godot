@@ -69,7 +69,6 @@ public:
 private:
 	HashMap<String, Ref<Texture2D>> cached_texture;
 	HashMap<String, Ref<AudioStream>> cached_audio;
-	HashMap<String, Ref<Texture2D>> bitmap_cache;
 	bool is_load_direct;
 	String game_data_root = "res://";
 	Ref<SpriteFrames> anim_frames;
