@@ -338,7 +338,8 @@ void SpxEngine::do_reset() {
 	for (auto mgr : mgrs) {
 		mgr->on_reset();
 	}
-	_pause_pure();
+
+	//_pause_pure();
 }
 
 // SPX Pause functionality implementation with thread safety
