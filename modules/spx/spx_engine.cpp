@@ -419,7 +419,7 @@ void SpxEngine::capture_last_frame() {
 
 	if (!freeze_layer) {
 		freeze_layer = memnew(CanvasLayer);
-		freeze_layer->set_layer(9999);
+		freeze_layer->set_layer(1);
 		vp->add_child(freeze_layer);
 	}
 
