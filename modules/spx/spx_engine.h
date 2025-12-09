@@ -54,6 +54,7 @@ class SpxDebugMgr;
 class SpxNavigationMgr;
 class SpxPenMgr;
 class SpxTilemapMgr;
+class SpxCallbackProxy;
 
 typedef void (*GDExtensionSpxGlobalRuntimePanicCallback)(GdString msg);
 typedef void (*GDExtensionSpxGlobalRuntimeExitCallback)(GdInt code);
@@ -87,6 +88,7 @@ private:
 	SpxNavigationMgr *navigation;
 	SpxPenMgr *pen;
 	SpxTilemapMgr *tilemap;
+	SpxCallbackProxy *delay_proxy;
 
 public:
 	SpxInputMgr *get_input() { return input; }

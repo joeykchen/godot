@@ -53,6 +53,8 @@
 #include "spx_navigation_mgr.h"
 #include "spx_pen_mgr.h"
 #include "spx_tilemap_mgr.h"
+#include "spx_callback_proxy.h"
+
 SpxEngine *SpxEngine::singleton = nullptr;
 
 void SpxEngine::register_runtime_panic_callbacks(GDExtensionSpxGlobalRuntimePanicCallback callback) {
@@ -180,6 +182,11 @@ Window *SpxEngine::get_root() {
 void SpxEngine::set_root_node(SceneTree *p_tree, Node *p_node) {
 	this->tree = p_tree;
 	spx_root = p_node;
+
+	if(!delay_proxy){
+		delay_proxy = memnew(SpxCallbackProxy);
+        tree->get_root()->add_child(delay_proxy);
+	}
 }
 
 void SpxEngine::on_awake() {
@@ -270,12 +277,19 @@ void SpxEngine::on_exit(int exit_code) {
 void SpxEngine::on_destroy() {
 	for (auto mgr : mgrs) {
 		mgr->on_destroy();
-	}	
+	}
+
 	if (!has_exit) {
 		if (callbacks.func_on_engine_destroy != nullptr) {
 			callbacks.func_on_engine_destroy();
 		}
 	}
+
+	if(delay_proxy){
+		delay_proxy->queue_free();
+		delay_proxy = nullptr;
+	}
+
 	callbacks = get_default_spx_callbacks();
 	
 	// Destroy svg global manager
@@ -295,6 +309,7 @@ void SpxEngine::on_destroy() {
 	memdelete(navigation);
 	memdelete(pen);
 	memdelete(tilemap);
+
 	mgrs.clear();
 	singleton = nullptr;
 }
@@ -339,7 +354,17 @@ void SpxEngine::do_reset() {
 		mgr->on_reset();
 	}
 
-	//_pause_pure();
+	SvgManager::get_singleton()->reset(false);
+
+	Ref<SceneTreeTimer> timer = tree->create_timer(2.0);
+    delay_proxy->callback = [this]() {
+        this->_pause_pure();
+    };
+
+	timer->connect(
+		"timeout",
+		Callable(delay_proxy, "_on_timeout")
+	);
 }
 
 // SPX Pause functionality implementation with thread safety
@@ -466,7 +491,6 @@ void SpxEngine::_on_godot_pause_changed(bool is_godot_paused) {
 }
 
 void SpxEngine::_pause_pure() {
-	SvgManager::get_singleton()->reset(false);
 	if (tree != nullptr) {
 		if (Thread::is_main_thread()) {
 			tree->set_pause(true);
