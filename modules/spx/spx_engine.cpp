@@ -186,6 +186,7 @@ void SpxEngine::set_root_node(SceneTree *p_tree, Node *p_node) {
 	if(!delay_proxy){
 		delay_proxy = memnew(SpxCallbackProxy);
         tree->get_root()->add_child(delay_proxy);
+		on_timeout_callable = Callable(delay_proxy, "_on_timeout");
 	}
 }
 
@@ -323,6 +324,7 @@ void SpxEngine::restart() {
 		return;
 	}
 
+	_disconnect_reset_timer();
 	clear_frozen_frame();
 	_resume_pure();
 	is_spx_reset = false;
@@ -356,14 +358,20 @@ void SpxEngine::do_reset() {
 
 	SvgManager::get_singleton()->reset(false);
 
-	Ref<SceneTreeTimer> timer = tree->create_timer(2.0);
-    delay_proxy->callback = [this]() {
-        this->_pause_pure();
-    };
+	if (!tree || !delay_proxy) {
+		return;
+	}
 
-	timer->connect(
+	_disconnect_reset_timer();
+
+	reset_timer = tree->create_timer(RESET_PAUSE_DELAY_SEC);
+	delay_proxy->callback = [this]() {
+		this->_pause_pure();
+	};
+
+	reset_timer->connect(
 		"timeout",
-		Callable(delay_proxy, "_on_timeout")
+		on_timeout_callable
 	);
 }
 
@@ -511,4 +519,10 @@ void SpxEngine::_resume_pure() {
 	}
 
 	is_spx_paused = false;
+}
+
+void SpxEngine::_disconnect_reset_timer() {
+	if (!reset_timer.is_null() && reset_timer.is_valid()) {
+		reset_timer->disconnect("timeout", on_timeout_callable);
+	}
 }

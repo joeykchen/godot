@@ -32,6 +32,7 @@
 #define SPX_ENGINE_H
 
 #include "gdextension_spx_ext.h"
+#include "core/variant/callable.h"
 #include "spx_base_mgr.h"
 
 #include <cstdint>
@@ -88,7 +89,8 @@ private:
 	SpxNavigationMgr *navigation;
 	SpxPenMgr *pen;
 	SpxTilemapMgr *tilemap;
-	SpxCallbackProxy *delay_proxy;
+
+	SpxCallbackProxy *delay_proxy = nullptr;
 
 public:
 	SpxInputMgr *get_input() { return input; }
@@ -119,6 +121,10 @@ private:
 	CanvasLayer *freeze_layer = nullptr;
 	TextureRect *freeze_screen = nullptr;
 	bool is_frozen_frame = false;
+
+	Ref<SceneTreeTimer> reset_timer;
+	Callable on_timeout_callable;
+	const double RESET_PAUSE_DELAY_SEC = 2.0f;
 
 	bool has_exit;
 	bool is_spx_reset = true;
@@ -167,7 +173,7 @@ public:
 
 	void _pause_pure();
 	void _resume_pure();
-
+	void _disconnect_reset_timer();
 };
 
 #endif // SPX_ENGINE_H

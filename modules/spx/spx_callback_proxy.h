@@ -31,7 +31,7 @@
 #ifndef SPX_CALLBACK_PROXY_H
 #define SPX_CALLBACK_PROXY_H
 
-#include "scene/2d/node_2d.h"
+#include "scene/main/node.h"
 #include <functional>
 
 class SpxCallbackProxy : public Node {
