@@ -362,6 +362,7 @@ void SpxEngine::do_reset() {
 		return;
 	}
 
+
 	_disconnect_reset_timer();
 
 	reset_timer = tree->create_timer(RESET_PAUSE_DELAY_SEC);
@@ -499,6 +500,7 @@ void SpxEngine::_on_godot_pause_changed(bool is_godot_paused) {
 }
 
 void SpxEngine::_pause_pure() {
+	print_error("_pause_pure..........");
 	if (tree != nullptr) {
 		if (Thread::is_main_thread()) {
 			tree->set_pause(true);

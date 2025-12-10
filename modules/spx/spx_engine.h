@@ -124,7 +124,7 @@ private:
 
 	Ref<SceneTreeTimer> reset_timer;
 	Callable on_timeout_callable;
-	const double RESET_PAUSE_DELAY_SEC = 2.0f;
+	const double RESET_PAUSE_DELAY_SEC = 5.0f;
 
 	bool has_exit;
 	bool is_spx_reset = true;
