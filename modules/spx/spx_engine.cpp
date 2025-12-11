@@ -524,7 +524,7 @@ void SpxEngine::_resume_pure() {
 }
 
 void SpxEngine::_disconnect_reset_timer() {
-	if (!reset_timer.is_null() && reset_timer.is_valid()) {
+	if (!reset_timer.is_null() && reset_timer.is_valid() && reset_timer->has_connections("timeout")) {
 		reset_timer->disconnect("timeout", on_timeout_callable);
 	}
 }
