@@ -132,6 +132,7 @@ private:
 	bool is_defer_call_pause;
 	bool defer_pause_value;
 	bool should_execute_single_frame;
+
 public:
 	SpxCallbackInfo *get_callbacks() ;
 	GDExtensionSpxGlobalRuntimePanicCallback get_on_runtime_panic() { return on_runtime_panic; }
@@ -164,10 +165,11 @@ public:
 	bool is_paused() const;
 	void next_frame();
 	
-
+	// Frozen last Frame feature
 	void capture_last_frame();
 	void clear_frozen_frame();
 
+private:
 	// Internal methods for Godot pause synchronization
 	void _on_godot_pause_changed(bool is_godot_paused);
 
