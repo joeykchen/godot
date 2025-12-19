@@ -68,6 +68,7 @@ public:
 	void on_create(GdInt id, Node *root);
 	void on_destroy();
 	void on_update(float delta);
+	void on_reset(int reset_code);
 
 public:
 	// Pen APIs

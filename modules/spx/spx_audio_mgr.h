@@ -32,40 +32,34 @@
 #define SPX_AUDIO_MGR_H
 
 #include "gdextension_spx_ext.h"
-#include "spx_base_mgr.h"
+#include "spx_audio.h"
+#include "spx_object_mgr.h"
 #include "scene/main/node.h"
 #include "scene/2d/node_2d.h"
 #include "core/templates/rb_map.h"
 #include "core/templates/list.h"
-#include "core/os/mutex.h"
 
 // Forward declarations
-class SpxAudio;
 class AudioStreamPlayer2D;
 
-class SpxAudioMgr : SpxBaseMgr {
-	SPXCLASS(SpxAudioMgr, SpxBaseMgr)
+class SpxAudioMgr : public SpxObjectMgr<SpxAudio> {
+	SPXCLASS(SpxAudioMgr, SpxObjectMgr<SpxAudio>)
 
 private:
-	RBMap<GdObj, SpxAudio *> id_audios;
+	// Additional mapping for audio instance IDs (aid) to audio objects
 	RBMap<GdInt, SpxAudio *> aid_audios;
-	Node *root = nullptr;
-	GdObj g_audio_id;
+	GdInt g_audio_id;
 
-	static Mutex lock;
-	SpxAudio *_get_audio(GdObj obj);
 	SpxAudio *_get_aid_audio(GdInt aid);
 	
 public:
-	virtual ~SpxAudioMgr() = default; // Added virtual destructor to fix -Werror=non-virtual-dtor
+	virtual ~SpxAudioMgr() = default;
 
-public:
 	void on_awake() override;
 	void on_destroy() override;
 	void on_update(float delta) override;
 	void on_reset(int reset_code) override;
 
-public:
 	void stop_all();
 	GdObj create_audio();
 	void destroy_audio(GdObj obj);

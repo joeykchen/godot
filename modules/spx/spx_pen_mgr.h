@@ -32,24 +32,14 @@
 #define SPX_PEN_MGR_H
 
 #include "gdextension_spx_ext.h"
-#include "core/os/mutex.h"
-#include "spx_base_mgr.h"
+#include "spx_pen.h"
+#include "spx_object_mgr.h"
 
-class SpxPen;
-
-class SpxPenMgr : SpxBaseMgr {
-	SPXCLASS(SpxPenMgr, SpxBaseMgr)
+class SpxPenMgr : public SpxObjectMgr<SpxPen> {
+	SPXCLASS(SpxPenMgr, SpxObjectMgr<SpxPen>)
 public:
 	virtual ~SpxPenMgr() = default;
 
-private:
-	RBMap<GdObj, SpxPen *> id_pens;
-	Node *pen_root;
-	static Mutex lock;
-
-	SpxPen *_get_pen(GdObj id);
-
-public:
 	void on_awake() override;
 	void on_update(float delta) override;
 	void on_destroy() override;
@@ -57,7 +47,8 @@ public:
 
 	void destroy_all_pens();
 	GdObj create_pen();
-	void destroy_pen(GdObj obj);
+	void destroy_pen(GdObj obj) { destroy_object(obj); }
+	// Pen operation methods
 	void pen_stamp(GdObj obj);
 	void move_pen_to(GdObj obj, GdVec2 position);
 	void pen_down(GdObj obj, GdBool move_by_mouse);

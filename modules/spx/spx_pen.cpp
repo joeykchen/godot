@@ -101,6 +101,9 @@ void SpxPen::on_update(float delta) {
 	}
 }
 
+void SpxPen::on_reset(int reset_code) {
+}
+
 void SpxPen::on_destroy() {
 	if (root) {
 		root->queue_free();
