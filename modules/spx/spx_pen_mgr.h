@@ -47,7 +47,7 @@ public:
 
 	void destroy_all_pens();
 	GdObj create_pen();
-	void destroy_pen(GdObj obj) { destroy_object(obj); }
+	void destroy_pen(GdObj obj);
 	// Pen operation methods
 	void pen_stamp(GdObj obj);
 	void move_pen_to(GdObj obj, GdVec2 position);

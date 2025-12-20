@@ -72,7 +72,7 @@ public:
 	GdFloat get_volume(GdObj obj);
 
 	// play audio and return the audioid
-	GdInt play_with_attenuation(GdObj obj, GdString path,GdObj owner_id, GdFloat attenuation ,GdFloat max_distance );
+	GdInt play_with_attenuation(GdObj obj, GdString path, GdObj owner_id, GdFloat attenuation, GdFloat max_distance);
 	GdInt play(GdObj obj, GdString path);
 	void pause(GdInt aid);
 	void resume(GdInt aid);
