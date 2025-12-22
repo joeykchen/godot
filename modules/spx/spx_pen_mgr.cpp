@@ -73,6 +73,10 @@ GdObj SpxPenMgr::create_pen() {
 	return _create_object();
 }
 
+void SpxPenMgr::destroy_pen(GdObj obj) {
+	destroy_object(obj); 
+}
+
 void SpxPenMgr::destroy_all_pens() {
 	lock.lock();
 	for (const KeyValue<GdObj, SpxPen *> &E : id_objects) {
