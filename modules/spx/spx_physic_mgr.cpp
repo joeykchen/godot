@@ -101,7 +101,7 @@ void SpxPhysicMgr::on_awake() {
 void SpxPhysicMgr::on_reset(int reset_code) {
 }
 
-SpxRaycastInfo SpxPhysicMgr::_raycast(GdVec2 from, GdVec2 to,GdArray ignore_sprites,GdInt collision_mask,GdBool collide_with_areas,GdBool collide_with_bodies) {
+SpxRaycastInfo SpxPhysicMgr::_raycast(GdVec2 from, GdVec2 to, GdArray ignore_sprites, GdInt collision_mask, GdBool collide_with_areas, GdBool collide_with_bodies) {
 	SpxRaycastInfo info;
 	info.collide = false;
 	info.position = GdVec2{0, 0};
@@ -157,7 +157,7 @@ SpxRaycastInfo SpxPhysicMgr::_raycast(GdVec2 from, GdVec2 to,GdArray ignore_spri
 
 
 
-GdArray SpxPhysicMgr::raycast_with_details(GdVec2 from, GdVec2 to,GdArray ignore_sprites,GdInt collision_mask,GdBool collide_with_areas,GdBool collide_with_bodies){
+GdArray SpxPhysicMgr::raycast_with_details(GdVec2 from, GdVec2 to, GdArray ignore_sprites, GdInt collision_mask, GdBool collide_with_areas, GdBool collide_with_bodies){
 	SpxRaycastInfo info = _raycast(from, to, ignore_sprites, collision_mask, collide_with_areas, collide_with_bodies);
 	return info.ToArray();
 }
@@ -333,14 +333,14 @@ GdArray SpxPhysicMgr::_check_collision(RID shape, GdVec2 pos, GdInt collision_ma
 	}
 	return result_array;
 }
-GdArray SpxPhysicMgr::check_collision_rect(GdVec2 pos, GdVec2 size,GdInt collision_mask) {
+GdArray SpxPhysicMgr::check_collision_rect(GdVec2 pos, GdVec2 size, GdInt collision_mask) {
 	Ref<RectangleShape2D> rect_shape;
 	rect_shape.instantiate();
 	rect_shape->set_size(size);
 	return _check_collision(rect_shape->get_rid(), pos, collision_mask);
 }
 
-GdArray SpxPhysicMgr::check_collision_circle(GdVec2 pos, GdFloat radius,GdInt collision_mask) {
+GdArray SpxPhysicMgr::check_collision_circle(GdVec2 pos, GdFloat radius, GdInt collision_mask) {
 	Ref<CircleShape2D> circle_shape;
 	circle_shape.instantiate();
 	circle_shape->set_radius(radius); 

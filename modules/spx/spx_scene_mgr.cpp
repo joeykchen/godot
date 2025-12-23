@@ -250,7 +250,7 @@ GdObj SpxSceneMgr::create_render_sprite(GdString texture_path, GdVec2 pos, GdFlo
 	return id;
 }
 
-GdObj SpxSceneMgr::create_static_sprite(GdString texture_path, GdVec2 pos,GdFloat degree,GdVec2 scale, GdInt zindex, GdVec2 pivot, GdInt collider_type, GdVec2 collider_pivot, GdArray collider_params){
+GdObj SpxSceneMgr::create_static_sprite(GdString texture_path, GdVec2 pos, GdFloat degree, GdVec2 scale, GdInt zindex, GdVec2 pivot, GdInt collider_type, GdVec2 collider_pivot, GdArray collider_params){
 	if (pure_sprite_root == nullptr) {
 		return NULL_OBJECT_ID;
 	}

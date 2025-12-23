@@ -486,7 +486,7 @@ void SpxSpriteMgr::set_z_index(GdObj obj, GdInt z) {
 	sprite->set_z_index(z);
 }
 
-void SpxSpriteMgr::play_anim(GdObj obj, GdString p_name, GdFloat p_speed,GdBool isLoop, GdBool p_revert) {
+void SpxSpriteMgr::play_anim(GdObj obj, GdString p_name, GdFloat p_speed, GdBool isLoop, GdBool p_revert) {
 	check_and_get_sprite_v()
 	sprite->play_anim(p_name, p_speed, isLoop, p_revert);
 }
@@ -892,7 +892,7 @@ Vector2 SpxSpriteMgr::_to_image_coord(const Transform2D &trans, Vector2 image_si
 	return Vector2(xpos.x + half_size.x,  xpos.y + half_size.y);
 }
 
-GdBool SpxSpriteMgr::check_collision_with_sprite_by_alpha(GdObj obj,GdObj obj_b, GdFloat alpha_threshold){
+GdBool SpxSpriteMgr::check_collision_with_sprite_by_alpha(GdObj obj, GdObj obj_b, GdFloat alpha_threshold){
 	check_and_get_sprite_r(false) // Ensure sprite exists
 
 	AnimatedSprite2D *anim1 = sprite->anim2d;

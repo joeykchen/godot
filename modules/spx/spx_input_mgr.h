@@ -50,7 +50,7 @@ public:
 	GdBool get_key(GdInt key);
 	GdBool get_mouse_state(GdInt mouse_id);
 	GdInt get_key_state(GdInt key);
-	GdFloat get_axis(GdString neg_action,GdString pos_action);
+	GdFloat get_axis(GdString neg_action, GdString pos_action);
 	GdBool is_action_pressed(GdString action);
 	GdBool is_action_just_pressed(GdString action);
 	GdBool is_action_just_released(GdString action);

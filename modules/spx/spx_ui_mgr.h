@@ -51,7 +51,7 @@ public:
 	void on_reset(int reset_code) override;
 
 	void on_node_destroy(SpxUi *node);
-	SpxUi* on_create_node(Control *control,GdInt type,bool is_attach = true);
+	SpxUi* on_create_node(Control *control, GdInt type,bool is_attach = true);
 	SpxUi *get_node(GdObj obj);
 
 	static ESpxUiType get_node_type(Node* obj);
@@ -61,7 +61,7 @@ public:
 	GdObj bind_node(GdObj obj, GdString rel_path);
 
 	GdObj create_node(GdString path);
-	GdObj create_button(GdString path,GdString text);
+	GdObj create_button(GdString path, GdString text);
 	GdObj create_label(GdString path, GdString text);
 	GdObj create_image(GdString path);
 	GdObj create_toggle(GdString path, GdBool value);
@@ -87,24 +87,24 @@ public:
 
 
 	GdInt get_layout_direction(GdObj obj);
-	void set_layout_direction(GdObj obj,GdInt value);
+	void set_layout_direction(GdObj obj, GdInt value);
 	GdInt get_layout_mode(GdObj obj);
-	void set_layout_mode(GdObj obj,GdInt value);
+	void set_layout_mode(GdObj obj, GdInt value);
 	GdInt get_anchors_preset(GdObj obj);
-	void set_anchors_preset(GdObj obj,GdInt value);
+	void set_anchors_preset(GdObj obj, GdInt value);
 	GdVec2 get_scale(GdObj obj);
-	void set_scale(GdObj obj,GdVec2 value);
+	void set_scale(GdObj obj, GdVec2 value);
 	GdVec2 get_position(GdObj obj);
-	void set_position(GdObj obj,GdVec2 value);
+	void set_position(GdObj obj, GdVec2 value);
 	GdVec2 get_size(GdObj obj);
-	void set_size(GdObj obj,GdVec2 value);
+	void set_size(GdObj obj, GdVec2 value);
 	GdVec2 get_global_position(GdObj obj);
-	void set_global_position(GdObj obj,GdVec2 value);
+	void set_global_position(GdObj obj, GdVec2 value);
 	GdFloat get_rotation(GdObj obj);
-	void set_rotation(GdObj obj,GdFloat value);
+	void set_rotation(GdObj obj, GdFloat value);
 
-	GdBool get_flip(GdObj obj,GdBool horizontal);
-	void set_flip(GdObj obj,GdBool horizontal, GdBool is_flip);
+	GdBool get_flip(GdObj obj, GdBool horizontal);
+	void set_flip(GdObj obj, GdBool horizontal, GdBool is_flip);
 };
 
 #endif // SPX_UI_MGR_H

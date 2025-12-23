@@ -77,7 +77,7 @@ static SpxCallbackInfo get_default_spx_callbacks() {
 	callbacks.func_on_engine_destroy = [](){};
 	callbacks.func_on_engine_reset = [](){};
 	callbacks.func_on_engine_pause = [](GdBool is_paused){};
-	callbacks.func_on_scene_sprite_instantiated = [](GdObj obj,GdString type_name){};
+	callbacks.func_on_scene_sprite_instantiated = [](GdObj obj, GdString type_name){};
 	callbacks.func_on_sprite_ready = [](GdObj obj){};
 	callbacks.func_on_sprite_updated = [](GdFloat delta){};
 	callbacks.func_on_sprite_fixed_updated = [](GdFloat delta){};
