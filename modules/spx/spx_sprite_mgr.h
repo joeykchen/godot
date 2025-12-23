@@ -131,7 +131,7 @@ public:
 	void set_process(GdObj obj, GdBool is_on);
 	void set_physic_process(GdObj obj, GdBool is_on);
 
-	void set_type_name(GdObj obj,GdString type_name);
+	void set_type_name(GdObj obj, GdString type_name);
 
 	void set_pivot(GdObj obj, GdVec2 pivot);
 	GdVec2 get_pivot(GdObj obj);
@@ -144,8 +144,8 @@ public:
 	void set_child_scale(GdObj obj, GdString path, GdVec2 scale);
 	GdVec2 get_child_scale(GdObj obj, GdString path);
 
-	GdBool check_collision(GdObj obj,GdObj target, GdBool is_src_trigger,GdBool is_dst_trigger);
-	GdBool check_collision_with_point(GdObj obj,GdVec2 point, GdBool is_trigger);
+	GdBool check_collision(GdObj obj, GdObj target, GdBool is_src_trigger, GdBool is_dst_trigger);
+	GdBool check_collision_with_point(GdObj obj, GdVec2 point, GdBool is_trigger);
 	//
 	GdObj create_backdrop(GdString path);
 	GdObj create_sprite(GdString path,  GdVec2 pos);
@@ -188,7 +188,7 @@ public:
 	void set_z_index(GdObj obj, GdInt z);
 
 	// animation
-	void play_anim(GdObj obj, GdString p_name , GdFloat p_speed, GdBool isLoop, GdBool p_revert );
+	void play_anim(GdObj obj, GdString p_name, GdFloat p_speed, GdBool isLoop, GdBool p_revert);
 	void play_backwards_anim(GdObj obj,  GdString p_name );
 	void pause_anim(GdObj obj);
 	void stop_anim(GdObj obj);
@@ -267,7 +267,7 @@ public:
 	GdBool is_trigger_enabled(GdObj obj);
 
 	// misc
-	GdBool check_collision_by_color(GdObj obj, GdColor color,GdFloat color_threshold, GdFloat alpha_threshold);
+	GdBool check_collision_by_color(GdObj obj, GdColor color, GdFloat color_threshold, GdFloat alpha_threshold);
 	GdBool check_collision_by_alpha(GdObj obj, GdFloat alpha_threshold);
 	GdBool check_collision_with_sprite_by_alpha(GdObj obj, GdObj obj_b, GdFloat alpha_threshold);
 

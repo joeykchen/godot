@@ -297,7 +297,7 @@ GdInt SpxUiMgr::get_layout_direction(GdObj obj) {
 	check_and_get_node_r(0)
 	return node->get_layout_direction();
 }
-void SpxUiMgr::set_layout_direction(GdObj obj,GdInt value) {
+void SpxUiMgr::set_layout_direction(GdObj obj, GdInt value) {
 	check_and_get_node_v()
 	node->set_layout_direction(value);
 }
@@ -305,7 +305,7 @@ GdInt SpxUiMgr::get_layout_mode(GdObj obj) {
 	check_and_get_node_r(0)
 	return node->get_layout_mode();
 }
-void SpxUiMgr::set_layout_mode(GdObj obj,GdInt value) {
+void SpxUiMgr::set_layout_mode(GdObj obj, GdInt value) {
 	check_and_get_node_v()
 	node->set_layout_mode(value);
 }
