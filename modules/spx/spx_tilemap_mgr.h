@@ -36,7 +36,7 @@
 
 class SpxDrawTiles;
 
-class SpxTilemapMgr : SpxBaseMgr {
+class SpxTilemapMgr : public SpxBaseMgr {
 	SPXCLASS(SpxTilemapMgr, SpxBaseMgr)
 public:
 	virtual ~SpxTilemapMgr() = default;

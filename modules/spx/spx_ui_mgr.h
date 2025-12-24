@@ -35,8 +35,8 @@
 #include "spx_engine.h"
 #include "spx_ui.h"
 class Node;
-class SpxUiMgr : SpxBaseMgr {
-	SPXCLASS(SpxUIMgr, SpxBaseMgr)
+class SpxUiMgr : public SpxBaseMgr {
+	SPXCLASS(SpxUiMgr, SpxBaseMgr)
 
 public:
 	virtual ~SpxUiMgr() = default; // Added virtual destructor to fix -Werror=non-virtual-dtor

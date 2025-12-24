@@ -68,7 +68,7 @@ enum class ColliderType {
 	CAPSULE = 4,
 	POLYGON = 5
 };
-class SpxPhysicMgr : SpxBaseMgr {
+class SpxPhysicMgr : public SpxBaseMgr {
 	SPXCLASS(SpxPhysicMgr, SpxBaseMgr)
 
 private:

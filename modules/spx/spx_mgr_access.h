@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  spx_input_mgr.h                                                       */
+/*  spx_mgr_access.h                                                      */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,32 +28,38 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef SPX_INPUT_MGR_H
-#define SPX_INPUT_MGR_H
+#ifndef SPX_MGR_ACCESS_H
+#define SPX_MGR_ACCESS_H
 
-#include "gdextension_spx_ext.h"
-#include "spx_base_mgr.h"
-#include "spx_input_proxy.h"
+// Forward declaration to avoid circular dependency
+class SpxEngine;
+class SvgManager;
 
+/**
+ * @file spx_mgr_access.h
+ * @brief Unified accessor macros for all SPX manager instances
+ * 
+ * This header provides convenient macros to access manager singletons throughout
+ * the SPX module. All manager access macros are centralized here to avoid duplication.
+ */
 
+// SPX Manager access macros
+#define inputMgr SpxEngine::get_singleton()->get_input()
+#define audioMgr SpxEngine::get_singleton()->get_audio()
+#define physicMgr SpxEngine::get_singleton()->get_physic()
+#define spriteMgr SpxEngine::get_singleton()->get_sprite()
+#define uiMgr SpxEngine::get_singleton()->get_ui()
+#define sceneMgr SpxEngine::get_singleton()->get_scene()
+#define cameraMgr SpxEngine::get_singleton()->get_camera()
+#define platformMgr SpxEngine::get_singleton()->get_platform()
+#define resMgr SpxEngine::get_singleton()->get_res()
+#define extMgr SpxEngine::get_singleton()->get_ext()
+#define debugMgr SpxEngine::get_singleton()->get_debug()
+#define navigationMgr SpxEngine::get_singleton()->get_navigation()
+#define penMgr SpxEngine::get_singleton()->get_pen()
+#define tilemapMgr SpxEngine::get_singleton()->get_tilemap()
 
-class SpxInputMgr : public SpxBaseMgr {
-	SPXCLASS(SpxInputMgr, SpxBaseMgr)
-public:
-	virtual ~SpxInputMgr() = default; // Added virtual destructor to fix -Werror=non-virtual-dtor
-	virtual void on_start() override;
-	void on_reset(int reset_code) override;
-protected:
-	SpxInputProxy *input_proxy;
-public:
-	GdVec2 get_global_mouse_pos();
-	GdBool get_key(GdInt key);
-	GdBool get_mouse_state(GdInt mouse_id);
-	GdInt get_key_state(GdInt key);
-	GdFloat get_axis(GdString neg_action, GdString pos_action);
-	GdBool is_action_pressed(GdString action);
-	GdBool is_action_just_pressed(GdString action);
-	GdBool is_action_just_released(GdString action);
-};
+// SVG Manager access macro
+#define svgMgr SvgManager::get_singleton()
 
-#endif // SPX_INPUT_MGR_H
+#endif // SPX_MGR_ACCESS_H

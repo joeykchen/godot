@@ -38,7 +38,7 @@ class ISortableSprite;
 class TileMapLayer;
 class SubViewport;
 
-class SpxSceneMgr : SpxBaseMgr {
+class SpxSceneMgr : public SpxBaseMgr {
 	SPXCLASS(SpxSceneMgr, SpxBaseMgr)
 
 private:	 

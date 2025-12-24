@@ -35,6 +35,7 @@
 #include "scene/2d/node_2d.h"
 #include "svg_mgr.h"
 #include "spx_utils.h"
+#include "spx_mgr_access.h"
 
 #define SPXCLASS(m_class, m_inherits) \
 public:                               \
@@ -42,16 +43,6 @@ public:                               \
 
 #define SpxStr(str) (String::utf8((const char *)str))
 #define SpxReturnStr(str) (SpxBaseMgr::to_return_cstr(str))
-
-#define inputMgr SpxEngine::get_singleton()->get_input()
-#define audioMgr SpxEngine::get_singleton()->get_audio()
-#define physicMgr SpxEngine::get_singleton()->get_physic()
-#define spriteMgr SpxEngine::get_singleton()->get_sprite()
-#define resMgr SpxEngine::get_singleton()->get_res()
-#define uiMgr SpxEngine::get_singleton()->get_ui()
-#define cameraMgr SpxEngine::get_singleton()->get_camera()
-
-#define svgMgr SvgManager::get_singleton()
 
 #define NULL_OBJECT_ID 0
 
