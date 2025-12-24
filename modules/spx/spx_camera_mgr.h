@@ -36,7 +36,7 @@
 
 class Camera2D;
 
-class SpxCameraMgr : SpxBaseMgr {
+class SpxCameraMgr : public SpxBaseMgr {
 	SPXCLASS(SpxCameraMgr, SpxBaseMgr)
 
 public:

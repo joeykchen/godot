@@ -34,7 +34,7 @@
 #include "gdextension_spx_ext.h"
 #include "spx_base_mgr.h"
 
-class SpxPlatformMgr : SpxBaseMgr {
+class SpxPlatformMgr : public SpxBaseMgr {
 	SPXCLASS(SpxPlatformMgr, SpxBaseMgr)
 	String persistant_data_dir = "res://";
 public:

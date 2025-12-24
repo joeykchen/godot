@@ -35,7 +35,7 @@
 #include "spx_base_mgr.h"
 #include "spx_path_finder.h"
 
-class SpxNavigationMgr : SpxBaseMgr {
+class SpxNavigationMgr : public SpxBaseMgr {
 	SPXCLASS(SpxNavigationMgr, SpxBaseMgr)
 public:
 	virtual ~SpxNavigationMgr() = default;

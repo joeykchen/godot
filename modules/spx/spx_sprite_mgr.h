@@ -90,7 +90,7 @@ struct hash<TriggerPair> {
 }
 
 
-class SpxSpriteMgr : SpxBaseMgr {
+class SpxSpriteMgr : public SpxBaseMgr {
 	SPXCLASS(SpxSpriteMgr, SpxBaseMgr)
 public:
 	virtual ~SpxSpriteMgr() = default; // Added virtual destructor to fix -Werror=non-virtual-dtor

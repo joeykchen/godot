@@ -60,8 +60,8 @@ struct AnimPayload {
 	int64_t max_bitmap;
 };
 
-class SpxResMgr : SpxBaseMgr {
-	SPXCLASS(SpxPlatformMgr, SpxBaseMgr)
+class SpxResMgr : public SpxBaseMgr {
+	SPXCLASS(SpxResMgr, SpxBaseMgr)
 
 public:
 	virtual ~SpxResMgr() = default; // Added virtual destructor to fix -Werror=non-virtual-dtor

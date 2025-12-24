@@ -35,6 +35,7 @@
 #include "gdextension_interface.h"
 #include "scene/main/window.h"
 #include "spx_engine.h"
+#include "spx_mgr_access.h"
 #include "spx_audio_mgr.h"
 #include "spx_camera_mgr.h"
 #include "spx_debug_mgr.h"
@@ -50,20 +51,6 @@
 #include "spx_tilemap_mgr.h"
 #include "spx_ui_mgr.h"
 
-#define audioMgr SpxEngine::get_singleton()->get_audio()
-#define cameraMgr SpxEngine::get_singleton()->get_camera()
-#define debugMgr SpxEngine::get_singleton()->get_debug()
-#define extMgr SpxEngine::get_singleton()->get_ext()
-#define inputMgr SpxEngine::get_singleton()->get_input()
-#define navigationMgr SpxEngine::get_singleton()->get_navigation()
-#define penMgr SpxEngine::get_singleton()->get_pen()
-#define physicMgr SpxEngine::get_singleton()->get_physic()
-#define platformMgr SpxEngine::get_singleton()->get_platform()
-#define resMgr SpxEngine::get_singleton()->get_res()
-#define sceneMgr SpxEngine::get_singleton()->get_scene()
-#define spriteMgr SpxEngine::get_singleton()->get_sprite()
-#define tilemapMgr SpxEngine::get_singleton()->get_tilemap()
-#define uiMgr SpxEngine::get_singleton()->get_ui()
 
 #define REGISTER_SPX_INTERFACE_FUNC(m_name) GDExtension::register_interface_function( #m_name, (GDExtensionInterfaceFunctionPtr)&gdextension_##m_name)
 static void gdextension_spx_global_register_callbacks(GDExtensionSpxCallbackInfoPtr callback_ptr) {

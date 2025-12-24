@@ -36,7 +36,7 @@
 #include "spx_base_mgr.h"
 
 
-class SpxExtMgr : SpxBaseMgr {
+class SpxExtMgr : public SpxBaseMgr {
 	SPXCLASS(SpxExtMgr, SpxBaseMgr)
 public:
 	virtual ~SpxExtMgr() = default;

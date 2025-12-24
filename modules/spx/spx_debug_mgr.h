@@ -50,7 +50,7 @@ struct DebugShape {
 	Node2D *node;
 };
 
-class SpxDebugMgr : SpxBaseMgr {
+class SpxDebugMgr : public SpxBaseMgr {
 	SPXCLASS(SpxDebugMgr, SpxBaseMgr)
 public:
 	virtual ~SpxDebugMgr() = default;
