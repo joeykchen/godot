@@ -176,9 +176,9 @@ public:
 	void set_material_params_color(GdObj obj, GdString effect, GdColor color);
 	GdColor get_material_params_color(GdObj obj, GdString effect);
 
-	void set_texture_altas(GdObj obj, GdString path, GdRect2 rect2);
+	void set_texture_atlas(GdObj obj, GdString path, GdRect2 rect2);
 	void set_texture(GdObj obj, GdString path);
-	void set_texture_altas_direct(GdObj obj, GdString path, GdRect2 rect2);
+	void set_texture_atlas_direct(GdObj obj, GdString path, GdRect2 rect2);
 	void set_texture_direct(GdObj obj, GdString path);
 
 	GdString get_texture(GdObj obj);

@@ -450,7 +450,7 @@ GdColor SpxSprite::get_material_params_color(GdString effect) {
 	return default_material->get_shader_parameter(SpxStr(effect));
 }
 
-void SpxSprite::set_texture_altas_direct(GdString path, GdRect2 rect2, GdBool direct) {
+void SpxSprite::set_texture_atlas_direct(GdString path, GdRect2 rect2, GdBool direct) {
 	auto path_str = SpxStr(path);
 	current_anim_name = "";
 	is_svg_mode = false;// svg don't support atlas
@@ -497,8 +497,8 @@ void SpxSprite::_play_single_image_animation(Ref<Texture2D> texture){
 	}
 }
 
-void SpxSprite::set_texture_altas(GdString path, GdRect2 rect2) {
-	return set_texture_altas_direct(path, rect2, false);
+void SpxSprite::set_texture_atlas(GdString path, GdRect2 rect2) {
+	return set_texture_atlas_direct(path, rect2, false);
 }
 void SpxSprite::set_texture(GdString path) {
 	return set_texture_direct(path, false);

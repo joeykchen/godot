@@ -11594,7 +11594,7 @@ msgid "Invalid texture selected."
 msgstr "選擇的紋理無效。"
 
 msgid "Add a new atlas source"
-msgstr "新增altas來源"
+msgstr "新增atlas來源"
 
 msgid "Remove source"
 msgstr "移除來源"
