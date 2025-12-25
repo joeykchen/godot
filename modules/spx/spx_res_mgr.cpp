@@ -57,7 +57,6 @@
 #include "modules/svg/svg_utils.h"
 #endif
 
-#define platformMgr SpxEngine::get_singleton()->get_platform()
 
 void SpxResMgr::on_awake() {
 	SpxBaseMgr::on_awake();

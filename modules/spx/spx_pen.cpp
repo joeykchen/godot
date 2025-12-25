@@ -42,7 +42,6 @@ const int PEN_PROPERTY_SATURATION = 0;
 const int PEN_PROPERTY_BRIGHTNESS = 1;
 const int PEN_PROPERTY_TRANSPARENCY = 2;
 
-#define resMgr SpxEngine::get_singleton()->get_res()
 GdObj SpxPen::get_id() {
 	return id;
 }

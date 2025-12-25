@@ -38,8 +38,6 @@
 #include "spx_res_mgr.h"
 #include "spx_audio_bus_pool.h"
 
-#define audioMgr SpxEngine::get_singleton()->get_audio()
-#define audioPool SpxAudioBusPool::get_singleton()
 
 #define check_and_get_aid_audio_v()                                           \
 	auto audio = _get_aid_audio(aid);                                         \

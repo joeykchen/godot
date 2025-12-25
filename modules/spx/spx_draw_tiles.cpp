@@ -44,7 +44,6 @@
 #include "spx_scene_mgr.h"
 #include "spx_draw_tiles.h"
 
-#define sceneMgr SpxEngine::get_singleton()->get_scene()
 
 void LayerRenderer::_draw_axis(Node2D *parent_node, const DrawContext &ctx) {
 	Vector2 origin = ctx.layer_pos;

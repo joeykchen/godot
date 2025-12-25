@@ -34,8 +34,6 @@
 #include "spx_res_mgr.h"
 #include "spx_audio_bus_pool.h"
 
-#define audioMgr SpxEngine::get_singleton()->get_audio()
-#define audioPool SpxAudioBusPool::get_singleton()
 
 // Initialize static members
 SpxAudioBusPool *SpxAudioBusPool::singleton = nullptr;

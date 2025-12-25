@@ -49,7 +49,6 @@
 #include "spx_engine.h"
 #include "spx_sprite_mgr.h"
 
-#define spriteMgr SpxEngine::get_singleton()->get_sprite()
 
 GdFloat SpxPhysicDefine::global_gravity = 1.0;
 GdFloat SpxPhysicDefine::global_friction = 1.0;

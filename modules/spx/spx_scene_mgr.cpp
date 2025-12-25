@@ -55,8 +55,6 @@
 
 #include <cmath>
 
-#define spriteMgr SpxEngine::get_singleton()->get_sprite()
-#define resMgr SpxEngine::get_singleton()->get_res()
 
 void SpxSceneMgr::_request_export(SubViewport *viewport) {
     viewport_to_export = viewport;

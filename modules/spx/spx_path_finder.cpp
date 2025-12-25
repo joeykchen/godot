@@ -41,8 +41,6 @@
 #include "spx_engine.h"
 #include "spx_path_finder.h"
 
-#define spriteMgr SpxEngine::get_singleton()->get_sprite()
-#define sceneMgr SpxEngine::get_singleton()->get_scene()
 
 void SpxPathFinder::_bind_methods() {
     ClassDB::bind_method(D_METHOD("setup_grid", "size", "cell_size", "with_debug"), &SpxPathFinder::setup);

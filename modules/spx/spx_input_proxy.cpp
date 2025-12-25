@@ -31,7 +31,7 @@
 #include "spx_input_proxy.h"
 #include "spx_engine.h"
 
-#define SPX_CALLBACK SpxEngine::get_singleton()->get_callbacks()
+
 void SpxInputProxy::ready() {
 	set_process_input(true);
 }
