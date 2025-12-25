@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  spx_mgr_access.h                                                      */
+/*  spx_tilemapparser_mgr.h                                              */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,42 +28,65 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef SPX_MGR_ACCESS_H
-#define SPX_MGR_ACCESS_H
+#ifndef SPX_TILEMAP_PARSER_MGR_H
+#define SPX_TILEMAP_PARSER_MGR_H
 
-// Forward declaration to avoid circular dependency
-class SpxEngine;
-class SvgManager;
-class SpxAudioBusPool;
+#include "gdextension_spx_ext.h"
+#include "spx_base_mgr.h"
+#include "spx_tilemap_types.h"
+#include "scene/resources/2d/tile_set.h"
 
-/**
- * @file spx_mgr_access.h
- * @brief Unified accessor macros for all SPX manager instances
- * 
- * This header provides convenient macros to access manager singletons throughout
- * the SPX module. All manager access macros are centralized here to avoid duplication.
- */
+class TileMapLayer;
+class TileSetAtlasSource;
+class TileData;
 
-// SPX Manager access macros
-#define inputMgr SpxEngine::get_singleton()->get_input()
-#define audioMgr SpxEngine::get_singleton()->get_audio()
-#define physicMgr SpxEngine::get_singleton()->get_physic()
-#define spriteMgr SpxEngine::get_singleton()->get_sprite()
-#define uiMgr SpxEngine::get_singleton()->get_ui()
-#define sceneMgr SpxEngine::get_singleton()->get_scene()
-#define cameraMgr SpxEngine::get_singleton()->get_camera()
-#define platformMgr SpxEngine::get_singleton()->get_platform()
-#define resMgr SpxEngine::get_singleton()->get_res()
-#define extMgr SpxEngine::get_singleton()->get_ext()
-#define debugMgr SpxEngine::get_singleton()->get_debug()
-#define navigationMgr SpxEngine::get_singleton()->get_navigation()
-#define penMgr SpxEngine::get_singleton()->get_pen()
-#define tilemapMgr SpxEngine::get_singleton()->get_tilemap()
-#define tilemapparserMgr SpxEngine::get_singleton()->get_tilemapparser()
+// Manager for loading TileMap resources from JSON files
+// Provides runtime API for loading TileMaps without Godot's import process
+// Uses SpxResMgr for texture loading (SPX direct loading)
+//
+// Architecture:
+//   JSON -> SpxTileMapData (via from_json) -> Godot Objects (via this manager)
+//   Godot Objects -> SpxTileMapData (via to_json) -> JSON (for export plugin)
+//
+class SpxTilemapparserMgr : SpxBaseMgr {
+	SPXCLASS(SpxTilemapparserMgr, SpxBaseMgr)
 
-// Special Manager access macro
-#define svgMgr SvgManager::get_singleton()
-#define audioPool SpxAudioBusPool::get_singleton()
-#define SPX_CALLBACK SpxEngine::get_singleton()->get_callbacks()
+public:
+	virtual ~SpxTilemapparserMgr() = default;
 
-#endif // SPX_MGR_ACCESS_H
+private:
+	// Cache of loaded TileSets by tilemap name
+	HashMap<String, Ref<TileSet>> tileset_cache;
+
+	// Cache of loaded TileMapLayers by tilemap name
+	HashMap<String, Vector<TileMapLayer *>> tilemap_layers;
+
+private:
+	// Godot object creation methods (using parsed data structures)
+	Ref<TileSet> _create_tileset(const SpxTileSetData &data, const String &base_path);
+	void _create_atlas_source(Ref<TileSet> tileset, const SpxTileSetSourceData &data, const String &base_path);
+	void _setup_tile_physics(TileData *tile_data, const SpxTileData &data);
+	TileMapLayer *_create_tilemap_layer(const SpxTileMapLayerData &data, Ref<TileSet> tileset, const Vector2 &node_offset);
+
+	// Helper methods
+	String _get_base_path(const String &json_path);
+	Vector<uint8_t> _base64_decode(const String &base64_str);
+
+public:
+	// Lifecycle methods
+	void on_awake() override;
+	void on_destroy() override;
+	void on_reset(int reset_code) override;
+
+public:
+	// Main API
+	void load_tilemap(GdString json_path);
+	void unload_tilemap(GdString name);
+	void destroy_all_tilemaps();
+
+	// Query API
+	GdBool has_tilemap(GdString name);
+	GdInt get_tilemap_layer_count(GdString name);
+};
+
+#endif // SPX_TILEMAP_PARSER_MGR_H

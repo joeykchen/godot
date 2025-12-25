@@ -49,6 +49,7 @@
 #include "spx_scene_mgr.h"
 #include "spx_sprite_mgr.h"
 #include "spx_tilemap_mgr.h"
+#include "spx_tilemapparser_mgr.h"
 #include "spx_ui_mgr.h"
 
 
@@ -809,6 +810,21 @@ static void gdextension_spx_tilemap_close_draw_tiles() {
 static void gdextension_spx_tilemap_exit_tilemap_editor_mode() {
 	 tilemapMgr->exit_tilemap_editor_mode();
 }
+static void gdextension_spx_tilemapparser_load_tilemap(GdString json_path) {
+	 tilemapparserMgr->load_tilemap(json_path);
+}
+static void gdextension_spx_tilemapparser_unload_tilemap(GdString name) {
+	 tilemapparserMgr->unload_tilemap(name);
+}
+static void gdextension_spx_tilemapparser_destroy_all_tilemaps() {
+	 tilemapparserMgr->destroy_all_tilemaps();
+}
+static void gdextension_spx_tilemapparser_has_tilemap(GdString name, GdBool *ret_val) {
+	*ret_val = tilemapparserMgr->has_tilemap(name);
+}
+static void gdextension_spx_tilemapparser_get_tilemap_layer_count(GdString name, GdInt *ret_val) {
+	*ret_val = tilemapparserMgr->get_tilemap_layer_count(name);
+}
 static void gdextension_spx_ui_bind_node(GdObj obj, GdString rel_path, GdObj *ret_val) {
 	*ret_val = uiMgr->bind_node(obj, rel_path);
 }
@@ -1192,6 +1208,11 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_get_tile_with_layer);
 	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_close_draw_tiles);
 	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_exit_tilemap_editor_mode);
+	REGISTER_SPX_INTERFACE_FUNC(spx_tilemapparser_load_tilemap);
+	REGISTER_SPX_INTERFACE_FUNC(spx_tilemapparser_unload_tilemap);
+	REGISTER_SPX_INTERFACE_FUNC(spx_tilemapparser_destroy_all_tilemaps);
+	REGISTER_SPX_INTERFACE_FUNC(spx_tilemapparser_has_tilemap);
+	REGISTER_SPX_INTERFACE_FUNC(spx_tilemapparser_get_tilemap_layer_count);
 	REGISTER_SPX_INTERFACE_FUNC(spx_ui_bind_node);
 	REGISTER_SPX_INTERFACE_FUNC(spx_ui_create_node);
 	REGISTER_SPX_INTERFACE_FUNC(spx_ui_create_button);
