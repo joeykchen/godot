@@ -165,7 +165,6 @@ void SpxDebugMgr::debug_draw_line(GdVec2 from, GdVec2 to, GdColor color) {
 		return;
 	}
 
-	// 翻转Y轴坐标
 	from.y = -from.y;
 	to.y = -to.y;
 

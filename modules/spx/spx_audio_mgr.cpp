@@ -39,9 +39,6 @@
 #include "spx_sprite.h"
 #include "scene/2d/camera_2d.h"
 
-#define cameraMgr SpxEngine::get_singleton()->get_camera()
-#define spriteMgr SpxEngine::get_singleton()->get_sprite()
-
 
 SpxAudio *SpxAudioMgr::_get_aid_audio(GdInt aid) {
 	if (aid_audios.has(aid)) {

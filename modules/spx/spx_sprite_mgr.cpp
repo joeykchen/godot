@@ -48,10 +48,6 @@
 #include "spx_sprite.h"
 #include "core/typedefs.h"
 
-#define extMgr SpxEngine::get_singleton()->get_ext()
-#define physicMgr SpxEngine::get_singleton()->get_physic()
-#define sceneMgr SpxEngine::get_singleton()->get_scene()
-#define SPX_CALLBACK SpxEngine::get_singleton()->get_callbacks()
 
 #define DEFAULT_COLLISION_ALPHA_THRESHOLD 0.05
 
@@ -82,8 +78,6 @@ StringName SpxSpriteMgr::default_texture_anim;
 		print_error("try to get property of a null sprite gid=" + itos(TARGET)); \
 	return VALUE; \
 }
-
-#define SPX_CALLBACK SpxEngine::get_singleton()->get_callbacks()
 
 void SpxSpriteMgr::on_awake() {
 	SpxBaseMgr::on_awake();

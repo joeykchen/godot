@@ -47,8 +47,6 @@
 #include "spx_sprite_mgr.h"
 #include "spx_camera_mgr.h"
 #include "svg_mgr.h"
-#define SPX_CALLBACK SpxEngine::get_singleton()->get_callbacks()
-#define spriteMgr SpxEngine::get_singleton()->get_sprite()
 
 
 void SpxStaticSprite::_notification(int p_what) {
