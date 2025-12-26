@@ -434,9 +434,9 @@ GdColor SpxSpriteMgr::get_material_params_color(GdObj obj, GdString effect) {
 	return sprite->get_material_params_color(effect);
 }
 
-void SpxSpriteMgr::set_texture_altas(GdObj obj, GdString path, GdRect2 rect2) {
+void SpxSpriteMgr::set_texture_atlas(GdObj obj, GdString path, GdRect2 rect2) {
 	check_and_get_sprite_v()
-	sprite->set_texture_altas(path, rect2);
+	sprite->set_texture_atlas(path, rect2);
 }
 
 void SpxSpriteMgr::set_texture(GdObj obj, GdString path) {
@@ -444,9 +444,9 @@ void SpxSpriteMgr::set_texture(GdObj obj, GdString path) {
 	sprite->set_texture(path);
 }
 
-void SpxSpriteMgr::set_texture_altas_direct(GdObj obj, GdString path, GdRect2 rect2) {
+void SpxSpriteMgr::set_texture_atlas_direct(GdObj obj, GdString path, GdRect2 rect2) {
 	check_and_get_sprite_v()
-	sprite->set_texture_altas_direct(path, rect2, true);
+	sprite->set_texture_atlas_direct(path, rect2, true);
 }
 
 void SpxSpriteMgr::set_texture_direct(GdObj obj, GdString path) {

@@ -1535,8 +1535,8 @@ gdspx_sprite_get_material_params_color(obj,effect) {
 	FreeGdColor(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_texture_altas(obj,path,rect2) {
-	var _gdFuncPtr = Module._gdspx_sprite_set_texture_altas; 
+gdspx_sprite_set_texture_atlas(obj,path,rect2) {
+	var _gdFuncPtr = Module._gdspx_sprite_set_texture_atlas; 
 	
 	var _arg0 = ToGdObj(obj);
 	var _arg1 = ToGdString(path);
@@ -1557,8 +1557,8 @@ gdspx_sprite_set_texture(obj,path) {
 	FreeGdString(_arg1); 
 
 }
-gdspx_sprite_set_texture_altas_direct(obj,path,rect2) {
-	var _gdFuncPtr = Module._gdspx_sprite_set_texture_altas_direct; 
+gdspx_sprite_set_texture_atlas_direct(obj,path,rect2) {
+	var _gdFuncPtr = Module._gdspx_sprite_set_texture_atlas_direct; 
 	
 	var _arg0 = ToGdObj(obj);
 	var _arg1 = ToGdString(path);

@@ -256,10 +256,10 @@ public:
 	void set_material_params_color(GdString effect, GdColor color);
 	GdColor get_material_params_color(GdString effect);
 
-	void set_texture_altas(GdString path, GdRect2 rect2);
+	void set_texture_atlas(GdString path, GdRect2 rect2);
 	void set_texture(GdString path);
 
-	void set_texture_altas_direct(GdString path, GdRect2 rect2, GdBool direct);
+	void set_texture_atlas_direct(GdString path, GdRect2 rect2, GdBool direct);
 	void set_texture_direct(GdString path, GdBool direct);
 
 	GdString get_texture();
