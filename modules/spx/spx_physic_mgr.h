@@ -60,6 +60,7 @@ public:
     ~SpxRaycastInfo() = default;
 	GdArray ToArray();
 };
+
 enum class ColliderType {
 	NONE = 0,
 	AUTO = 1,
@@ -87,6 +88,7 @@ public:
 	GdBool check_collision(GdVec2 from, GdVec2 to, GdInt collision_mask, GdBool collide_with_areas, GdBool collide_with_bodies);
 	GdInt check_touched_camera_boundaries(GdObj obj);
 	GdBool check_touched_camera_boundary(GdObj obj, GdInt board_type);
+	GdInt check_nearest_touched_camera_boundary(GdObj obj);
 	void set_collision_system_type(GdBool is_collision_by_alpha);
 
 	// configs

@@ -661,6 +661,16 @@ gdspx_physic_check_touched_camera_boundary(obj,board_type) {
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
+gdspx_physic_check_nearest_touched_camera_boundary(obj) {
+	var _gdFuncPtr = Module._gdspx_physic_check_nearest_touched_camera_boundary; 
+	var _retValue = AllocGdInt();
+	var _arg0 = ToGdObj(obj);
+	_gdFuncPtr(_arg0, _retValue);
+	FreeGdObj(_arg0); 
+	var _finalRetValue = ToJsInt(_retValue);
+	FreeGdInt(_retValue); 
+	return _finalRetValue
+}
 gdspx_physic_set_collision_system_type(is_collision_by_alpha) {
 	var _gdFuncPtr = Module._gdspx_physic_set_collision_system_type; 
 	
