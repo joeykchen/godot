@@ -260,6 +260,9 @@ static void gdextension_spx_physic_check_touched_camera_boundaries(GdObj obj, Gd
 static void gdextension_spx_physic_check_touched_camera_boundary(GdObj obj, GdInt board_type, GdBool *ret_val) {
 	*ret_val = physicMgr->check_touched_camera_boundary(obj, board_type);
 }
+static void gdextension_spx_physic_check_nearest_touched_camera_boundary(GdObj obj, GdInt *ret_val) {
+	*ret_val = physicMgr->check_nearest_touched_camera_boundary(obj);
+}
 static void gdextension_spx_physic_set_collision_system_type(GdBool is_collision_by_alpha) {
 	 physicMgr->set_collision_system_type(is_collision_by_alpha);
 }
@@ -1009,6 +1012,7 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_physic_check_collision);
 	REGISTER_SPX_INTERFACE_FUNC(spx_physic_check_touched_camera_boundaries);
 	REGISTER_SPX_INTERFACE_FUNC(spx_physic_check_touched_camera_boundary);
+	REGISTER_SPX_INTERFACE_FUNC(spx_physic_check_nearest_touched_camera_boundary);
 	REGISTER_SPX_INTERFACE_FUNC(spx_physic_set_collision_system_type);
 	REGISTER_SPX_INTERFACE_FUNC(spx_physic_set_global_gravity);
 	REGISTER_SPX_INTERFACE_FUNC(spx_physic_get_global_gravity);

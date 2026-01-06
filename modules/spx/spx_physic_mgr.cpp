@@ -37,8 +37,7 @@
 #include "scene/resources/world_2d.h"
 #include "servers/physics_server_2d.h"
 #include "servers/physics_server_3d.h"
-#include "spx_sprite.h"
-#include "spx_sprite_mgr.h"
+
 
 #include "scene/2d/camera_2d.h"
 #include "scene/2d/physics/collision_shape_2d.h"
@@ -46,7 +45,9 @@
 #include "scene/resources/2d/circle_shape_2d.h"
 #include "scene/2d/physics/area_2d.h"
 #include "scene/resources/2d/rectangle_shape_2d.h"
+#include "spx_sprite.h"
 #include "spx_engine.h"
+#include "spx_camera_mgr.h"
 #include "spx_sprite_mgr.h"
 
 
@@ -200,6 +201,7 @@ GdBool SpxPhysicMgr::check_collision(GdVec2 from, GdVec2 to, GdInt collision_mas
 	bool hit = space_state->intersect_ray(params, result);
 	return hit;
 }
+
 const GdInt BOUND_CAM_LEFT = 1 << 0;
 const GdInt BOUND_CAM_TOP = 1 << 1;
 const GdInt BOUND_CAM_RIGHT = 1 << 2;
@@ -257,9 +259,82 @@ GdInt SpxPhysicMgr::check_touched_camera_boundaries(GdObj obj) {
 	result += is_colliding_left ? BOUND_CAM_LEFT : 0;
 	return result;
 }
+
 GdBool SpxPhysicMgr::check_touched_camera_boundary(GdObj obj, GdInt board_type) {
 	auto result = check_touched_camera_boundaries(obj);
 	return (result & board_type) != 0;
+}
+
+GdInt SpxPhysicMgr::check_nearest_touched_camera_boundary(GdObj obj) {
+	auto sprite = spriteMgr->get_sprite(obj);
+	if (sprite == nullptr) {
+		print_error("try to get property of a null sprite gid=" + itos(obj));
+		return 0;
+	}
+
+	// Get sprite's bounding box
+	CollisionShape2D *collision_shape = sprite->get_trigger();
+	if (!collision_shape) {
+		return 0;
+	}
+	
+	Ref<Shape2D> sprite_shape = collision_shape->get_shape();
+	if (sprite_shape.is_null()) {
+		return 0;
+	}
+
+	Transform2D sprite_transform = sprite->get_global_transform();
+	Rect2 sprite_rect = sprite_shape->get_rect();
+	
+	// Transform the rect to world coordinates
+	Vector2 sprite_pos = sprite_transform.get_origin();
+	Vector2 sprite_scale = sprite_transform.get_scale();
+	
+	// Get the actual bounding box in world space
+	real_t left = sprite_pos.x + sprite_rect.position.x * sprite_scale.x;
+	real_t right = sprite_pos.x + (sprite_rect.position.x + sprite_rect.size.x) * sprite_scale.x;
+	real_t top = sprite_pos.y + sprite_rect.position.y * sprite_scale.y;
+	real_t bottom = sprite_pos.y + (sprite_rect.position.y + sprite_rect.size.y) * sprite_scale.y;
+
+	// Get camera boundaries
+	Rect2 camera_rect = cameraMgr->get_global_camera_rect();
+	real_t stage_left = camera_rect.position.x;
+	real_t stage_top = camera_rect.position.y;
+	real_t stage_right = camera_rect.position.x + camera_rect.size.x;
+	real_t stage_bottom = camera_rect.position.y + camera_rect.size.y;
+
+	// Calculate distances to edges (positive when far away, clamped to 0 when beyond)
+	real_t dist_left = MAX(0.0, left - stage_left);
+	real_t dist_top = MAX(0.0, top - stage_top);
+	real_t dist_right = MAX(0.0, stage_right - right);
+	real_t dist_bottom = MAX(0.0, stage_bottom - bottom);
+
+	// Find nearest edge
+	real_t min_dist = INFINITY;
+	GdInt nearest_edge = 0;
+
+	if (dist_left < min_dist) {
+		min_dist = dist_left;
+		nearest_edge = BOUND_CAM_LEFT;
+	}
+	if (dist_top < min_dist) {
+		min_dist = dist_top;
+		nearest_edge = BOUND_CAM_TOP;
+	}
+	if (dist_right < min_dist) {
+		min_dist = dist_right;
+		nearest_edge = BOUND_CAM_RIGHT;
+	}
+	if (dist_bottom < min_dist) {
+		min_dist = dist_bottom;
+		nearest_edge = BOUND_CAM_BOTTOM;
+	}
+
+	if(min_dist > 0){
+		return 0;
+	}
+
+	return nearest_edge;
 }
 
 //

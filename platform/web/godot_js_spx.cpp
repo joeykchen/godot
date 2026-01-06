@@ -351,6 +351,10 @@ void gdspx_physic_check_touched_camera_boundary(GdObj* obj, GdInt* board_type, G
 	*ret_val = physicMgr->check_touched_camera_boundary(*obj, *board_type);
 }
 EMSCRIPTEN_KEEPALIVE
+void gdspx_physic_check_nearest_touched_camera_boundary(GdObj* obj, GdInt *ret_val) {
+	*ret_val = physicMgr->check_nearest_touched_camera_boundary(*obj);
+}
+EMSCRIPTEN_KEEPALIVE
 void gdspx_physic_set_collision_system_type(GdBool* is_collision_by_alpha) {
 	 physicMgr->set_collision_system_type(*is_collision_by_alpha);
 }
