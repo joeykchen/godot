@@ -48,6 +48,7 @@
 #include "modules/spx/spx_scene_mgr.h"
 #include "modules/spx/spx_sprite_mgr.h"
 #include "modules/spx/spx_tilemap_mgr.h"
+#include "modules/spx/spx_tilemapparser_mgr.h"
 #include "modules/spx/spx_ui_mgr.h"
 
 #include <emscripten.h>
@@ -64,6 +65,7 @@
 #define sceneMgr SpxEngine::get_singleton()->get_scene()
 #define spriteMgr SpxEngine::get_singleton()->get_sprite()
 #define tilemapMgr SpxEngine::get_singleton()->get_tilemap()
+#define tilemapparserMgr SpxEngine::get_singleton()->get_tilemapparser()
 #define uiMgr SpxEngine::get_singleton()->get_ui()
 
 
@@ -1085,6 +1087,26 @@ void gdspx_tilemap_close_draw_tiles() {
 EMSCRIPTEN_KEEPALIVE
 void gdspx_tilemap_exit_tilemap_editor_mode() {
 	 tilemapMgr->exit_tilemap_editor_mode();
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_tilemapparser_load_tilemap(GdString* json_path) {
+	 tilemapparserMgr->load_tilemap(*json_path);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_tilemapparser_unload_tilemap(GdString* name) {
+	 tilemapparserMgr->unload_tilemap(*name);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_tilemapparser_destroy_all_tilemaps() {
+	 tilemapparserMgr->destroy_all_tilemaps();
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_tilemapparser_has_tilemap(GdString* name, GdBool *ret_val) {
+	*ret_val = tilemapparserMgr->has_tilemap(*name);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_tilemapparser_get_tilemap_layer_count(GdString* name, GdInt *ret_val) {
+	*ret_val = tilemapparserMgr->get_tilemap_layer_count(*name);
 }
 EMSCRIPTEN_KEEPALIVE
 void gdspx_ui_bind_node(GdObj* obj, GdString* rel_path, GdObj *ret_val) {
