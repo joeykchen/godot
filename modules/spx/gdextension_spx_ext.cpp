@@ -759,8 +759,8 @@ static void gdextension_spx_sprite_check_collision_by_color(GdObj obj, GdColor c
 static void gdextension_spx_sprite_check_collision_by_alpha(GdObj obj, GdFloat alpha_threshold, GdBool *ret_val) {
 	*ret_val = spriteMgr->check_collision_by_alpha(obj, alpha_threshold);
 }
-static void gdextension_spx_sprite_check_collision_with_sprite_by_alpha(GdObj obj, GdObj obj_b, GdFloat alpha_threshold, GdBool *ret_val) {
-	*ret_val = spriteMgr->check_collision_with_sprite_by_alpha(obj, obj_b, alpha_threshold);
+static void gdextension_spx_sprite_check_collision_with_sprite(GdObj obj, GdObj obj_b, GdFloat alpha_threshold, GdBool use_pixel_perfect, GdBool *ret_val) {
+	*ret_val = spriteMgr->check_collision_with_sprite(obj, obj_b, alpha_threshold, use_pixel_perfect);
 }
 static void gdextension_spx_tilemap_open_draw_tiles_with_size(GdInt tile_size) {
 	 tilemapMgr->open_draw_tiles_with_size(tile_size);
@@ -1194,7 +1194,7 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_is_trigger_enabled);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_check_collision_by_color);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_check_collision_by_alpha);
-	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_check_collision_with_sprite_by_alpha);
+	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_check_collision_with_sprite);
 	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_open_draw_tiles_with_size);
 	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_open_draw_tiles);
 	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_set_layer_index);

@@ -2369,16 +2369,18 @@ gdspx_sprite_check_collision_by_alpha(obj,alpha_threshold) {
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_check_collision_with_sprite_by_alpha(obj,obj_b,alpha_threshold) {
-	var _gdFuncPtr = Module._gdspx_sprite_check_collision_with_sprite_by_alpha; 
+gdspx_sprite_check_collision_with_sprite(obj,obj_b,alpha_threshold,use_pixel_perfect) {
+	var _gdFuncPtr = Module._gdspx_sprite_check_collision_with_sprite; 
 	var _retValue = AllocGdBool();
 	var _arg0 = ToGdObj(obj);
 	var _arg1 = ToGdObj(obj_b);
 	var _arg2 = ToGdFloat(alpha_threshold);
-	_gdFuncPtr(_arg0, _arg1, _arg2, _retValue);
+	var _arg3 = ToGdBool(use_pixel_perfect);
+	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _retValue);
 	FreeGdObj(_arg0); 
 	FreeGdObj(_arg1); 
 	FreeGdFloat(_arg2); 
+	FreeGdBool(_arg3); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue

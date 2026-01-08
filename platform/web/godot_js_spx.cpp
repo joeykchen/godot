@@ -1017,8 +1017,8 @@ void gdspx_sprite_check_collision_by_alpha(GdObj* obj, GdFloat* alpha_threshold,
 	*ret_val = spriteMgr->check_collision_by_alpha(*obj, *alpha_threshold);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_sprite_check_collision_with_sprite_by_alpha(GdObj* obj, GdObj* obj_b, GdFloat* alpha_threshold, GdBool *ret_val) {
-	*ret_val = spriteMgr->check_collision_with_sprite_by_alpha(*obj, *obj_b, *alpha_threshold);
+void gdspx_sprite_check_collision_with_sprite(GdObj* obj, GdObj* obj_b, GdFloat* alpha_threshold, GdBool* use_pixel_perfect, GdBool *ret_val) {
+	*ret_val = spriteMgr->check_collision_with_sprite(*obj, *obj_b, *alpha_threshold, *use_pixel_perfect);
 }
 EMSCRIPTEN_KEEPALIVE
 void gdspx_tilemap_open_draw_tiles_with_size(GdInt* tile_size) {

@@ -886,9 +886,16 @@ Vector2 SpxSpriteMgr::_to_image_coord(const Transform2D &trans, Vector2 image_si
 	return Vector2(xpos.x + half_size.x,  xpos.y + half_size.y);
 }
 
-GdBool SpxSpriteMgr::check_collision_with_sprite_by_alpha(GdObj obj, GdObj obj_b, GdFloat alpha_threshold){
+GdBool SpxSpriteMgr::check_collision_with_sprite(GdObj obj, GdObj obj_b, GdFloat alpha_threshold, GdBool use_pixel_perfect){
 	check_and_get_sprite_r(false) // Ensure sprite exists
-
+	check_and_get_target_sprite_r(obj_b, false)
+	
+	// If not using pixel-perfect collision, use simple collider2d collision detection
+	if (!use_pixel_perfect) {
+		return sprite->check_collision(sprite_obj_b, false, false);
+	}
+	
+	// Original pixel-perfect collision logic
 	AnimatedSprite2D *anim1 = sprite->anim2d;
 	if (!anim1) {
 		return false;
@@ -965,7 +972,7 @@ GdBool SpxSpriteMgr::check_collision_by_alpha(GdObj obj, GdFloat alpha_threshold
 GdBool SpxSpriteMgr::_check_collision(GdObj obj, ColorCheckFunc check_func) {
 	check_and_get_sprite_r(false) // Ensure sprite exists
 
-			AnimatedSprite2D *anim1 = sprite->anim2d;
+	AnimatedSprite2D *anim1 = sprite->anim2d;
 	if (!anim1) {
 		return false;
 	}
@@ -1065,7 +1072,7 @@ void SpxSpriteMgr::_check_pixel_collision_events() {
 		}
 		// check collision by pixel
 		for(auto &trigger : bounding_collision_pairs){
-			auto is_collide = check_collision_with_sprite_by_alpha(trigger.id1, trigger.id2, DEFAULT_COLLISION_ALPHA_THRESHOLD);
+			auto is_collide = check_collision_with_sprite(trigger.id1, trigger.id2, DEFAULT_COLLISION_ALPHA_THRESHOLD, true);
 			if(is_collide) {
 				if(pixel_collision_pairs.find(trigger) == pixel_collision_pairs.end()) {
 					pixel_collision_pairs.insert(trigger);
