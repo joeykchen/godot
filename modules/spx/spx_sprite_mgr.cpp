@@ -887,7 +887,7 @@ Vector2 SpxSpriteMgr::_to_image_coord(const Transform2D &trans, Vector2 image_si
 }
 
 GdBool SpxSpriteMgr::check_collision_with_sprite(GdObj obj, GdObj obj_b, GdFloat alpha_threshold, GdBool use_pixel_perfect){
-	check_and_get_sprite_r(false) // Ensure sprite exists
+	check_and_get_sprite_r(false)
 	check_and_get_target_sprite_r(obj_b, false)
 	
 	// If not using pixel-perfect collision, use simple collider2d collision detection
@@ -910,13 +910,7 @@ GdBool SpxSpriteMgr::check_collision_with_sprite(GdObj obj, GdObj obj_b, GdFloat
 	Vector2i size1 = image1->get_size();
 	auto trans1 = transform1.affine_inverse();
 
-	auto sp2 = get_sprite(obj_b);
-	if (sp2 == nullptr) {
-		print_error("try to get property of a null sprite gid=" + itos(obj));
-		return false;
-	}
-
-	AnimatedSprite2D *anim2 = sp2->anim2d;
+	AnimatedSprite2D *anim2 = sprite_obj_b->anim2d;
 	if (!anim2) {
 		return false;
 	}
@@ -1100,4 +1094,79 @@ GdVec2 SpxSpriteMgr::get_pivot(GdObj obj){
 	check_and_get_sprite_r(GdVec2())
 	auto pivot= sprite->get_pivot();
 	return GdVec2(pivot.x,-pivot.y);
+}
+
+void SpxSpriteMgr::batch_update_transforms(GdArray buffer) {
+	// Buffer format with header: [updateCount, deleteCount, update_data..., delete_ids...]
+	// - Header: [updateCount, deleteCount]
+	// - Update section: [id, x, y, rotation, scaleX, scaleY, offsetX, offsetY, visible, ...] (9 fields per sprite)
+	// - Delete section: [id1, id2, id3, ...] (1 field per sprite)
+	const int FIELDS_PER_SPRITE = 9;
+	const int HEADER_SIZE = 2;
+	
+	if (!buffer) {
+		return;
+	}
+	
+	auto len = buffer->size;
+	if (len < HEADER_SIZE) {
+		return;
+	}
+	
+	// Read header
+	int update_count = static_cast<int>(*(SpxBaseMgr::get_array<float>(buffer, 0)));
+	int delete_count = static_cast<int>(*(SpxBaseMgr::get_array<float>(buffer, 1)));
+	
+	// Validate buffer size
+	int expected_size = HEADER_SIZE + update_count * FIELDS_PER_SPRITE + delete_count;
+	if (len != expected_size) {
+		print_error("batch_update_transforms: buffer size " + itos(len) + 
+		            " does not match expected size " + itos(expected_size) +
+		            " (updateCount=" + itos(update_count) + ", deleteCount=" + itos(delete_count) + ")");
+		return;
+	}
+	
+	int idx = HEADER_SIZE;
+	
+	// Process updates
+	for (int i = 0; i < update_count; i++) {
+		// Extract sprite ID and data
+		auto sprite_id = static_cast<GdObj>(*(SpxBaseMgr::get_array<float>(buffer, idx)));
+		auto x = *(SpxBaseMgr::get_array<float>(buffer, idx + 1));
+		auto y = *(SpxBaseMgr::get_array<float>(buffer, idx + 2));
+		auto rotation = *(SpxBaseMgr::get_array<float>(buffer, idx + 3));
+		auto scale_x = *(SpxBaseMgr::get_array<float>(buffer, idx + 4));
+		auto scale_y = *(SpxBaseMgr::get_array<float>(buffer, idx + 5));
+		// Note: offsetX and offsetY (idx+6, idx+7) are reserved for future use
+		auto visible = *(SpxBaseMgr::get_array<float>(buffer, idx + 8)) != 0.0;
+		
+		idx += FIELDS_PER_SPRITE;
+		
+		// Get sprite from id_objects map
+		SpxSprite* sprite = get_sprite(sprite_id);
+		if (sprite == nullptr) {
+			continue;
+		}
+		
+		// Apply transforms
+		// Note: Y-axis is flipped in Godot coordinate system
+		sprite->set_position(GdVec2(x, -y));
+		sprite->set_rotation(rotation);
+		sprite->set_scale(GdVec2(scale_x, scale_y));
+		sprite->set_visible(visible);
+		sprite->on_set_visible(visible);
+	}
+	
+	// Process deletes
+	for (int i = 0; i < delete_count; i++) {
+		auto sprite_id = static_cast<GdObj>(*(SpxBaseMgr::get_array<float>(buffer, idx)));
+		idx++;
+		
+		// Get sprite and destroy it
+		SpxSprite* sprite = get_sprite(sprite_id);
+		if (sprite != nullptr) {
+			sprite->set_block_signals(true);
+			sprite->queue_free();
+		}
+	}
 }
