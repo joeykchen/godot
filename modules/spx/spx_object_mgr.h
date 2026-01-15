@@ -106,10 +106,8 @@ public:
 	 * @brief Get object by ID (thread-safe)
 	 */
 	T *get_object(GdObj obj) {
-		lock.lock();
-		T *result = _get_object(obj);
-		lock.unlock();
-		return result;
+		MutexLock mutex_lock(lock);
+		return _get_object(obj);
 	}
 
 	/**
@@ -127,10 +125,9 @@ public:
 	virtual ~SpxObjectMgr() = default;
 };
 
-// Template method implementations (must be after class definition)
 template <typename T>
 void SpxObjectMgr<T>::_destroy_all() {
-	lock.lock();
+	MutexLock mutex_lock(lock);
 	for (const KeyValue<GdObj, T *> &E : id_objects) {
 		E.value->on_destroy();
 	}
@@ -140,37 +137,33 @@ void SpxObjectMgr<T>::_destroy_all() {
 		root->queue_free();
 		root = nullptr;
 	}
-	lock.unlock();
 }
 
 template <typename T>
 void SpxObjectMgr<T>::_update_all(float delta) {
-	lock.lock();
+	MutexLock mutex_lock(lock);
 	for (const KeyValue<GdObj, T *> &E : id_objects) {
 		E.value->on_update(delta);
 	}
-	lock.unlock();
 }
 
 template <typename T>
 void SpxObjectMgr<T>::_reset_all(int reset_code) {
-	lock.lock();
+	MutexLock mutex_lock(lock);
 	for (const KeyValue<GdObj, T *> &E : id_objects) {
 		E.value->on_reset(reset_code);
 	}
 	id_objects.clear();
-	lock.unlock();
 }
 
 template <typename T>
 void SpxObjectMgr<T>::destroy_object(GdObj obj) {
-	lock.lock();
+	MutexLock mutex_lock(lock);
 	T *object = _get_object(obj);
 	if (object != nullptr) {
 		id_objects.erase(obj);
 		object->on_destroy();
 	}
-	lock.unlock();
 }
 
 // Common macros for checking and getting objects with error handling

@@ -119,29 +119,22 @@ GdArray SpxBaseMgr::create_array(int32_t type, int32_t size) {
 		return array;
 	}
 	
-	size_t element_size = 0;
-	switch (type) {
-		case GD_ARRAY_TYPE_INT64:
-			element_size = sizeof(int64_t);
-			break;
-		case GD_ARRAY_TYPE_FLOAT:
-			element_size = sizeof(float);
-			break;
-		case GD_ARRAY_TYPE_BOOL:
-			element_size = sizeof(uint8_t); // Store as int64_t for alignment
-			break;
-		case GD_ARRAY_TYPE_STRING:
-			element_size = sizeof(char*);
-			break;
-		case GD_ARRAY_TYPE_BYTE:
-			element_size = sizeof(uint8_t);
-			break;
-		case GD_ARRAY_TYPE_GDOBJ:
-			element_size = sizeof(GdObj);
-			break;
-		default:
-			free(array);
-			return nullptr;
+	constexpr auto get_element_size = [](int32_t array_type) -> size_t {
+		switch (array_type) {
+			case GD_ARRAY_TYPE_INT64: return sizeof(int64_t);
+			case GD_ARRAY_TYPE_FLOAT: return sizeof(float);
+			case GD_ARRAY_TYPE_BOOL: return sizeof(uint8_t);
+			case GD_ARRAY_TYPE_STRING: return sizeof(char*);
+			case GD_ARRAY_TYPE_BYTE: return sizeof(uint8_t);
+			case GD_ARRAY_TYPE_GDOBJ: return sizeof(GdObj);
+			default: return 0;
+		}
+	};
+	
+	const size_t element_size = get_element_size(type);
+	if (element_size == 0) {
+		free(array);
+		return nullptr;
 	}
 	
 	array->data = malloc(size * element_size);
