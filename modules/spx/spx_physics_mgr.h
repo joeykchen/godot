@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  spx_physic_mgr.h                                                      */
+/*  spx_physics_mgr.h                                                     */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,14 +28,14 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef SPX_PHYSIC_MGR_H
-#define SPX_PHYSIC_MGR_H
+#ifndef SPX_PHYSICS_MGR_H
+#define SPX_PHYSICS_MGR_H
 
 #include "gdextension_spx_ext.h"
 #include "spx_base_mgr.h"
 
 
-class SpxPhysicDefine{
+class SpxPhysicsDefine{
 private:
 	static GdFloat global_gravity;
 	static GdFloat global_friction;
@@ -69,8 +69,8 @@ enum class ColliderType {
 	CAPSULE = 4,
 	POLYGON = 5
 };
-class SpxPhysicMgr : public SpxBaseMgr {
-	SPXCLASS(SpxPhysicMgr, SpxBaseMgr)
+class SpxPhysicsMgr : public SpxBaseMgr {
+	SPXCLASS(SpxPhysicsMgr, SpxBaseMgr)
 
 private:
 	GdArray _check_collision(RID shape, GdVec2 pos, GdInt collision_mask);
@@ -83,7 +83,7 @@ public:
 	
 
 public:
-	virtual ~SpxPhysicMgr() = default; // Added virtual destructor to fix -Werror=non-virtual-dtor
+	virtual ~SpxPhysicsMgr() = default; // Added virtual destructor to fix -Werror=non-virtual-dtor
 	GdObj raycast(GdVec2 from, GdVec2 to, GdInt collision_mask);
 	GdBool check_collision(GdVec2 from, GdVec2 to, GdInt collision_mask, GdBool collide_with_areas, GdBool collide_with_bodies);
 	GdInt check_touched_camera_boundaries(GdObj obj);
@@ -105,4 +105,4 @@ public:
 	GdArray raycast_with_details(GdVec2 from, GdVec2 to, GdArray ignore_sprites, GdInt collision_mask, GdBool collide_with_areas, GdBool collide_with_bodies);
 };
 
-#endif // SPX_PHYSIC_MGR_H
+#endif // SPX_PHYSICS_MGR_H

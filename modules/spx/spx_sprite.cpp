@@ -42,7 +42,7 @@
 #include "scene/resources/2d/rectangle_shape_2d.h"
 #include "spx.h"
 #include "spx_engine.h"
-#include "spx_physic_mgr.h"
+#include "spx_physics_mgr.h"
 #include "spx_res_mgr.h"
 #include "spx_sprite_mgr.h"
 #include "spx_camera_mgr.h"
@@ -961,7 +961,7 @@ void SpxSprite::_handle_dynamic_physics(double delta) {
 	
 	// Apply gravity
 	if (use_gravity && !is_on_floor()) {
-		vel.y += _gravity  * delta * gravity_scale * SpxPhysicDefine::get_global_gravity();
+		vel.y += _gravity  * delta * gravity_scale * SpxPhysicsDefine::get_global_gravity();
 	}
 	
 	// Apply forces
@@ -970,12 +970,12 @@ void SpxSprite::_handle_dynamic_physics(double delta) {
 	
 	// Apply drag
 	if (drag_value > 0) {
-		vel = vel.move_toward(Vector2(), drag_value * vel.length() * delta * SpxPhysicDefine::get_global_air_drag());
+		vel = vel.move_toward(Vector2(), drag_value * vel.length() * delta * SpxPhysicsDefine::get_global_air_drag());
 	}
 	
 	// Ground friction
 	if (is_on_floor() && ABS(vel.x) > 0) {
-		vel.x = Math::move_toward(double(vel.x), 0.0,  delta*friction_value *  SpxPhysicDefine::get_global_friction());
+		vel.x = Math::move_toward(double(vel.x), 0.0,  delta*friction_value *  SpxPhysicsDefine::get_global_friction());
 	}
 	
 	set_velocity(vel);

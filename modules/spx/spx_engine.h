@@ -43,7 +43,7 @@ class TextureRect;
 class CanvasLayer;
 class SpxInputMgr;
 class SpxAudioMgr;
-class SpxPhysicMgr;
+class SpxPhysicsMgr;
 class SpxSpriteMgr;
 class SpxUiMgr;
 class SpxSceneMgr;
@@ -78,7 +78,7 @@ private:
 	Vector<SpxBaseMgr *> mgrs;
 	SpxInputMgr *input;
 	SpxAudioMgr *audio;
-	SpxPhysicMgr *physic;
+	SpxPhysicsMgr *physics;
 	SpxSpriteMgr *sprite;
 	SpxUiMgr *ui;
 	SpxSceneMgr *scene;
@@ -97,7 +97,7 @@ private:
 public:
 	SpxInputMgr *get_input() { return input; }
 	SpxAudioMgr *get_audio() { return audio; }
-	SpxPhysicMgr *get_physic() { return physic; }
+	SpxPhysicsMgr *get_physics() { return physics; }
 	SpxSpriteMgr *get_sprite() { return sprite; }
 	SpxUiMgr *get_ui() { return ui; }
 	SpxSceneMgr *get_scene() { return scene; }
