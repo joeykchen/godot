@@ -83,8 +83,8 @@ GdObj SpxAudioMgr::create_audio() {
 
 void SpxAudioMgr::stop_all() {
 	lock.lock();
-	for (const KeyValue<GdObj, SpxAudio *> &E : id_objects) {
-		E.value->stop_all();
+	for (const auto &[id, audio] : id_objects) {
+		audio->stop_all();
 	}
 	aid_audios.clear();
 	lock.unlock();
@@ -96,9 +96,9 @@ void SpxAudioMgr::destroy_audio(GdObj obj) {
 	if (audio != nullptr) {
 		// Remove audio from aid_audios mapping
 		Vector<GdInt> keys;
-		for (const KeyValue<GdInt, SpxAudio *> &E : aid_audios) {
-			if (E.value == audio) {
-				keys.push_back(E.key);
+		for (const auto &[aid, audio_obj] : aid_audios) {
+			if (audio_obj == audio) {
+				keys.push_back(aid);
 			}
 		}
 		for (const GdInt &key : keys) {
