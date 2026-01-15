@@ -43,7 +43,7 @@
 #include "spx_input_mgr.h"
 #include "spx_navigation_mgr.h"
 #include "spx_pen_mgr.h"
-#include "spx_physic_mgr.h"
+#include "spx_physics_mgr.h"
 #include "spx_platform_mgr.h"
 #include "spx_res_mgr.h"
 #include "spx_scene_mgr.h"
@@ -249,50 +249,50 @@ static void gdextension_spx_pen_set_pen_size_to(GdObj obj, GdFloat size) {
 static void gdextension_spx_pen_set_pen_stamp_texture(GdObj obj, GdString texture_path) {
 	 penMgr->set_pen_stamp_texture(obj, texture_path);
 }
-static void gdextension_spx_physic_raycast(GdVec2 from, GdVec2 to, GdInt collision_mask, GdObj *ret_val) {
-	*ret_val = physicMgr->raycast(from, to, collision_mask);
+static void gdextension_spx_physics_raycast(GdVec2 from, GdVec2 to, GdInt collision_mask, GdObj *ret_val) {
+	*ret_val = physicsMgr->raycast(from, to, collision_mask);
 }
-static void gdextension_spx_physic_check_collision(GdVec2 from, GdVec2 to, GdInt collision_mask, GdBool collide_with_areas, GdBool collide_with_bodies, GdBool *ret_val) {
-	*ret_val = physicMgr->check_collision(from, to, collision_mask, collide_with_areas, collide_with_bodies);
+static void gdextension_spx_physics_check_collision(GdVec2 from, GdVec2 to, GdInt collision_mask, GdBool collide_with_areas, GdBool collide_with_bodies, GdBool *ret_val) {
+	*ret_val = physicsMgr->check_collision(from, to, collision_mask, collide_with_areas, collide_with_bodies);
 }
-static void gdextension_spx_physic_check_touched_camera_boundaries(GdObj obj, GdInt *ret_val) {
-	*ret_val = physicMgr->check_touched_camera_boundaries(obj);
+static void gdextension_spx_physics_check_touched_camera_boundaries(GdObj obj, GdInt *ret_val) {
+	*ret_val = physicsMgr->check_touched_camera_boundaries(obj);
 }
-static void gdextension_spx_physic_check_touched_camera_boundary(GdObj obj, GdInt board_type, GdBool *ret_val) {
-	*ret_val = physicMgr->check_touched_camera_boundary(obj, board_type);
+static void gdextension_spx_physics_check_touched_camera_boundary(GdObj obj, GdInt board_type, GdBool *ret_val) {
+	*ret_val = physicsMgr->check_touched_camera_boundary(obj, board_type);
 }
-static void gdextension_spx_physic_check_nearest_touched_camera_boundary(GdObj obj, GdInt *ret_val) {
-	*ret_val = physicMgr->check_nearest_touched_camera_boundary(obj);
+static void gdextension_spx_physics_check_nearest_touched_camera_boundary(GdObj obj, GdInt *ret_val) {
+	*ret_val = physicsMgr->check_nearest_touched_camera_boundary(obj);
 }
-static void gdextension_spx_physic_set_collision_system_type(GdBool is_collision_by_alpha) {
-	 physicMgr->set_collision_system_type(is_collision_by_alpha);
+static void gdextension_spx_physics_set_collision_system_type(GdBool is_collision_by_alpha) {
+	 physicsMgr->set_collision_system_type(is_collision_by_alpha);
 }
-static void gdextension_spx_physic_set_global_gravity(GdFloat gravity) {
-	 physicMgr->set_global_gravity(gravity);
+static void gdextension_spx_physics_set_global_gravity(GdFloat gravity) {
+	 physicsMgr->set_global_gravity(gravity);
 }
-static void gdextension_spx_physic_get_global_gravity(GdFloat *ret_val) {
-	*ret_val = physicMgr->get_global_gravity();
+static void gdextension_spx_physics_get_global_gravity(GdFloat *ret_val) {
+	*ret_val = physicsMgr->get_global_gravity();
 }
-static void gdextension_spx_physic_set_global_friction(GdFloat friction) {
-	 physicMgr->set_global_friction(friction);
+static void gdextension_spx_physics_set_global_friction(GdFloat friction) {
+	 physicsMgr->set_global_friction(friction);
 }
-static void gdextension_spx_physic_get_global_friction(GdFloat *ret_val) {
-	*ret_val = physicMgr->get_global_friction();
+static void gdextension_spx_physics_get_global_friction(GdFloat *ret_val) {
+	*ret_val = physicsMgr->get_global_friction();
 }
-static void gdextension_spx_physic_set_global_air_drag(GdFloat air_drag) {
-	 physicMgr->set_global_air_drag(air_drag);
+static void gdextension_spx_physics_set_global_air_drag(GdFloat air_drag) {
+	 physicsMgr->set_global_air_drag(air_drag);
 }
-static void gdextension_spx_physic_get_global_air_drag(GdFloat *ret_val) {
-	*ret_val = physicMgr->get_global_air_drag();
+static void gdextension_spx_physics_get_global_air_drag(GdFloat *ret_val) {
+	*ret_val = physicsMgr->get_global_air_drag();
 }
-static void gdextension_spx_physic_check_collision_rect(GdVec2 pos, GdVec2 size, GdInt collision_mask, GdArray *ret_val) {
-	*ret_val = physicMgr->check_collision_rect(pos, size, collision_mask);
+static void gdextension_spx_physics_check_collision_rect(GdVec2 pos, GdVec2 size, GdInt collision_mask, GdArray *ret_val) {
+	*ret_val = physicsMgr->check_collision_rect(pos, size, collision_mask);
 }
-static void gdextension_spx_physic_check_collision_circle(GdVec2 pos, GdFloat radius, GdInt collision_mask, GdArray *ret_val) {
-	*ret_val = physicMgr->check_collision_circle(pos, radius, collision_mask);
+static void gdextension_spx_physics_check_collision_circle(GdVec2 pos, GdFloat radius, GdInt collision_mask, GdArray *ret_val) {
+	*ret_val = physicsMgr->check_collision_circle(pos, radius, collision_mask);
 }
-static void gdextension_spx_physic_raycast_with_details(GdVec2 from, GdVec2 to, GdArray ignore_sprites, GdInt collision_mask, GdBool collide_with_areas, GdBool collide_with_bodies, GdArray *ret_val) {
-	*ret_val = physicMgr->raycast_with_details(from, to, ignore_sprites, collision_mask, collide_with_areas, collide_with_bodies);
+static void gdextension_spx_physics_raycast_with_details(GdVec2 from, GdVec2 to, GdArray ignore_sprites, GdInt collision_mask, GdBool collide_with_areas, GdBool collide_with_bodies, GdArray *ret_val) {
+	*ret_val = physicsMgr->raycast_with_details(from, to, ignore_sprites, collision_mask, collide_with_areas, collide_with_bodies);
 }
 static void gdextension_spx_platform_set_stretch_mode(GdBool enable) {
 	 platformMgr->set_stretch_mode(enable);
@@ -1030,21 +1030,21 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_pen_change_pen_size_by);
 	REGISTER_SPX_INTERFACE_FUNC(spx_pen_set_pen_size_to);
 	REGISTER_SPX_INTERFACE_FUNC(spx_pen_set_pen_stamp_texture);
-	REGISTER_SPX_INTERFACE_FUNC(spx_physic_raycast);
-	REGISTER_SPX_INTERFACE_FUNC(spx_physic_check_collision);
-	REGISTER_SPX_INTERFACE_FUNC(spx_physic_check_touched_camera_boundaries);
-	REGISTER_SPX_INTERFACE_FUNC(spx_physic_check_touched_camera_boundary);
-	REGISTER_SPX_INTERFACE_FUNC(spx_physic_check_nearest_touched_camera_boundary);
-	REGISTER_SPX_INTERFACE_FUNC(spx_physic_set_collision_system_type);
-	REGISTER_SPX_INTERFACE_FUNC(spx_physic_set_global_gravity);
-	REGISTER_SPX_INTERFACE_FUNC(spx_physic_get_global_gravity);
-	REGISTER_SPX_INTERFACE_FUNC(spx_physic_set_global_friction);
-	REGISTER_SPX_INTERFACE_FUNC(spx_physic_get_global_friction);
-	REGISTER_SPX_INTERFACE_FUNC(spx_physic_set_global_air_drag);
-	REGISTER_SPX_INTERFACE_FUNC(spx_physic_get_global_air_drag);
-	REGISTER_SPX_INTERFACE_FUNC(spx_physic_check_collision_rect);
-	REGISTER_SPX_INTERFACE_FUNC(spx_physic_check_collision_circle);
-	REGISTER_SPX_INTERFACE_FUNC(spx_physic_raycast_with_details);
+	REGISTER_SPX_INTERFACE_FUNC(spx_physics_raycast);
+	REGISTER_SPX_INTERFACE_FUNC(spx_physics_check_collision);
+	REGISTER_SPX_INTERFACE_FUNC(spx_physics_check_touched_camera_boundaries);
+	REGISTER_SPX_INTERFACE_FUNC(spx_physics_check_touched_camera_boundary);
+	REGISTER_SPX_INTERFACE_FUNC(spx_physics_check_nearest_touched_camera_boundary);
+	REGISTER_SPX_INTERFACE_FUNC(spx_physics_set_collision_system_type);
+	REGISTER_SPX_INTERFACE_FUNC(spx_physics_set_global_gravity);
+	REGISTER_SPX_INTERFACE_FUNC(spx_physics_get_global_gravity);
+	REGISTER_SPX_INTERFACE_FUNC(spx_physics_set_global_friction);
+	REGISTER_SPX_INTERFACE_FUNC(spx_physics_get_global_friction);
+	REGISTER_SPX_INTERFACE_FUNC(spx_physics_set_global_air_drag);
+	REGISTER_SPX_INTERFACE_FUNC(spx_physics_get_global_air_drag);
+	REGISTER_SPX_INTERFACE_FUNC(spx_physics_check_collision_rect);
+	REGISTER_SPX_INTERFACE_FUNC(spx_physics_check_collision_circle);
+	REGISTER_SPX_INTERFACE_FUNC(spx_physics_raycast_with_details);
 	REGISTER_SPX_INTERFACE_FUNC(spx_platform_set_stretch_mode);
 	REGISTER_SPX_INTERFACE_FUNC(spx_platform_set_stretch_aspect);
 	REGISTER_SPX_INTERFACE_FUNC(spx_platform_set_stretch_content_scale);

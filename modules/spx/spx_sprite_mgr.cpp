@@ -43,7 +43,7 @@
 #include "spx_res_mgr.h"
 #include "spx_ext_mgr.h"
 #include "spx_scene_mgr.h"
-#include "spx_physic_mgr.h"
+#include "spx_physics_mgr.h"
 #include "spx_layer_sorter.h"
 #include "spx_sprite.h"
 #include "core/typedefs.h"
@@ -1028,14 +1028,14 @@ GdBool SpxSpriteMgr::_check_collision(GdObj obj, ColorCheckFunc check_func) {
 
 
 void SpxSpriteMgr::on_trigger_enter(GdInt self_id, GdInt other_id){
-	if(physicMgr->is_collision_by_pixel){
+	if(physicsMgr->is_collision_by_pixel){
 		bounding_collision_pairs.insert(TriggerPair(self_id, other_id));
 	}else{
 		SPX_CALLBACK->func_on_trigger_enter(self_id, other_id);
 	}
 }
 void SpxSpriteMgr::on_trigger_exit(GdInt self_id, GdInt other_id){
-	if(physicMgr->is_collision_by_pixel){
+	if(physicsMgr->is_collision_by_pixel){
 		bounding_collision_pairs.erase(TriggerPair(self_id, other_id));
 	}else{
 		SPX_CALLBACK->func_on_trigger_exit(self_id, other_id);
@@ -1044,7 +1044,7 @@ void SpxSpriteMgr::on_trigger_exit(GdInt self_id, GdInt other_id){
 
 void SpxSpriteMgr::_check_pixel_collision_events() {
 	// trigger pixel collision events
-	if(physicMgr->is_collision_by_pixel){
+	if(physicsMgr->is_collision_by_pixel){
 		Vector<TriggerPair> triggers;
 		Vector<TriggerPair> delete_triggers;
 		for(auto &trigger : bounding_collision_pairs){

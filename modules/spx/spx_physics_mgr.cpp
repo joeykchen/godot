@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  spx_physic_mgr.cpp                                                    */
+/*  spx_physics_mgr.cpp                                                   */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,7 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "spx_physic_mgr.h"
+#include "spx_physics_mgr.h"
 
 
 #include "core/templates/hash_set.h"
@@ -51,9 +51,9 @@
 #include "spx_sprite_mgr.h"
 
 
-GdFloat SpxPhysicDefine::global_gravity = 1.0;
-GdFloat SpxPhysicDefine::global_friction = 1.0;
-GdFloat SpxPhysicDefine::global_air_drag = 1.0;
+GdFloat SpxPhysicsDefine::global_gravity = 1.0;
+GdFloat SpxPhysicsDefine::global_friction = 1.0;
+GdFloat SpxPhysicsDefine::global_air_drag = 1.0;
 
 GdArray SpxRaycastInfo::ToArray(){
 	GdArray result_array = SpxBaseMgr::create_array(GD_ARRAY_TYPE_INT64, 6);
@@ -66,42 +66,42 @@ GdArray SpxRaycastInfo::ToArray(){
 	return result_array;
 }
 
-void SpxPhysicDefine::set_global_gravity(GdFloat gravity) {
-	SpxPhysicDefine::global_gravity = gravity;
+void SpxPhysicsDefine::set_global_gravity(GdFloat gravity) {
+	SpxPhysicsDefine::global_gravity = gravity;
 }
 
-GdFloat SpxPhysicDefine::get_global_gravity() {
-	return SpxPhysicDefine::global_gravity;
+GdFloat SpxPhysicsDefine::get_global_gravity() {
+	return SpxPhysicsDefine::global_gravity;
 }
 
-void SpxPhysicDefine::set_global_friction(GdFloat friction) {
-	SpxPhysicDefine::global_friction = friction;
+void SpxPhysicsDefine::set_global_friction(GdFloat friction) {
+	SpxPhysicsDefine::global_friction = friction;
 }
 
-GdFloat SpxPhysicDefine::get_global_friction() {
-	return SpxPhysicDefine::global_friction;
+GdFloat SpxPhysicsDefine::get_global_friction() {
+	return SpxPhysicsDefine::global_friction;
 }
 
-void SpxPhysicDefine::set_global_air_drag(GdFloat air_drag) {
-	SpxPhysicDefine::global_air_drag = air_drag;
+void SpxPhysicsDefine::set_global_air_drag(GdFloat air_drag) {
+	SpxPhysicsDefine::global_air_drag = air_drag;
 }
 
-GdFloat SpxPhysicDefine::get_global_air_drag() {
-	return SpxPhysicDefine::global_air_drag	;
+GdFloat SpxPhysicsDefine::get_global_air_drag() {
+	return SpxPhysicsDefine::global_air_drag	;
 }
 
 
 
 
-void SpxPhysicMgr::on_awake() {
+void SpxPhysicsMgr::on_awake() {
 	SpxBaseMgr::on_awake();
 	is_collision_by_pixel = true;
 }
 
-void SpxPhysicMgr::on_reset(int reset_code) {
+void SpxPhysicsMgr::on_reset(int reset_code) {
 }
 
-SpxRaycastInfo SpxPhysicMgr::_raycast(GdVec2 from, GdVec2 to, GdArray ignore_sprites, GdInt collision_mask, GdBool collide_with_areas, GdBool collide_with_bodies) {
+SpxRaycastInfo SpxPhysicsMgr::_raycast(GdVec2 from, GdVec2 to, GdArray ignore_sprites, GdInt collision_mask, GdBool collide_with_areas, GdBool collide_with_bodies) {
 	SpxRaycastInfo info;
 	info.collide = false;
 	info.position = GdVec2{0, 0};
@@ -157,12 +157,12 @@ SpxRaycastInfo SpxPhysicMgr::_raycast(GdVec2 from, GdVec2 to, GdArray ignore_spr
 
 
 
-GdArray SpxPhysicMgr::raycast_with_details(GdVec2 from, GdVec2 to, GdArray ignore_sprites, GdInt collision_mask, GdBool collide_with_areas, GdBool collide_with_bodies){
+GdArray SpxPhysicsMgr::raycast_with_details(GdVec2 from, GdVec2 to, GdArray ignore_sprites, GdInt collision_mask, GdBool collide_with_areas, GdBool collide_with_bodies){
 	SpxRaycastInfo info = _raycast(from, to, ignore_sprites, collision_mask, collide_with_areas, collide_with_bodies);
 	return info.ToArray();
 }
 
-GdObj SpxPhysicMgr::raycast(GdVec2 from, GdVec2 to, GdInt collision_mask) {
+GdObj SpxPhysicsMgr::raycast(GdVec2 from, GdVec2 to, GdInt collision_mask) {
 	auto node = (Node2D *)get_root();
 	PhysicsDirectSpaceState2D *space_state = node->get_world_2d()->get_direct_space_state();
 
@@ -184,7 +184,7 @@ GdObj SpxPhysicMgr::raycast(GdVec2 from, GdVec2 to, GdInt collision_mask) {
 	return 0;
 }
 
-GdBool SpxPhysicMgr::check_collision(GdVec2 from, GdVec2 to, GdInt collision_mask, GdBool collide_with_areas, GdBool collide_with_bodies) {
+GdBool SpxPhysicsMgr::check_collision(GdVec2 from, GdVec2 to, GdInt collision_mask, GdBool collide_with_areas, GdBool collide_with_bodies) {
 	auto node = (Node2D *)get_root();
 	PhysicsDirectSpaceState2D *space_state = node->get_world_2d()->get_direct_space_state();
 	PhysicsDirectSpaceState2D::RayResult result;
@@ -207,7 +207,7 @@ const GdInt BOUND_CAM_TOP = 1 << 1;
 const GdInt BOUND_CAM_RIGHT = 1 << 2;
 const GdInt BOUND_CAM_BOTTOM = 1 << 3;
 
-GdInt SpxPhysicMgr::check_touched_camera_boundaries(GdObj obj) {
+GdInt SpxPhysicsMgr::check_touched_camera_boundaries(GdObj obj) {
 	auto sprite = spriteMgr->get_sprite(obj);
 	if (sprite == nullptr) {
 		print_error("try to get property of a null sprite gid=" + itos(obj));
@@ -260,12 +260,12 @@ GdInt SpxPhysicMgr::check_touched_camera_boundaries(GdObj obj) {
 	return result;
 }
 
-GdBool SpxPhysicMgr::check_touched_camera_boundary(GdObj obj, GdInt board_type) {
+GdBool SpxPhysicsMgr::check_touched_camera_boundary(GdObj obj, GdInt board_type) {
 	auto result = check_touched_camera_boundaries(obj);
 	return (result & board_type) != 0;
 }
 
-GdInt SpxPhysicMgr::check_nearest_touched_camera_boundary(GdObj obj) {
+GdInt SpxPhysicsMgr::check_nearest_touched_camera_boundary(GdObj obj) {
 	auto sprite = spriteMgr->get_sprite(obj);
 	if (sprite == nullptr) {
 		print_error("try to get property of a null sprite gid=" + itos(obj));
@@ -338,36 +338,36 @@ GdInt SpxPhysicMgr::check_nearest_touched_camera_boundary(GdObj obj) {
 }
 
 //
-void SpxPhysicMgr::set_collision_system_type(GdBool is_collision_by_alpha) {
+void SpxPhysicsMgr::set_collision_system_type(GdBool is_collision_by_alpha) {
 	this->is_collision_by_pixel = is_collision_by_alpha;
 }
 
-void SpxPhysicMgr::set_global_gravity(GdFloat gravity) {
-	SpxPhysicDefine::set_global_gravity(gravity);
+void SpxPhysicsMgr::set_global_gravity(GdFloat gravity) {
+	SpxPhysicsDefine::set_global_gravity(gravity);
 }
 
-GdFloat SpxPhysicMgr::get_global_gravity() {
-	return SpxPhysicDefine::get_global_gravity();
+GdFloat SpxPhysicsMgr::get_global_gravity() {
+	return SpxPhysicsDefine::get_global_gravity();
 }
 
-void SpxPhysicMgr::set_global_friction(GdFloat friction) {
-	SpxPhysicDefine::set_global_friction(friction);
+void SpxPhysicsMgr::set_global_friction(GdFloat friction) {
+	SpxPhysicsDefine::set_global_friction(friction);
 }
 
-GdFloat SpxPhysicMgr::get_global_friction() {
-	return SpxPhysicDefine::get_global_friction();
+GdFloat SpxPhysicsMgr::get_global_friction() {
+	return SpxPhysicsDefine::get_global_friction();
 }
 
-void SpxPhysicMgr::set_global_air_drag(GdFloat air_drag) {
-	SpxPhysicDefine::set_global_air_drag(air_drag);
+void SpxPhysicsMgr::set_global_air_drag(GdFloat air_drag) {
+	SpxPhysicsDefine::set_global_air_drag(air_drag);
 }
 
-GdFloat SpxPhysicMgr::get_global_air_drag() {
-	return SpxPhysicDefine::get_global_air_drag();
+GdFloat SpxPhysicsMgr::get_global_air_drag() {
+	return SpxPhysicsDefine::get_global_air_drag();
 }
 
 
-GdArray SpxPhysicMgr::_check_collision(RID shape, GdVec2 pos, GdInt collision_mask){
+GdArray SpxPhysicsMgr::_check_collision(RID shape, GdVec2 pos, GdInt collision_mask){
 	auto node = (Node2D *)get_root();
 	PhysicsDirectSpaceState2D *space_state = node->get_world_2d()->get_direct_space_state();
 	if (!space_state) {
@@ -407,14 +407,14 @@ GdArray SpxPhysicMgr::_check_collision(RID shape, GdVec2 pos, GdInt collision_ma
 	}
 	return result_array;
 }
-GdArray SpxPhysicMgr::check_collision_rect(GdVec2 pos, GdVec2 size, GdInt collision_mask) {
+GdArray SpxPhysicsMgr::check_collision_rect(GdVec2 pos, GdVec2 size, GdInt collision_mask) {
 	Ref<RectangleShape2D> rect_shape;
 	rect_shape.instantiate();
 	rect_shape->set_size(size);
 	return _check_collision(rect_shape->get_rid(), pos, collision_mask);
 }
 
-GdArray SpxPhysicMgr::check_collision_circle(GdVec2 pos, GdFloat radius, GdInt collision_mask) {
+GdArray SpxPhysicsMgr::check_collision_circle(GdVec2 pos, GdFloat radius, GdInt collision_mask) {
 	Ref<CircleShape2D> circle_shape;
 	circle_shape.instantiate();
 	circle_shape->set_radius(radius); 

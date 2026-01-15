@@ -607,8 +607,8 @@ gdspx_pen_set_pen_stamp_texture(obj,texture_path) {
 	FreeGdString(_arg1); 
 
 }
-gdspx_physic_raycast(from,to,collision_mask) {
-	var _gdFuncPtr = Module._gdspx_physic_raycast; 
+gdspx_physics_raycast(from,to,collision_mask) {
+	var _gdFuncPtr = Module._gdspx_physics_raycast; 
 	var _retValue = AllocGdObj();
 	var _arg0 = ToGdVec2(from);
 	var _arg1 = ToGdVec2(to);
@@ -621,8 +621,8 @@ gdspx_physic_raycast(from,to,collision_mask) {
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
-gdspx_physic_check_collision(from,to,collision_mask,collide_with_areas,collide_with_bodies) {
-	var _gdFuncPtr = Module._gdspx_physic_check_collision; 
+gdspx_physics_check_collision(from,to,collision_mask,collide_with_areas,collide_with_bodies) {
+	var _gdFuncPtr = Module._gdspx_physics_check_collision; 
 	var _retValue = AllocGdBool();
 	var _arg0 = ToGdVec2(from);
 	var _arg1 = ToGdVec2(to);
@@ -639,8 +639,8 @@ gdspx_physic_check_collision(from,to,collision_mask,collide_with_areas,collide_w
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_physic_check_touched_camera_boundaries(obj) {
-	var _gdFuncPtr = Module._gdspx_physic_check_touched_camera_boundaries; 
+gdspx_physics_check_touched_camera_boundaries(obj) {
+	var _gdFuncPtr = Module._gdspx_physics_check_touched_camera_boundaries; 
 	var _retValue = AllocGdInt();
 	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
@@ -649,8 +649,8 @@ gdspx_physic_check_touched_camera_boundaries(obj) {
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
-gdspx_physic_check_touched_camera_boundary(obj,board_type) {
-	var _gdFuncPtr = Module._gdspx_physic_check_touched_camera_boundary; 
+gdspx_physics_check_touched_camera_boundary(obj,board_type) {
+	var _gdFuncPtr = Module._gdspx_physics_check_touched_camera_boundary; 
 	var _retValue = AllocGdBool();
 	var _arg0 = ToGdObj(obj);
 	var _arg1 = ToGdInt(board_type);
@@ -661,8 +661,8 @@ gdspx_physic_check_touched_camera_boundary(obj,board_type) {
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_physic_check_nearest_touched_camera_boundary(obj) {
-	var _gdFuncPtr = Module._gdspx_physic_check_nearest_touched_camera_boundary; 
+gdspx_physics_check_nearest_touched_camera_boundary(obj) {
+	var _gdFuncPtr = Module._gdspx_physics_check_nearest_touched_camera_boundary; 
 	var _retValue = AllocGdInt();
 	var _arg0 = ToGdObj(obj);
 	_gdFuncPtr(_arg0, _retValue);
@@ -671,64 +671,64 @@ gdspx_physic_check_nearest_touched_camera_boundary(obj) {
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
-gdspx_physic_set_collision_system_type(is_collision_by_alpha) {
-	var _gdFuncPtr = Module._gdspx_physic_set_collision_system_type; 
+gdspx_physics_set_collision_system_type(is_collision_by_alpha) {
+	var _gdFuncPtr = Module._gdspx_physics_set_collision_system_type; 
 	
 	var _arg0 = ToGdBool(is_collision_by_alpha);
 	_gdFuncPtr(_arg0);
 	FreeGdBool(_arg0); 
 
 }
-gdspx_physic_set_global_gravity(gravity) {
-	var _gdFuncPtr = Module._gdspx_physic_set_global_gravity; 
+gdspx_physics_set_global_gravity(gravity) {
+	var _gdFuncPtr = Module._gdspx_physics_set_global_gravity; 
 	
 	var _arg0 = ToGdFloat(gravity);
 	_gdFuncPtr(_arg0);
 	FreeGdFloat(_arg0); 
 
 }
-gdspx_physic_get_global_gravity() {
-	var _gdFuncPtr = Module._gdspx_physic_get_global_gravity; 
+gdspx_physics_get_global_gravity() {
+	var _gdFuncPtr = Module._gdspx_physics_get_global_gravity; 
 	var _retValue = AllocGdFloat();
 	_gdFuncPtr(_retValue);
 	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
-gdspx_physic_set_global_friction(friction) {
-	var _gdFuncPtr = Module._gdspx_physic_set_global_friction; 
+gdspx_physics_set_global_friction(friction) {
+	var _gdFuncPtr = Module._gdspx_physics_set_global_friction; 
 	
 	var _arg0 = ToGdFloat(friction);
 	_gdFuncPtr(_arg0);
 	FreeGdFloat(_arg0); 
 
 }
-gdspx_physic_get_global_friction() {
-	var _gdFuncPtr = Module._gdspx_physic_get_global_friction; 
+gdspx_physics_get_global_friction() {
+	var _gdFuncPtr = Module._gdspx_physics_get_global_friction; 
 	var _retValue = AllocGdFloat();
 	_gdFuncPtr(_retValue);
 	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
-gdspx_physic_set_global_air_drag(air_drag) {
-	var _gdFuncPtr = Module._gdspx_physic_set_global_air_drag; 
+gdspx_physics_set_global_air_drag(air_drag) {
+	var _gdFuncPtr = Module._gdspx_physics_set_global_air_drag; 
 	
 	var _arg0 = ToGdFloat(air_drag);
 	_gdFuncPtr(_arg0);
 	FreeGdFloat(_arg0); 
 
 }
-gdspx_physic_get_global_air_drag() {
-	var _gdFuncPtr = Module._gdspx_physic_get_global_air_drag; 
+gdspx_physics_get_global_air_drag() {
+	var _gdFuncPtr = Module._gdspx_physics_get_global_air_drag; 
 	var _retValue = AllocGdFloat();
 	_gdFuncPtr(_retValue);
 	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
-gdspx_physic_check_collision_rect(pos,size,collision_mask) {
-	var _gdFuncPtr = Module._gdspx_physic_check_collision_rect; 
+gdspx_physics_check_collision_rect(pos,size,collision_mask) {
+	var _gdFuncPtr = Module._gdspx_physics_check_collision_rect; 
 	var _retValue = AllocGdArray();
 	var _arg0 = ToGdVec2(pos);
 	var _arg1 = ToGdVec2(size);
@@ -741,8 +741,8 @@ gdspx_physic_check_collision_rect(pos,size,collision_mask) {
 	FreeGdArray(_retValue); 
 	return _finalRetValue
 }
-gdspx_physic_check_collision_circle(pos,radius,collision_mask) {
-	var _gdFuncPtr = Module._gdspx_physic_check_collision_circle; 
+gdspx_physics_check_collision_circle(pos,radius,collision_mask) {
+	var _gdFuncPtr = Module._gdspx_physics_check_collision_circle; 
 	var _retValue = AllocGdArray();
 	var _arg0 = ToGdVec2(pos);
 	var _arg1 = ToGdFloat(radius);
@@ -755,8 +755,8 @@ gdspx_physic_check_collision_circle(pos,radius,collision_mask) {
 	FreeGdArray(_retValue); 
 	return _finalRetValue
 }
-gdspx_physic_raycast_with_details(from,to,ignore_sprites,collision_mask,collide_with_areas,collide_with_bodies) {
-	var _gdFuncPtr = Module._gdspx_physic_raycast_with_details; 
+gdspx_physics_raycast_with_details(from,to,ignore_sprites,collision_mask,collide_with_areas,collide_with_bodies) {
+	var _gdFuncPtr = Module._gdspx_physics_raycast_with_details; 
 	var _retValue = AllocGdArray();
 	var _arg0 = ToGdVec2(from);
 	var _arg1 = ToGdVec2(to);

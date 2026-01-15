@@ -41,7 +41,7 @@
 #include "core/config/project_settings.h"
 #include "spx_input_mgr.h"
 #include "spx_audio_mgr.h"
-#include "spx_physic_mgr.h"
+#include "spx_physics_mgr.h"
 #include "spx_sprite_mgr.h"
 #include "spx_ui_mgr.h"
 #include "spx_camera_mgr.h"
@@ -129,8 +129,8 @@ void SpxEngine::register_callbacks(GDExtensionSpxCallbackInfoPtr callback_ptr) {
 	singleton->mgrs.append((SpxBaseMgr *)singleton->input);
 	singleton->audio = memnew(SpxAudioMgr);
 	singleton->mgrs.append((SpxBaseMgr *)singleton->audio);
-	singleton->physic = memnew(SpxPhysicMgr);
-	singleton->mgrs.append((SpxBaseMgr *)singleton->physic);
+	singleton->physics = memnew(SpxPhysicsMgr);
+	singleton->mgrs.append((SpxBaseMgr *)singleton->physics);
 	singleton->sprite = memnew(SpxSpriteMgr);
 	singleton->mgrs.append((SpxBaseMgr *)singleton->sprite);
 	singleton->ui = memnew(SpxUiMgr);
@@ -301,7 +301,7 @@ void SpxEngine::on_destroy() {
 
 	memdelete(input);
 	memdelete(audio);
-	memdelete(physic);
+	memdelete(physics);
 	memdelete(sprite);
 	memdelete(ui);
 	memdelete(scene);

@@ -48,7 +48,7 @@
 #include "spx_sprite.h"
 #include "spx_draw_tiles.h"
 #include "spx_layer_sorter.h"
-#include "spx_physic_mgr.h"
+#include "spx_physics_mgr.h"
 
 #include <cmath>
 

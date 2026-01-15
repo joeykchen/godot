@@ -47,7 +47,7 @@ class SpxAudioBusPool;
 // SPX Manager access macros
 #define inputMgr SpxEngine::get_singleton()->get_input()
 #define audioMgr SpxEngine::get_singleton()->get_audio()
-#define physicMgr SpxEngine::get_singleton()->get_physic()
+#define physicsMgr SpxEngine::get_singleton()->get_physics()
 #define spriteMgr SpxEngine::get_singleton()->get_sprite()
 #define uiMgr SpxEngine::get_singleton()->get_ui()
 #define sceneMgr SpxEngine::get_singleton()->get_scene()

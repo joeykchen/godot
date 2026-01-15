@@ -42,7 +42,7 @@
 #include "modules/spx/spx_input_mgr.h"
 #include "modules/spx/spx_navigation_mgr.h"
 #include "modules/spx/spx_pen_mgr.h"
-#include "modules/spx/spx_physic_mgr.h"
+#include "modules/spx/spx_physics_mgr.h"
 #include "modules/spx/spx_platform_mgr.h"
 #include "modules/spx/spx_res_mgr.h"
 #include "modules/spx/spx_scene_mgr.h"
@@ -59,7 +59,7 @@
 #define inputMgr SpxEngine::get_singleton()->get_input()
 #define navigationMgr SpxEngine::get_singleton()->get_navigation()
 #define penMgr SpxEngine::get_singleton()->get_pen()
-#define physicMgr SpxEngine::get_singleton()->get_physic()
+#define physicsMgr SpxEngine::get_singleton()->get_physics()
 #define platformMgr SpxEngine::get_singleton()->get_platform()
 #define resMgr SpxEngine::get_singleton()->get_res()
 #define sceneMgr SpxEngine::get_singleton()->get_scene()
@@ -337,64 +337,64 @@ void gdspx_pen_set_pen_stamp_texture(GdObj* obj, GdString* texture_path) {
 	 penMgr->set_pen_stamp_texture(*obj, *texture_path);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_physic_raycast(GdVec2* from, GdVec2* to, GdInt* collision_mask, GdObj *ret_val) {
-	*ret_val = physicMgr->raycast(*from, *to, *collision_mask);
+void gdspx_physics_raycast(GdVec2* from, GdVec2* to, GdInt* collision_mask, GdObj *ret_val) {
+	*ret_val = physicsMgr->raycast(*from, *to, *collision_mask);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_physic_check_collision(GdVec2* from, GdVec2* to, GdInt* collision_mask, GdBool* collide_with_areas, GdBool* collide_with_bodies, GdBool *ret_val) {
-	*ret_val = physicMgr->check_collision(*from, *to, *collision_mask, *collide_with_areas, *collide_with_bodies);
+void gdspx_physics_check_collision(GdVec2* from, GdVec2* to, GdInt* collision_mask, GdBool* collide_with_areas, GdBool* collide_with_bodies, GdBool *ret_val) {
+	*ret_val = physicsMgr->check_collision(*from, *to, *collision_mask, *collide_with_areas, *collide_with_bodies);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_physic_check_touched_camera_boundaries(GdObj* obj, GdInt *ret_val) {
-	*ret_val = physicMgr->check_touched_camera_boundaries(*obj);
+void gdspx_physics_check_touched_camera_boundaries(GdObj* obj, GdInt *ret_val) {
+	*ret_val = physicsMgr->check_touched_camera_boundaries(*obj);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_physic_check_touched_camera_boundary(GdObj* obj, GdInt* board_type, GdBool *ret_val) {
-	*ret_val = physicMgr->check_touched_camera_boundary(*obj, *board_type);
+void gdspx_physics_check_touched_camera_boundary(GdObj* obj, GdInt* board_type, GdBool *ret_val) {
+	*ret_val = physicsMgr->check_touched_camera_boundary(*obj, *board_type);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_physic_check_nearest_touched_camera_boundary(GdObj* obj, GdInt *ret_val) {
-	*ret_val = physicMgr->check_nearest_touched_camera_boundary(*obj);
+void gdspx_physics_check_nearest_touched_camera_boundary(GdObj* obj, GdInt *ret_val) {
+	*ret_val = physicsMgr->check_nearest_touched_camera_boundary(*obj);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_physic_set_collision_system_type(GdBool* is_collision_by_alpha) {
-	 physicMgr->set_collision_system_type(*is_collision_by_alpha);
+void gdspx_physics_set_collision_system_type(GdBool* is_collision_by_alpha) {
+	 physicsMgr->set_collision_system_type(*is_collision_by_alpha);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_physic_set_global_gravity(GdFloat* gravity) {
-	 physicMgr->set_global_gravity(*gravity);
+void gdspx_physics_set_global_gravity(GdFloat* gravity) {
+	 physicsMgr->set_global_gravity(*gravity);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_physic_get_global_gravity(GdFloat *ret_val) {
-	*ret_val = physicMgr->get_global_gravity();
+void gdspx_physics_get_global_gravity(GdFloat *ret_val) {
+	*ret_val = physicsMgr->get_global_gravity();
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_physic_set_global_friction(GdFloat* friction) {
-	 physicMgr->set_global_friction(*friction);
+void gdspx_physics_set_global_friction(GdFloat* friction) {
+	 physicsMgr->set_global_friction(*friction);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_physic_get_global_friction(GdFloat *ret_val) {
-	*ret_val = physicMgr->get_global_friction();
+void gdspx_physics_get_global_friction(GdFloat *ret_val) {
+	*ret_val = physicsMgr->get_global_friction();
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_physic_set_global_air_drag(GdFloat* air_drag) {
-	 physicMgr->set_global_air_drag(*air_drag);
+void gdspx_physics_set_global_air_drag(GdFloat* air_drag) {
+	 physicsMgr->set_global_air_drag(*air_drag);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_physic_get_global_air_drag(GdFloat *ret_val) {
-	*ret_val = physicMgr->get_global_air_drag();
+void gdspx_physics_get_global_air_drag(GdFloat *ret_val) {
+	*ret_val = physicsMgr->get_global_air_drag();
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_physic_check_collision_rect(GdVec2* pos, GdVec2* size, GdInt* collision_mask, GdArray *ret_val) {
-	*ret_val = physicMgr->check_collision_rect(*pos, *size, *collision_mask);
+void gdspx_physics_check_collision_rect(GdVec2* pos, GdVec2* size, GdInt* collision_mask, GdArray *ret_val) {
+	*ret_val = physicsMgr->check_collision_rect(*pos, *size, *collision_mask);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_physic_check_collision_circle(GdVec2* pos, GdFloat* radius, GdInt* collision_mask, GdArray *ret_val) {
-	*ret_val = physicMgr->check_collision_circle(*pos, *radius, *collision_mask);
+void gdspx_physics_check_collision_circle(GdVec2* pos, GdFloat* radius, GdInt* collision_mask, GdArray *ret_val) {
+	*ret_val = physicsMgr->check_collision_circle(*pos, *radius, *collision_mask);
 }
 EMSCRIPTEN_KEEPALIVE
-void gdspx_physic_raycast_with_details(GdVec2* from, GdVec2* to, GdArray* ignore_sprites, GdInt* collision_mask, GdBool* collide_with_areas, GdBool* collide_with_bodies, GdArray *ret_val) {
-	*ret_val = physicMgr->raycast_with_details(*from, *to, *ignore_sprites, *collision_mask, *collide_with_areas, *collide_with_bodies);
+void gdspx_physics_raycast_with_details(GdVec2* from, GdVec2* to, GdArray* ignore_sprites, GdInt* collision_mask, GdBool* collide_with_areas, GdBool* collide_with_bodies, GdArray *ret_val) {
+	*ret_val = physicsMgr->raycast_with_details(*from, *to, *ignore_sprites, *collision_mask, *collide_with_areas, *collide_with_bodies);
 }
 EMSCRIPTEN_KEEPALIVE
 void gdspx_platform_set_stretch_mode(GdBool* enable) {
