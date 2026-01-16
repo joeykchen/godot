@@ -79,8 +79,8 @@ void SpxPenMgr::destroy_pen(GdObj obj) {
 
 void SpxPenMgr::destroy_all_pens() {
 	lock.lock();
-	for (const KeyValue<GdObj, SpxPen *> &E : id_objects) {
-		E.value->erase_all();
+	for (const auto &[id, pen] : id_objects) {
+		pen->erase_all();
 	}
 	lock.unlock();
 }

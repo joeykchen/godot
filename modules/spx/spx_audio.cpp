@@ -94,9 +94,9 @@ void SpxAudio::on_update(float delta) {
 		if (!audio->is_playing()) {
 			audio->queue_free();
 			audios.erase(item);
-			for (const KeyValue<GdInt, AudioStreamPlayer2D *> &E : aid_audios) {
-				if (E.value == audio) {
-					aid_audios.erase(E.key);
+			for (const auto &[aid, audio_player] : aid_audios) {
+				if (audio_player == audio) {
+					aid_audios.erase(aid);
 					break;
 				}
 			}
