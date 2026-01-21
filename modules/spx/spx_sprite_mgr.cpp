@@ -50,6 +50,12 @@
 
 
 #define DEFAULT_COLLISION_ALPHA_THRESHOLD 0.05
+// Pixel-perfect collision sampling step: check every N pixels instead of every pixel
+// Higher values = better performance but lower accuracy
+// 1 = check every pixel (most accurate, slowest)
+// 2 = check every 2 pixels (good balance)
+// 3+ = faster but may miss small collisions
+#define PIXEL_COLLISION_SAMPLING_STEP 2
 
 StringName SpxSpriteMgr::default_texture_anim;
 #define check_and_get_sprite_r(VALUE) \
@@ -930,8 +936,9 @@ GdBool SpxSpriteMgr::check_collision_with_sprite(GdObj obj, GdObj obj_b, GdFloat
 	auto trans2 = transform2.affine_inverse();
 
 	// Iterate through the overlapping area for pixel-perfect collision detection
-	for (int x = overlap.position.x; x < overlap.position.x + overlap.size.x; x++) {
-		for (int y = overlap.position.y; y < overlap.position.y + overlap.size.y; y++) {
+	// Use sampling step for performance optimization - check every Nth pixel instead of every pixel
+	for (int x = overlap.position.x; x < overlap.position.x + overlap.size.x; x += PIXEL_COLLISION_SAMPLING_STEP) {
+		for (int y = overlap.position.y; y < overlap.position.y + overlap.size.y; y += PIXEL_COLLISION_SAMPLING_STEP) {
 			Vector2 local_pos1 = _to_image_coord(trans1, size1, Vector2(x, y));
 			Vector2 local_pos2 = _to_image_coord(trans2, size2, Vector2(x, y));
 
@@ -941,7 +948,7 @@ GdBool SpxSpriteMgr::check_collision_with_sprite(GdObj obj, GdObj obj_b, GdFloat
 				Color color2 = image2->get_pixel((int)local_pos2.x,  (int)local_pos2.y);
 
 				if (color1.a > alpha_threshold && color2.a > alpha_threshold) {
-					return true;
+					return true; // Early exit on first collision detected
 				}
 			}
 		}
@@ -1007,8 +1014,9 @@ GdBool SpxSpriteMgr::_check_collision(GdObj obj, ColorCheckFunc check_func) {
 		auto trans2 = transform2.affine_inverse();
 
 		// Iterate through the overlapping area for pixel-perfect collision detection
-		for (int x = overlap.position.x; x < overlap.position.x + overlap.size.x; x++) {
-			for (int y = overlap.position.y; y < overlap.position.y + overlap.size.y; y++) {
+		// Use sampling step for performance optimization
+		for (int x = overlap.position.x; x < overlap.position.x + overlap.size.x; x += PIXEL_COLLISION_SAMPLING_STEP) {
+			for (int y = overlap.position.y; y < overlap.position.y + overlap.size.y; y += PIXEL_COLLISION_SAMPLING_STEP) {
 				Vector2 local_pos1 = _to_image_coord(trans1, size1, Vector2(x, y));
 				Vector2 local_pos2 = _to_image_coord(trans2, size2, Vector2(x, y));
 
@@ -1017,7 +1025,7 @@ GdBool SpxSpriteMgr::_check_collision(GdObj obj, ColorCheckFunc check_func) {
 					Color color1 = image1->get_pixel((int)local_pos1.x, (int)local_pos1.y);
 					Color color2 = image2->get_pixel((int)local_pos2.x, (int)local_pos2.y);
 					if (check_func(color1, color2)) {
-						return true;
+						return true; // Early exit on collision detected
 					}
 				}
 			}
