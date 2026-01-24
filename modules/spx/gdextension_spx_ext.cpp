@@ -762,6 +762,12 @@ static void gdextension_spx_sprite_check_collision_by_alpha(GdObj obj, GdFloat a
 static void gdextension_spx_sprite_check_collision_with_sprite(GdObj obj, GdObj obj_b, GdFloat alpha_threshold, GdBool use_pixel_perfect, GdBool *ret_val) {
 	*ret_val = spriteMgr->check_collision_with_sprite(obj, obj_b, alpha_threshold, use_pixel_perfect);
 }
+static void gdextension_spx_sprite_set_pixel_collision_sampling_step(GdInt step) {
+	 spriteMgr->set_pixel_collision_sampling_step(step);
+}
+static void gdextension_spx_sprite_get_pixel_collision_sampling_step(GdInt *ret_val) {
+	*ret_val = spriteMgr->get_pixel_collision_sampling_step();
+}
 static void gdextension_spx_sprite_batch_update_transforms(GdArray buffer) {
 	 spriteMgr->batch_update_transforms(buffer);
 }
@@ -1201,6 +1207,8 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_check_collision_by_color);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_check_collision_by_alpha);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_check_collision_with_sprite);
+	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_pixel_collision_sampling_step);
+	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_get_pixel_collision_sampling_step);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_batch_update_transforms);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_batch_update_positions);
 	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_open_draw_tiles_with_size);

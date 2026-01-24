@@ -104,6 +104,13 @@ private:
 	Node* dont_destroy_root;
 	Node* sprite_root;
 
+	// Pixel-perfect collision sampling step: check every N pixels instead of every pixel
+	// Higher values = better performance but lower accuracy
+	// 1 = check every pixel (most accurate, slowest)
+	// 2 = check every 2 pixels (good balance)
+	// 3+ = faster but may miss small collisions
+	int pixel_collision_sampling_step;
+
 	Ref<Image> _get_current_frame_image(AnimatedSprite2D *sprite);
 	Rect2 _get_sprite_aabb(AnimatedSprite2D *anim2d);
 	Vector2 _to_image_coord(const Transform2D &trans, Vector2 image_size, Vector2 pos);
@@ -271,6 +278,10 @@ public:
 	GdBool check_collision_by_color(GdObj obj, GdColor color, GdFloat color_threshold, GdFloat alpha_threshold);
 	GdBool check_collision_by_alpha(GdObj obj, GdFloat alpha_threshold);
 	GdBool check_collision_with_sprite(GdObj obj, GdObj obj_b, GdFloat alpha_threshold, GdBool use_pixel_perfect);
+
+	// pixel collision sampling configuration
+	void set_pixel_collision_sampling_step(GdInt step);
+	GdInt get_pixel_collision_sampling_step();
 
 	// batch sync
 	void batch_update_transforms(GdArray buffer);

@@ -1021,6 +1021,14 @@ void gdspx_sprite_check_collision_with_sprite(GdObj* obj, GdObj* obj_b, GdFloat*
 	*ret_val = spriteMgr->check_collision_with_sprite(*obj, *obj_b, *alpha_threshold, *use_pixel_perfect);
 }
 EMSCRIPTEN_KEEPALIVE
+void gdspx_sprite_set_pixel_collision_sampling_step(GdInt* step) {
+	 spriteMgr->set_pixel_collision_sampling_step(*step);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_sprite_get_pixel_collision_sampling_step(GdInt *ret_val) {
+	*ret_val = spriteMgr->get_pixel_collision_sampling_step();
+}
+EMSCRIPTEN_KEEPALIVE
 void gdspx_sprite_batch_update_transforms(GdArray* buffer) {
 	 spriteMgr->batch_update_transforms(*buffer);
 }

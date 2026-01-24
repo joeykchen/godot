@@ -2385,6 +2385,22 @@ gdspx_sprite_check_collision_with_sprite(obj,obj_b,alpha_threshold,use_pixel_per
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
+gdspx_sprite_set_pixel_collision_sampling_step(step) {
+	var _gdFuncPtr = Module._gdspx_sprite_set_pixel_collision_sampling_step; 
+	
+	var _arg0 = ToGdInt(step);
+	_gdFuncPtr(_arg0);
+	FreeGdInt(_arg0); 
+
+}
+gdspx_sprite_get_pixel_collision_sampling_step() {
+	var _gdFuncPtr = Module._gdspx_sprite_get_pixel_collision_sampling_step; 
+	var _retValue = AllocGdInt();
+	_gdFuncPtr(_retValue);
+	var _finalRetValue = ToJsInt(_retValue);
+	FreeGdInt(_retValue); 
+	return _finalRetValue
+}
 gdspx_sprite_batch_update_transforms(buffer) {
 	var _gdFuncPtr = Module._gdspx_sprite_batch_update_transforms; 
 	

@@ -50,12 +50,6 @@
 
 
 #define DEFAULT_COLLISION_ALPHA_THRESHOLD 0.05
-// Pixel-perfect collision sampling step: check every N pixels instead of every pixel
-// Higher values = better performance but lower accuracy
-// 1 = check every pixel (most accurate, slowest)
-// 2 = check every 2 pixels (good balance)
-// 3+ = faster but may miss small collisions
-#define PIXEL_COLLISION_SAMPLING_STEP 2
 
 StringName SpxSpriteMgr::default_texture_anim;
 #define check_and_get_sprite_r(VALUE) \
@@ -88,6 +82,10 @@ StringName SpxSpriteMgr::default_texture_anim;
 void SpxSpriteMgr::on_awake() {
 	SpxBaseMgr::on_awake();
 	default_texture_anim = "default";
+	
+	// Initialize pixel collision sampling step with default value of 2 (good balance between performance and accuracy)
+	pixel_collision_sampling_step = 2;
+	
 	dont_destroy_root = memnew(Node2D);
 	dont_destroy_root->set_name("dont_destroy_root");
 	get_spx_root()->add_child(dont_destroy_root);
@@ -937,8 +935,8 @@ GdBool SpxSpriteMgr::check_collision_with_sprite(GdObj obj, GdObj obj_b, GdFloat
 
 	// Iterate through the overlapping area for pixel-perfect collision detection
 	// Use sampling step for performance optimization - check every Nth pixel instead of every pixel
-	for (int x = overlap.position.x; x < overlap.position.x + overlap.size.x; x += PIXEL_COLLISION_SAMPLING_STEP) {
-		for (int y = overlap.position.y; y < overlap.position.y + overlap.size.y; y += PIXEL_COLLISION_SAMPLING_STEP) {
+	for (int x = overlap.position.x; x < overlap.position.x + overlap.size.x; x += pixel_collision_sampling_step) {
+		for (int y = overlap.position.y; y < overlap.position.y + overlap.size.y; y += pixel_collision_sampling_step) {
 			Vector2 local_pos1 = _to_image_coord(trans1, size1, Vector2(x, y));
 			Vector2 local_pos2 = _to_image_coord(trans2, size2, Vector2(x, y));
 
@@ -1015,8 +1013,8 @@ GdBool SpxSpriteMgr::_check_collision(GdObj obj, ColorCheckFunc check_func) {
 
 		// Iterate through the overlapping area for pixel-perfect collision detection
 		// Use sampling step for performance optimization
-		for (int x = overlap.position.x; x < overlap.position.x + overlap.size.x; x += PIXEL_COLLISION_SAMPLING_STEP) {
-			for (int y = overlap.position.y; y < overlap.position.y + overlap.size.y; y += PIXEL_COLLISION_SAMPLING_STEP) {
+		for (int x = overlap.position.x; x < overlap.position.x + overlap.size.x; x += pixel_collision_sampling_step) {
+			for (int y = overlap.position.y; y < overlap.position.y + overlap.size.y; y += pixel_collision_sampling_step) {
 				Vector2 local_pos1 = _to_image_coord(trans1, size1, Vector2(x, y));
 				Vector2 local_pos2 = _to_image_coord(trans2, size2, Vector2(x, y));
 
@@ -1231,4 +1229,18 @@ GdArray SpxSpriteMgr::batch_update_positions(GdArray objs) {
 	}
 	
 	return result;
+}
+
+void SpxSpriteMgr::set_pixel_collision_sampling_step(GdInt step) {
+	// Clamp to valid range (minimum 1, as 0 or negative would cause infinite loop)
+	if (step < 1) {
+		pixel_collision_sampling_step = 1;
+		print_error("pixel_collision_sampling_step must be at least 1. Setting to 1.");
+	} else {
+		pixel_collision_sampling_step = step;
+	}
+}
+
+GdInt SpxSpriteMgr::get_pixel_collision_sampling_step() {
+	return pixel_collision_sampling_step;
 }
