@@ -29,11 +29,13 @@
 /**************************************************************************/
 
 #include "gdextension_spx_ext.h"
+
 #include "core/extension/gdextension.h"
 #include "core/extension/gdextension_special_compat_hashes.h"
 #include "core/variant/variant.h"
-#include "gdextension_interface.h"
 #include "scene/main/window.h"
+
+#include "gdextension_interface.h"
 #include "spx_engine.h"
 #include "spx_mgr_access.h"
 #include "spx_audio_mgr.h"
@@ -991,11 +993,8 @@ static void gdextension_spx_ui_set_flip(GdObj obj, GdBool horizontal, GdBool is_
 	uiMgr->set_flip(obj, horizontal, is_flip);
 }
 
-
-
 void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_global_register_callbacks);
-
 	REGISTER_SPX_INTERFACE_FUNC(spx_audio_stop_all);
 	REGISTER_SPX_INTERFACE_FUNC(spx_audio_create_audio);
 	REGISTER_SPX_INTERFACE_FUNC(spx_audio_destroy_audio);
