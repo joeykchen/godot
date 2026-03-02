@@ -142,6 +142,11 @@ void SpxSprite::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_friction", "friction"), &SpxSprite::set_friction);
 	ClassDB::bind_method(D_METHOD("get_friction"), &SpxSprite::get_friction);
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "friction"), "set_friction", "get_friction");
+
+	// Debug collision visibility control
+	ClassDB::bind_method(D_METHOD("set_debug_collision_visible", "enabled"), &SpxSprite::set_debug_collision_visible);
+	ClassDB::bind_method(D_METHOD("is_debug_collision_visible"), &SpxSprite::is_debug_collision_visible);
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "debug_collision_visible"), "set_debug_collision_visible", "is_debug_collision_visible");
 }
 
 void SpxSprite::on_destroy_call() {
@@ -183,6 +188,10 @@ void SpxSprite::_notification(int p_what) {
 
 void SpxSprite::_draw() {
 	if (!Spx::debug_mode) {
+		return;
+	}
+
+	if (!debug_collision_visible) {
 		return;
 	}
 
@@ -853,6 +862,15 @@ GdBool SpxSprite::check_collision_with_point(GdVec2 point, GdBool is_trigger) {
 	return is_colliding;
 }
 
+void SpxSprite::set_debug_collision_visible(GdBool enabled) {
+	debug_collision_visible = enabled;
+	queue_redraw();
+}
+
+GdBool SpxSprite::is_debug_collision_visible() const {
+	return debug_collision_visible;
+}
+
 void SpxSprite::set_render_scale(GdVec2 new_scale) {
 	_render_scale = new_scale;
 	update_anim_scale();
@@ -1126,3 +1144,4 @@ void SpxSprite::_disable_collision() {
 		collider2d->set_disabled(true);
 	}
 }
+

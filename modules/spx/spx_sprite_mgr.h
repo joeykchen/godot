@@ -153,7 +153,8 @@ public:
 
 	GdBool check_collision(GdObj obj, GdObj target, GdBool is_src_trigger, GdBool is_dst_trigger);
 	GdBool check_collision_with_point(GdObj obj, GdVec2 point, GdBool is_trigger);
-	//
+	void set_debug_collision_visible(GdObj obj, GdBool visible);
+	GdBool is_debug_collision_visible(GdObj obj);
 	GdObj create_backdrop(GdString path);
 	GdObj create_sprite(GdString path, GdVec2 pos);
 	GdObj clone_sprite(GdObj obj);

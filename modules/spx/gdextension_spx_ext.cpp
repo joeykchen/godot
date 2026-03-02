@@ -467,6 +467,12 @@ static void gdextension_spx_sprite_check_collision(GdObj obj, GdObj target, GdBo
 static void gdextension_spx_sprite_check_collision_with_point(GdObj obj, GdVec2 point, GdBool is_trigger, GdBool *ret_val) {
 	*ret_val = spriteMgr->check_collision_with_point(obj, point, is_trigger);
 }
+static void gdextension_spx_sprite_set_debug_collision_visible(GdObj obj, GdBool visible) {
+	spriteMgr->set_debug_collision_visible(obj, visible);
+}
+static void gdextension_spx_sprite_is_debug_collision_visible(GdObj obj, GdBool *ret_val) {
+	*ret_val = spriteMgr->is_debug_collision_visible(obj);
+}
 static void gdextension_spx_sprite_create_backdrop(GdString path, GdObj *ret_val) {
 	*ret_val = spriteMgr->create_backdrop(path);
 }
@@ -1131,6 +1137,8 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_get_child_scale);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_check_collision);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_check_collision_with_point);
+	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_debug_collision_visible);
+	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_is_debug_collision_visible);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_create_backdrop);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_create_sprite);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_clone_sprite);

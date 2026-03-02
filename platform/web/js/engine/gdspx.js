@@ -1339,6 +1339,26 @@ gdspx_sprite_check_collision_with_point(obj,point,is_trigger) {
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
+gdspx_sprite_set_debug_collision_visible(obj,visible) {
+	var _gdFuncPtr = Module._gdspx_sprite_set_debug_collision_visible; 
+	
+	var _arg0 = ToGdObj(obj);
+	var _arg1 = ToGdBool(visible);
+	_gdFuncPtr(_arg0, _arg1);
+	FreeGdObj(_arg0); 
+	FreeGdBool(_arg1); 
+
+}
+gdspx_sprite_is_debug_collision_visible(obj) {
+	var _gdFuncPtr = Module._gdspx_sprite_is_debug_collision_visible; 
+	var _retValue = AllocGdBool();
+	var _arg0 = ToGdObj(obj);
+	_gdFuncPtr(_arg0, _retValue);
+	FreeGdObj(_arg0); 
+	var _finalRetValue = ToJsBool(_retValue);
+	FreeGdBool(_retValue); 
+	return _finalRetValue
+}
 gdspx_sprite_create_backdrop(path) {
 	var _gdFuncPtr = Module._gdspx_sprite_create_backdrop; 
 	var _retValue = AllocGdObj();

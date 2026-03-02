@@ -237,6 +237,16 @@ GdBool SpxSpriteMgr::check_collision_with_point(GdObj obj, GdVec2 point, GdBool 
 	return sprite->check_collision_with_point(point, is_trigger);
 }
 
+void SpxSpriteMgr::set_debug_collision_visible(GdObj obj, GdBool visible) {
+	SPX_REQUIRE_SPRITE_VOID()
+	sprite->set_debug_collision_visible(visible);
+}
+
+GdBool SpxSpriteMgr::is_debug_collision_visible(GdObj obj) {
+	SPX_REQUIRE_SPRITE_RETURN(false)
+	return sprite->is_debug_collision_visible();
+}
+
 GdInt SpxSpriteMgr::create_backdrop(GdString path) {
 	return _create_sprite(path, GdVec2(), true);
 }
