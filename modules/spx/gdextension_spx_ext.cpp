@@ -803,6 +803,9 @@ static void gdextension_spx_sprite_get_pixel_collision_sampling_step(GdInt *ret_
 static void gdextension_spx_sprite_batch_update_transforms(GdArray buffer) {
 	spriteMgr->batch_update_transforms(buffer);
 }
+static void gdextension_spx_sprite_batch_update_visuals(GdArray buffer) {
+	spriteMgr->batch_update_visuals(buffer);
+}
 static void gdextension_spx_sprite_batch_retrieve_positions(GdArray objs, GdArray *ret_val) {
 	*ret_val = spriteMgr->batch_retrieve_positions(objs);
 }
@@ -1249,6 +1252,7 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_set_pixel_collision_sampling_step);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_get_pixel_collision_sampling_step);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_batch_update_transforms);
+	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_batch_update_visuals);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_batch_retrieve_positions);
 	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_open_draw_tiles_with_size);
 	REGISTER_SPX_INTERFACE_FUNC(spx_tilemap_open_draw_tiles);

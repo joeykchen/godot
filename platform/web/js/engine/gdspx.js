@@ -2509,6 +2509,14 @@ gdspx_sprite_batch_update_transforms(buffer) {
 	FreeGdArray(_arg0); 
 
 }
+gdspx_sprite_batch_update_visuals(buffer) {
+	var _gdFuncPtr = Module._gdspx_sprite_batch_update_visuals; 
+	
+	var _arg0 = ToGdArray(buffer);
+	_gdFuncPtr(_arg0);
+	FreeGdArray(_arg0); 
+
+}
 gdspx_sprite_batch_retrieve_positions(objs) {
 	var _gdFuncPtr = Module._gdspx_sprite_batch_retrieve_positions; 
 	var _retValue = AllocGdArray();

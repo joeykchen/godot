@@ -1073,6 +1073,10 @@ void gdspx_sprite_batch_update_transforms(GdArray* buffer) {
 	 spriteMgr->batch_update_transforms(*buffer);
 }
 EMSCRIPTEN_KEEPALIVE
+void gdspx_sprite_batch_update_visuals(GdArray* buffer) {
+	 spriteMgr->batch_update_visuals(*buffer);
+}
+EMSCRIPTEN_KEEPALIVE
 void gdspx_sprite_batch_retrieve_positions(GdArray* objs, GdArray *ret_val) {
 	*ret_val = spriteMgr->batch_retrieve_positions(*objs);
 }

@@ -287,6 +287,7 @@ public:
 
 	// batch sync
 	void batch_update_transforms(GdArray buffer);
+	void batch_update_visuals(GdArray buffer);
 	GdArray batch_retrieve_positions(GdArray objs);
 };
 
