@@ -237,6 +237,16 @@ GdBool SpxSpriteMgr::check_collision_with_point(GdObj obj, GdVec2 point, GdBool 
 	return sprite->check_collision_with_point(point, is_trigger);
 }
 
+void SpxSpriteMgr::set_debug_collision_visible(GdObj obj, GdBool visible) {
+	SPX_REQUIRE_SPRITE_VOID()
+	sprite->set_debug_collision_visible(visible);
+}
+
+GdBool SpxSpriteMgr::is_debug_collision_visible(GdObj obj) {
+	SPX_REQUIRE_SPRITE_RETURN(false)
+	return sprite->is_debug_collision_visible();
+}
+
 GdInt SpxSpriteMgr::create_backdrop(GdString path) {
 	return _create_sprite(path, GdVec2(), true);
 }
@@ -1174,6 +1184,71 @@ void SpxSpriteMgr::batch_update_transforms(GdArray buffer) {
 		if (sprite != nullptr) {
 			sprite->set_block_signals(true);
 			sprite->queue_free();
+		}
+	}
+}
+
+void SpxSpriteMgr::batch_update_visuals(GdArray buffer) {
+	// Buffer format: [count, entry0..., entry1..., ...]
+	// Each entry (9 floats): [spriteId, renderScaleX, renderScaleY, zIndex, flags, uvX, uvY, uvW, uvH]
+	const int VISUAL_FIELDS_PER_SPRITE = 9;
+	const int HEADER_SIZE = 1;
+	const int FLAG_HAS_ZINDEX = 1;
+	const int FLAG_HAS_UV_REMAP = 2;
+
+	if (!buffer) {
+		return;
+	}
+
+	auto len = buffer->size;
+	if (len < HEADER_SIZE) {
+		return;
+	}
+
+	const float *buffer_data = SpxBaseMgr::get_array<float>(buffer, 0);
+
+	int count = static_cast<int>(buffer_data[0]);
+
+	int expected_size = HEADER_SIZE + count * VISUAL_FIELDS_PER_SPRITE;
+	if (len != expected_size) {
+		print_error("batch_update_visuals: buffer size " + itos(len) +
+				" does not match expected size " + itos(expected_size) +
+				" (count=" + itos(count) + ")");
+		return;
+	}
+
+	int idx = HEADER_SIZE;
+
+	for (int i = 0; i < count; i++) {
+		auto sprite_id = static_cast<GdObj>(buffer_data[idx]);
+		auto render_scale_x = buffer_data[idx + 1];
+		auto render_scale_y = buffer_data[idx + 2];
+		auto z_index = static_cast<int>(buffer_data[idx + 3]);
+		auto flags = static_cast<int>(buffer_data[idx + 4]);
+		auto uv_x = buffer_data[idx + 5];
+		auto uv_y = buffer_data[idx + 6];
+		auto uv_w = buffer_data[idx + 7];
+		auto uv_h = buffer_data[idx + 8];
+
+		idx += VISUAL_FIELDS_PER_SPRITE;
+
+		SpxSprite *sprite = get_sprite(sprite_id);
+		if (sprite == nullptr) {
+			continue;
+		}
+
+		// Apply render scale
+		sprite->set_render_scale(GdVec2(render_scale_x, render_scale_y));
+
+		// Apply z-index if flag is set
+		if (flags & FLAG_HAS_ZINDEX) {
+			sprite->set_z_index(z_index);
+		}
+
+		// Apply UV remap if flag is set
+		if (flags & FLAG_HAS_UV_REMAP) {
+			String uv_param = "uv_remap";
+			sprite->set_material_params_vec4(SpxReturnStr(uv_param), GdVec4(uv_x, uv_y, uv_w, uv_h));
 		}
 	}
 }

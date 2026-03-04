@@ -625,6 +625,14 @@ void gdspx_sprite_check_collision_with_point(GdObj* obj, GdVec2* point, GdBool* 
 	*ret_val = spriteMgr->check_collision_with_point(*obj, *point, *is_trigger);
 }
 EMSCRIPTEN_KEEPALIVE
+void gdspx_sprite_set_debug_collision_visible(GdObj* obj, GdBool* visible) {
+	 spriteMgr->set_debug_collision_visible(*obj, *visible);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_sprite_is_debug_collision_visible(GdObj* obj, GdBool *ret_val) {
+	*ret_val = spriteMgr->is_debug_collision_visible(*obj);
+}
+EMSCRIPTEN_KEEPALIVE
 void gdspx_sprite_create_backdrop(GdString* path, GdObj *ret_val) {
 	*ret_val = spriteMgr->create_backdrop(*path);
 }
@@ -1063,6 +1071,10 @@ void gdspx_sprite_get_pixel_collision_sampling_step(GdInt *ret_val) {
 EMSCRIPTEN_KEEPALIVE
 void gdspx_sprite_batch_update_transforms(GdArray* buffer) {
 	 spriteMgr->batch_update_transforms(*buffer);
+}
+EMSCRIPTEN_KEEPALIVE
+void gdspx_sprite_batch_update_visuals(GdArray* buffer) {
+	 spriteMgr->batch_update_visuals(*buffer);
 }
 EMSCRIPTEN_KEEPALIVE
 void gdspx_sprite_batch_retrieve_positions(GdArray* objs, GdArray *ret_val) {

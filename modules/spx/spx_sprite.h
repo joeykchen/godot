@@ -145,6 +145,7 @@ private:
 
 	bool _is_collision_enabled = false;
 	bool _is_trigger_enabled = false;
+	bool debug_collision_visible = true; // Per-sprite debug collision visibility control
 
 	template <typename T>
 	T *get_component(Node *node, GdBool recursive = false);
@@ -334,6 +335,8 @@ public:
 	CollisionShape2D *get_collider(bool is_trigger = false);
 	GdBool check_collision(SpxSprite *other, GdBool is_src_trigger = true, GdBool is_dst_trigger = true);
 	GdBool check_collision_with_point(GdVec2 point, GdBool is_trigger = true);
+	void set_debug_collision_visible(GdBool enabled);
+	GdBool is_debug_collision_visible() const;
 
 	void set_render_scale(GdVec2 scale);
 	GdVec2 get_render_scale();
