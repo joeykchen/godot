@@ -296,10 +296,6 @@ void SpxEngine::restart() {
 	for (auto mgr : mgrs) {
 		mgr->on_start();
 	}
-
-	if (callbacks.func_on_engine_start) {
-		callbacks.func_on_engine_start();
-	}
 }
 
 void SpxEngine::set_delay_runtime_reset(bool p_delay) {
