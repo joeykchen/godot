@@ -54,6 +54,21 @@ class SpxEngineNode : public Node {
 
 #define SPX_ENGINE SpxEngine::get_singleton()
 
+namespace {
+inline bool _is_spx_engine_ready() {
+	return Spx::initialed && SpxEngine::has_initialed();
+}
+
+inline void _clear_pending_requests() {
+	Spx::restart_requested.clear();
+	Spx::reset_requested.clear();
+	Spx::reset_exit_code.set(0);
+	Spx::pause_requested.clear();
+	Spx::resume_requested.clear();
+	Spx::next_frame_requested.clear();
+}
+} // namespace
+
 void Spx::register_extension_functions() {
 	SpxUtil::register_func = &gdextension_spx_setup_interface;
 	SpxUtil::debug_mode = debug_mode;
@@ -75,12 +90,7 @@ void Spx::register_types() {
 
 void Spx::on_start(void *p_tree) {
 	initialed = true;
-	restart_requested.clear(); // Initialize restart flag to false
-	reset_requested.clear(); // Initialize reset flag to false
-	reset_exit_code.set(0); // Initialize reset exit code to 0
-	pause_requested.clear(); // Initialize pause flag to false
-	resume_requested.clear(); // Initialize resume flag to false
-	next_frame_requested.clear(); // Initialize next_frame flag to false
+	_clear_pending_requests();
 	if (!SpxEngine::has_initialed()) {
 		return;
 	}
@@ -101,7 +111,7 @@ void Spx::on_start(void *p_tree) {
 }
 
 void Spx::on_fixed_update(double delta) {
-	if (!initialed || !SpxEngine::has_initialed()) {
+	if (!_is_spx_engine_ready()) {
 		return;
 	}
 
@@ -109,7 +119,7 @@ void Spx::on_fixed_update(double delta) {
 }
 
 void Spx::on_update(double delta) {
-	if (!initialed || !SpxEngine::has_initialed()) {
+	if (!_is_spx_engine_ready()) {
 		return;
 	}
 
@@ -126,10 +136,6 @@ void Spx::on_update(double delta) {
 		int exit_code = reset_exit_code.get();
 		reset_requested.clear(); // Clear the flag after reading
 		SPX_ENGINE->on_reset(exit_code);
-		auto callback = SPX_ENGINE->get_on_runtime_reset();
-		if (callback != nullptr) {
-			callback(exit_code);
-		}
 		return; // Skip the normal update after reset
 	}
 
@@ -155,84 +161,71 @@ void Spx::on_update(double delta) {
 }
 
 void Spx::on_destroy() {
-	if (!initialed || !SpxEngine::has_initialed()) {
+	if (!_is_spx_engine_ready()) {
 		return;
 	}
 
 	SPX_ENGINE->on_destroy();
 	initialed = false;
-	restart_requested.clear();
-	reset_requested.clear();
-	reset_exit_code.set(0);
-	pause_requested.clear();
-	resume_requested.clear();
-	next_frame_requested.clear();
+	_clear_pending_requests();
 }
 
 void Spx::reset(int exit_code) {
-	if (!initialed || !SpxEngine::has_initialed()) {
+	if (!_is_spx_engine_ready()) {
 		return;
 	}
 
-	// Check if we're on the main thread
 	if (Thread::is_main_thread()) {
-		// If we're on the main thread, reset immediately
 		SPX_ENGINE->on_reset(exit_code);
-	} else {
-		// If we're not on the main thread, set the reset flag
-		// Write data first, then set flag to ensure happens-before ordering
-		reset_exit_code.set(exit_code);
-		reset_requested.set();
+		return;
 	}
+
+	// Write data first, then set flag to ensure happens-before ordering.
+	reset_exit_code.set(exit_code);
+	reset_requested.set();
 }
 
 void Spx::restart() {
-	if (!initialed || !SpxEngine::has_initialed()) {
+	if (!_is_spx_engine_ready()) {
 		return;
 	}
 
-	// Check if we're on the main thread
 	if (Thread::is_main_thread()) {
-		// If we're on the main thread, restart immediately
 		SPX_ENGINE->restart();
-	} else {
-		// If we're not on the main thread, set the restart flag
-		restart_requested.set();
+		return;
 	}
+
+	restart_requested.set();
 }
 
 void Spx::pause() {
-	if (!initialed || !SpxEngine::has_initialed()) {
+	if (!_is_spx_engine_ready()) {
 		return;
 	}
 
-	// Check if we're on the main thread
 	if (Thread::is_main_thread()) {
-		// If we're on the main thread, pause immediately
 		SPX_ENGINE->pause();
-	} else {
-		// If we're not on the main thread, set the pause flag
-		pause_requested.set();
+		return;
 	}
+
+	pause_requested.set();
 }
 
 void Spx::resume() {
-	if (!initialed || !SpxEngine::has_initialed()) {
+	if (!_is_spx_engine_ready()) {
 		return;
 	}
 
-	// Check if we're on the main thread
 	if (Thread::is_main_thread()) {
-		// If we're on the main thread, resume immediately
 		SPX_ENGINE->resume();
-	} else {
-		// If we're not on the main thread, set the resume flag
-		resume_requested.set();
+		return;
 	}
+
+	resume_requested.set();
 }
 
 bool Spx::is_paused() {
-	if (!initialed || !SpxEngine::has_initialed()) {
+	if (!_is_spx_engine_ready()) {
 		return false;
 	}
 	// Query operations are generally safe from any thread
@@ -240,16 +233,14 @@ bool Spx::is_paused() {
 }
 
 void Spx::next_frame() {
-	if (!initialed || !SpxEngine::has_initialed()) {
+	if (!_is_spx_engine_ready()) {
 		return;
 	}
 
-	// Check if we're on the main thread
 	if (Thread::is_main_thread()) {
-		// If we're on the main thread, execute next_frame immediately
 		SPX_ENGINE->next_frame();
-	} else {
-		// If we're not on the main thread, set the next_frame flag
-		next_frame_requested.set();
+		return;
 	}
+
+	next_frame_requested.set();
 }

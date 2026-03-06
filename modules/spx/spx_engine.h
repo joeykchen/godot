@@ -122,13 +122,13 @@ public:
 	SpxTilemapparserMgr *get_tilemapparser() { return tilemapparser; }
 
 private:
-	SceneTree *tree;
-	Node *spx_root;
-	GdInt global_id;
-	SpxCallbackInfo callbacks;
-	GDExtensionSpxGlobalRuntimePanicCallback on_runtime_panic;
-	GDExtensionSpxGlobalRuntimeExitCallback on_runtime_exit;
-	GDExtensionSpxGlobalRuntimeResetCallback on_runtime_reset;
+	SceneTree *tree = nullptr;
+	Node *spx_root = nullptr;
+	GdInt global_id = 0;
+	SpxCallbackInfo callbacks = {};
+	GDExtensionSpxGlobalRuntimePanicCallback on_runtime_panic = nullptr;
+	GDExtensionSpxGlobalRuntimeExitCallback on_runtime_exit = nullptr;
+	GDExtensionSpxGlobalRuntimeResetCallback on_runtime_reset = nullptr;
 
 	CanvasLayer *freeze_layer = nullptr;
 	TextureRect *freeze_screen = nullptr;
@@ -139,12 +139,12 @@ private:
 	const double RESET_PAUSE_DELAY_SEC = 5.0f;
 	bool should_delay_runtime_reset = false;
 
-	bool has_exit;
+	bool has_exit = false;
 	bool is_spx_reset = true;
-	bool is_spx_paused;
-	bool is_defer_call_pause;
-	bool defer_pause_value;
-	bool should_execute_single_frame;
+	bool is_spx_paused = false;
+	bool is_defer_call_pause = false;
+	bool defer_pause_value = false;
+	bool should_execute_single_frame = false;
 
 public:
 	SpxCallbackInfo *get_callbacks();
@@ -193,6 +193,14 @@ private:
 	void _attach_freeze_node(TextureRect *screen);
 
 	void _initialize_managers();
+	void _notify_managers_awake();
+	void _notify_managers_start();
+	void _notify_managers_fixed_update(float delta);
+	void _notify_managers_update(float delta);
+	void _notify_managers_destroy();
+	void _notify_managers_exit(int exit_code);
+	void _notify_managers_reset(int reset_code);
+	void _notify_managers_pause(bool paused);
 };
 
 #endif // SPX_ENGINE_H
