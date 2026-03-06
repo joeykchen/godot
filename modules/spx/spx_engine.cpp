@@ -125,7 +125,7 @@ void SpxEngine::register_callbacks(GDExtensionSpxCallbackInfoPtr callback_ptr) {
 	singleton = new SpxEngine();
 	singleton->mgrs.clear();
 	singleton->_initialize_managers();
-	singleton->callbacks = *(SpxCallbackInfo *)callback_ptr;
+	singleton->callbacks = (callback_ptr != nullptr) ? *(SpxCallbackInfo *)callback_ptr : get_default_spx_callbacks();
 	singleton->global_id = 1;
 	singleton->is_spx_paused = false;
 	singleton->should_execute_single_frame = false;
@@ -148,6 +148,9 @@ SceneTree *SpxEngine::get_tree() {
 }
 
 Window *SpxEngine::get_root() {
+	if (tree == nullptr) {
+		return nullptr;
+	}
 	return tree->get_root();
 }
 
@@ -166,13 +169,8 @@ void SpxEngine::on_awake() {
 		return;
 	}
 
-	for (auto mgr : mgrs) {
-		mgr->on_awake();
-	}
-
-	for (auto mgr : mgrs) {
-		mgr->on_start();
-	}
+	_notify_managers_awake();
+	_notify_managers_start();
 
 	if (callbacks.func_on_engine_start) {
 		callbacks.func_on_engine_start();
@@ -188,9 +186,7 @@ void SpxEngine::on_fixed_update(float delta) {
 		return;
 	}
 
-	for (auto mgr : mgrs) {
-		mgr->on_fixed_update(delta);
-	}
+	_notify_managers_fixed_update(delta);
 
 	if (callbacks.func_on_engine_fixed_update) {
 		callbacks.func_on_engine_fixed_update(delta);
@@ -215,9 +211,7 @@ void SpxEngine::on_update(float delta) {
 		is_defer_call_pause = false;
 	}
 
-	for (auto mgr : mgrs) {
-		mgr->on_update(delta);
-	}
+	_notify_managers_update(delta);
 
 	if (callbacks.func_on_engine_update) {
 		callbacks.func_on_engine_update(delta);
@@ -233,9 +227,7 @@ void SpxEngine::on_update(float delta) {
 }
 
 void SpxEngine::on_destroy() {
-	for (auto mgr : mgrs) {
-		mgr->on_destroy();
-	}
+	_notify_managers_destroy();
 
 	if (!has_exit) {
 		if (callbacks.func_on_engine_destroy) {
@@ -262,9 +254,7 @@ void SpxEngine::on_exit(int exit_code) {
 	capture_last_frame();
 	has_exit = true;
 
-	for (auto mgr : mgrs) {
-		mgr->on_exit(exit_code);
-	}
+	_notify_managers_exit(exit_code);
 
 	callbacks = get_default_spx_callbacks();
 }
@@ -293,9 +283,7 @@ void SpxEngine::restart() {
 	_resume_pure();
 	is_spx_reset = false;
 
-	for (auto mgr : mgrs) {
-		mgr->on_start();
-	}
+	_notify_managers_start();
 }
 
 void SpxEngine::set_delay_runtime_reset(bool p_delay) {
@@ -392,9 +380,7 @@ void SpxEngine::_do_reset(int reset_code) {
 		callbacks.func_on_engine_reset();
 	}
 
-	for (auto mgr : mgrs) {
-		mgr->on_reset(reset_code);
-	}
+	_notify_managers_reset(reset_code);
 
 	SvgManager::get_singleton()->reset(false);
 
@@ -436,13 +422,7 @@ void SpxEngine::_on_godot_pause_changed(bool is_godot_paused) {
 	if (is_godot_paused != is_spx_paused) {
 		is_spx_paused = is_godot_paused;
 
-		for (auto mgr : mgrs) {
-			if (is_spx_paused) {
-				mgr->on_pause();
-			} else {
-				mgr->on_resume();
-			}
-		}
+		_notify_managers_pause(is_spx_paused);
 
 		if (callbacks.func_on_engine_pause) {
 			callbacks.func_on_engine_pause(is_spx_paused);
@@ -532,6 +512,58 @@ void SpxEngine::_initialize_managers() {
 	pen = create_manager<SpxPenMgr>();
 	tilemap = create_manager<SpxTilemapMgr>();
 	tilemapparser = create_manager<SpxTilemapparserMgr>();
+}
+
+void SpxEngine::_notify_managers_awake() {
+	for (auto *mgr : mgrs) {
+		mgr->on_awake();
+	}
+}
+
+void SpxEngine::_notify_managers_start() {
+	for (auto *mgr : mgrs) {
+		mgr->on_start();
+	}
+}
+
+void SpxEngine::_notify_managers_fixed_update(float delta) {
+	for (auto *mgr : mgrs) {
+		mgr->on_fixed_update(delta);
+	}
+}
+
+void SpxEngine::_notify_managers_update(float delta) {
+	for (auto *mgr : mgrs) {
+		mgr->on_update(delta);
+	}
+}
+
+void SpxEngine::_notify_managers_destroy() {
+	for (auto *mgr : mgrs) {
+		mgr->on_destroy();
+	}
+}
+
+void SpxEngine::_notify_managers_exit(int exit_code) {
+	for (auto *mgr : mgrs) {
+		mgr->on_exit(exit_code);
+	}
+}
+
+void SpxEngine::_notify_managers_reset(int reset_code) {
+	for (auto *mgr : mgrs) {
+		mgr->on_reset(reset_code);
+	}
+}
+
+void SpxEngine::_notify_managers_pause(bool paused) {
+	for (auto *mgr : mgrs) {
+		if (paused) {
+			mgr->on_pause();
+		} else {
+			mgr->on_resume();
+		}
+	}
 }
 
 void SpxEngine::_destroy_all_managers() {
