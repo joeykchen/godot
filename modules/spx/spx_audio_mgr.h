@@ -48,6 +48,7 @@ class SpxAudioMgr : public SpxObjectMgr<SpxAudio> {
 private:
 	// Additional mapping for audio instance IDs (aid) to audio objects
 	RBMap<GdInt, SpxAudio *> aid_audios;
+	mutable Mutex aid_mutex;
 	GdInt g_audio_id;
 
 	SpxAudio *_get_aid_audio(GdInt aid);

@@ -45,9 +45,12 @@ private:
 	RBMap<GdObj, SpxUi *> id_objects;
 
 	Control *create_control(GdString path);
+	void _clear_nodes(bool emit_destroyed, bool queue_controls);
+	Node *create_owner_node() override;
 
 public:
 	void on_awake() override;
+	void on_destroy() override;
 	void on_reset(int reset_code) override;
 
 	void on_node_destroy(SpxUi *node);

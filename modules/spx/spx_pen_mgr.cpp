@@ -30,6 +30,12 @@
 
 #include "spx_pen_mgr.h"
 
+#define SPX_WITH_PEN_OR_RETURN(OBJ_ID, BODY)                    \
+	if (!with_object(OBJ_ID, [&](SpxPen *pen) { BODY; })) {    \
+		print_error("try to access null SpxPen object");       \
+		return;                                                \
+	}
+
 void SpxPenMgr::on_awake() {
 	SpxBaseMgr::on_awake();
 	_create_root("pen_root");
@@ -66,51 +72,41 @@ void SpxPenMgr::destroy_all_pens() {
 }
 
 void SpxPenMgr::move_pen_to(GdObj obj, GdVec2 position) {
-	SPX_CHECK_AND_GET_OBJECT_V(pen, get_object(obj), SpxPen)
-	pen->move_to(position);
+	SPX_WITH_PEN_OR_RETURN(obj, pen->move_to(position))
 }
 
 void SpxPenMgr::pen_stamp(GdObj obj) {
-	SPX_CHECK_AND_GET_OBJECT_V(pen, get_object(obj), SpxPen)
-	pen->stamp();
+	SPX_WITH_PEN_OR_RETURN(obj, pen->stamp())
 }
 
 void SpxPenMgr::pen_down(GdObj obj, GdBool move_by_mouse) {
-	SPX_CHECK_AND_GET_OBJECT_V(pen, get_object(obj), SpxPen)
-	pen->on_down(move_by_mouse);
+	SPX_WITH_PEN_OR_RETURN(obj, pen->on_down(move_by_mouse))
 }
 
 void SpxPenMgr::pen_up(GdObj obj) {
-	SPX_CHECK_AND_GET_OBJECT_V(pen, get_object(obj), SpxPen)
-	pen->on_up();
+	SPX_WITH_PEN_OR_RETURN(obj, pen->on_up())
 }
 
 void SpxPenMgr::set_pen_color_to(GdObj obj, GdColor color) {
-	SPX_CHECK_AND_GET_OBJECT_V(pen, get_object(obj), SpxPen)
-	pen->set_color_to(color);
+	SPX_WITH_PEN_OR_RETURN(obj, pen->set_color_to(color))
 }
 
 void SpxPenMgr::change_pen_by(GdObj obj, GdInt property, GdFloat amount) {
-	SPX_CHECK_AND_GET_OBJECT_V(pen, get_object(obj), SpxPen)
-	pen->change_by(property, amount);
+	SPX_WITH_PEN_OR_RETURN(obj, pen->change_by(property, amount))
 }
 
 void SpxPenMgr::set_pen_to(GdObj obj, GdInt property, GdFloat value) {
-	SPX_CHECK_AND_GET_OBJECT_V(pen, get_object(obj), SpxPen)
-	pen->set_to(property, value);
+	SPX_WITH_PEN_OR_RETURN(obj, pen->set_to(property, value))
 }
 
 void SpxPenMgr::change_pen_size_by(GdObj obj, GdFloat amount) {
-	SPX_CHECK_AND_GET_OBJECT_V(pen, get_object(obj), SpxPen)
-	pen->change_size_by(amount);
+	SPX_WITH_PEN_OR_RETURN(obj, pen->change_size_by(amount))
 }
 
 void SpxPenMgr::set_pen_size_to(GdObj obj, GdFloat size) {
-	SPX_CHECK_AND_GET_OBJECT_V(pen, get_object(obj), SpxPen)
-	pen->set_size_to(size);
+	SPX_WITH_PEN_OR_RETURN(obj, pen->set_size_to(size))
 }
 
 void SpxPenMgr::set_pen_stamp_texture(GdObj obj, GdString texture_path) {
-	SPX_CHECK_AND_GET_OBJECT_V(pen, get_object(obj), SpxPen)
-	pen->set_stamp_texture(texture_path);
+	SPX_WITH_PEN_OR_RETURN(obj, pen->set_stamp_texture(texture_path))
 }

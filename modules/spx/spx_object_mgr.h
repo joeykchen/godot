@@ -112,14 +112,14 @@ protected:
 public:
 	/**
 	 * @brief Get object by ID for reading (thread-safe with shared lock)
-	 * Use this for read-only operations - allows multiple concurrent reads
+	 * Prefer with_object()/with_object_ret() for non-trivial access so the lock
+	 * stays held while the object is being used.
 	 * @param obj Object ID
 	 * @return Pointer to object, or nullptr if not found
 	 */
 	T *get_object(GdObj obj) {
-		rw_lock.read_lock();
+		RWLockRead read_lock(rw_lock);
 		T *result = _get_object_unsafe(obj);
-		rw_lock.read_unlock();
 		return result;
 	}
 
@@ -128,9 +128,30 @@ public:
 	 * Thread-safe with shared lock
 	 */
 	const T *get_object(GdObj obj) const {
-		rw_lock.read_lock();
+		RWLockRead read_lock(rw_lock);
 		const T *result = _get_object_unsafe(obj);
-		rw_lock.read_unlock();
+		return result;
+	}
+
+	template <typename Func>
+	bool with_object(GdObj obj, Func &&func) {
+		RWLockRead read_lock(rw_lock);
+		T *object = _get_object_unsafe(obj);
+		if (object == nullptr) {
+			return false;
+		}
+		func(object);
+		return true;
+	}
+
+	template <typename Ret, typename Func>
+	Ret with_object_ret(GdObj obj, Ret default_value, Func &&func) {
+		RWLockRead read_lock(rw_lock);
+		T *object = _get_object_unsafe(obj);
+		if (object == nullptr) {
+			return default_value;
+		}
+		Ret result = func(object);
 		return result;
 	}
 
@@ -143,9 +164,8 @@ public:
 	 * @brief Get the number of managed objects (thread-safe)
 	 */
 	int get_object_count() const {
-		rw_lock.read_lock();
+		RWLockRead read_lock(rw_lock);
 		int count = id_objects.size();
-		rw_lock.read_unlock();
 		return count;
 	}
 
@@ -154,12 +174,19 @@ public:
 
 template <typename T>
 void SpxObjectMgr<T>::_destroy_all() {
-	rw_lock.write_lock();
-	for (const KeyValue<GdObj, T *> &E : id_objects) {
-		E.value->on_destroy();
+	Vector<T *> objects;
+	{
+		RWLockWrite write_lock(rw_lock);
+		for (const KeyValue<GdObj, T *> &E : id_objects) {
+			objects.push_back(E.value);
+		}
+		id_objects.clear();
 	}
-	id_objects.clear();
-	rw_lock.write_unlock();
+
+	for (T *object : objects) {
+		object->on_destroy();
+		memdelete(object);
+	}
 
 	if (root) {
 		root->queue_free();
@@ -169,41 +196,50 @@ void SpxObjectMgr<T>::_destroy_all() {
 
 template <typename T>
 void SpxObjectMgr<T>::_update_all(float delta) {
-	rw_lock.read_lock();
-	// Create a copy to avoid holding lock during callbacks
 	Vector<T *> objects_copy;
-	for (const KeyValue<GdObj, T *> &E : id_objects) {
-		objects_copy.push_back(E.value);
+	{
+		RWLockRead read_lock(rw_lock);
+		for (const KeyValue<GdObj, T *> &E : id_objects) {
+			objects_copy.push_back(E.value);
+		}
 	}
-	rw_lock.read_unlock();
 
-	// Call callbacks without holding lock to avoid deadlocks
-	for (T *obj : objects_copy) {
-		obj->on_update(delta);
+	for (T *object : objects_copy) {
+		object->on_update(delta);
 	}
 }
 
 template <typename T>
 void SpxObjectMgr<T>::_reset_all(int reset_code) {
-	rw_lock.write_lock();
-	for (const KeyValue<GdObj, T *> &E : id_objects) {
-		E.value->on_reset(reset_code);
+	Vector<T *> objects;
+	{
+		RWLockWrite write_lock(rw_lock);
+		for (const KeyValue<GdObj, T *> &E : id_objects) {
+			objects.push_back(E.value);
+		}
+		id_objects.clear();
 	}
-	id_objects.clear();
-	rw_lock.write_unlock();
+
+	for (T *object : objects) {
+		object->on_reset(reset_code);
+		object->on_destroy();
+		memdelete(object);
+	}
 }
 
 template <typename T>
 void SpxObjectMgr<T>::destroy_object(GdObj obj) {
-	rw_lock.write_lock();
-	T *object = _get_object_unsafe(obj);
+	T *object = nullptr;
+	{
+		RWLockWrite write_lock(rw_lock);
+		object = _get_object_unsafe(obj);
+		if (object != nullptr) {
+			id_objects.erase(obj);
+		}
+	}
 	if (object != nullptr) {
-		id_objects.erase(obj);
-		rw_lock.write_unlock();
-		// Destroy outside of lock to avoid potential deadlocks
 		object->on_destroy();
-	} else {
-		rw_lock.write_unlock();
+		memdelete(object);
 	}
 }
 

@@ -37,6 +37,10 @@
 
 #include "spx_engine.h"
 
+Node *SpxBaseMgr::create_owner_node() {
+	return memnew(Node2D);
+}
+
 GdInt SpxBaseMgr::get_unique_id() {
 	return SpxEngine::get_singleton()->get_unique_id();
 }
@@ -65,7 +69,10 @@ SceneTree *SpxBaseMgr::get_tree() {
 }
 
 void SpxBaseMgr::on_awake() {
-	owner = memnew(Node2D);
+	owner = create_owner_node();
+	if (owner == nullptr) {
+		return;
+	}
 	owner->set_name(get_class_name());
 	get_spx_root()->add_child(owner);
 }

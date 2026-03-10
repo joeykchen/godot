@@ -45,26 +45,45 @@ GdObj SpxPen::get_id() {
 }
 
 void SpxPen::on_create(GdInt id, Node *root) {
-	this->root = root;
+	manager_root = root;
 	this->id = id;
+	pen_root = memnew(Node2D);
+	pen_root->set_name("pen_" + itos(id));
+	manager_root->add_child(pen_root);
 	current_line = _create_new_line();
 	is_pen_down = false;
 	min_draw_distance = 1.0f;
 	pen_properties.transparency = 1.0f;
 }
 
+void SpxPen::_destroy_pen_root() {
+	if (pen_root != nullptr) {
+		pen_root->queue_free();
+		pen_root = nullptr;
+	}
+	manager_root = nullptr;
+	current_line = nullptr;
+	is_pen_down = false;
+	move_by_mouse = false;
+}
+
 Line2D *SpxPen::_create_new_line() {
+	if (pen_root == nullptr) {
+		return nullptr;
+	}
 	Line2D *new_line = memnew(Line2D);
 	new_line->set_width(pen_properties.size);
 	new_line->set_default_color(_get_current_color());
-	root->add_child(new_line);
+	pen_root->add_child(new_line);
 	return new_line;
 }
 
 void SpxPen::_start_new_line() {
 	if (is_pen_down) {
 		current_line = _create_new_line();
-		current_line->add_point(current_pen_pos);
+		if (current_line != nullptr) {
+			current_line->add_point(current_pen_pos);
+		}
 	}
 }
 
@@ -99,18 +118,19 @@ void SpxPen::on_update(float delta) {
 }
 
 void SpxPen::on_reset(int reset_code) {
+	_destroy_pen_root();
 }
 
 void SpxPen::on_destroy() {
-	if (root) {
-		root->queue_free();
-		root = nullptr;
-	}
-	current_line = nullptr;
+	_destroy_pen_root();
 }
 
 void SpxPen::erase_all() {
-	TypedArray<Node> children = root->get_children();
+	if (pen_root == nullptr) {
+		return;
+	}
+
+	TypedArray<Node> children = pen_root->get_children();
 	for (int i = 0; i < children.size(); i++) {
 		Node *child = Object::cast_to<Node>(children[i]);
 		if (Object::cast_to<Line2D>(child)) {
@@ -128,10 +148,13 @@ void SpxPen::stamp() {
 	if (!stamp_texture.is_valid()) {
 		return;
 	}
+	if (pen_root == nullptr) {
+		return;
+	}
 	Sprite2D *new_stamp = memnew(Sprite2D);
 	new_stamp->set_texture(stamp_texture);
 	new_stamp->set_position(current_pen_pos);
-	root->add_child(new_stamp);
+	pen_root->add_child(new_stamp);
 }
 
 void SpxPen::move_to(GdVec2 position) {

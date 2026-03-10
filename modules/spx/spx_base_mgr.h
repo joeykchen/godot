@@ -67,6 +67,7 @@ public:
 
 protected:
 	Node *owner;
+	virtual Node *create_owner_node();
 
 protected:
 	virtual GdInt get_unique_id();

@@ -45,6 +45,10 @@
 #define SPX_REQUIRE_UI_RETURN(VALUE) \
 	SPX_UI_GUARD_RETURN(obj, __func__, VALUE)
 
+Node *SpxUiMgr::create_owner_node() {
+	return memnew(CanvasLayer);
+}
+
 SpxUi *SpxUiMgr::get_node(GdObj obj) {
 	if (id_objects.has(obj)) {
 		return id_objects[obj];
@@ -89,23 +93,65 @@ void SpxUiMgr::on_click(ISpxUi *node) {
 
 void SpxUiMgr::on_awake() {
 	SpxBaseMgr::on_awake();
-	owner = memnew(CanvasLayer);
-	owner->set_name(get_class_name());
-	get_spx_root()->add_child(owner);
+}
+
+void SpxUiMgr::_clear_nodes(bool emit_destroyed, bool queue_controls) {
+	Vector<SpxUi *> nodes;
+	for (const auto &entry : id_objects) {
+		nodes.push_back(entry.value);
+	}
+	id_objects.clear();
+
+	for (SpxUi *node : nodes) {
+		if (node == nullptr) {
+			continue;
+		}
+
+		Control *control = node->control;
+		if (emit_destroyed) {
+			SPX_CALLBACK->func_on_ui_destroyed(node->get_gid());
+		}
+
+		if (control != nullptr) {
+			if (queue_controls) {
+				control->queue_free();
+				continue;
+			}
+			control->spx_owner = nullptr;
+			node->control = nullptr;
+		}
+
+		memdelete(node);
+	}
+}
+
+void SpxUiMgr::on_destroy() {
+	_clear_nodes(false, false);
+	SpxBaseMgr::on_destroy();
 }
 
 void SpxUiMgr::on_reset(int reset_code) {
-	owner->queue_free();
-	owner = memnew(CanvasLayer);
+	_clear_nodes(true, true);
+	if (owner != nullptr) {
+		owner->queue_free();
+	}
+	owner = create_owner_node();
+	if (owner == nullptr) {
+		return;
+	}
 	owner->set_name(get_class_name());
 	get_spx_root()->add_child(owner);
-	id_objects.clear();
 }
 
 void SpxUiMgr::on_node_destroy(SpxUi *node) {
 	if (id_objects.erase(node->get_gid())) {
 		SPX_CALLBACK->func_on_ui_destroyed(node->get_gid());
 	}
+	if (node->control != nullptr) {
+		node->control->spx_owner = nullptr;
+		node->control = nullptr;
+	}
+	memdelete(node);
 }
 
 Control *SpxUiMgr::create_control(GdString path) {
@@ -127,6 +173,9 @@ Control *SpxUiMgr::create_control(GdString path) {
 }
 
 SpxUi *SpxUiMgr::on_create_node(Control *control, GdInt type, bool is_attach) {
+	if (control == nullptr) {
+		return nullptr;
+	}
 	SpxUi *node = memnew(SpxUi);
 	if (is_attach) {
 		owner->add_child(control);
@@ -135,7 +184,7 @@ SpxUi *SpxUiMgr::on_create_node(Control *control, GdInt type, bool is_attach) {
 	node->set_control_item(control);
 	node->set_gid(get_unique_id());
 	node->on_start();
-	uiMgr->id_objects[node->get_gid()] = node;
+	id_objects[node->get_gid()] = node;
 	SPX_CALLBACK->func_on_ui_ready(node->get_gid());
 	return node;
 }
@@ -155,6 +204,9 @@ GdObj SpxUiMgr::create_node(GdString path) {
 	}
 	auto type = get_node_type(control);
 	auto node = on_create_node(control, (GdInt)type);
+	if (node == nullptr) {
+		return NULL_OBJECT_ID;
+	}
 	return node->get_gid();
 }
 
@@ -215,6 +267,9 @@ GdObj SpxUiMgr::bind_node(GdObj obj, GdString rel_path) {
 	}
 
 	auto node = on_create_node((Control *)child, (GdInt)type, false);
+	if (node == nullptr) {
+		return NULL_OBJECT_ID;
+	}
 	return node->get_gid();
 }
 
