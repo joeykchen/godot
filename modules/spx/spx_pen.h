@@ -41,7 +41,8 @@ class SpxSprite;
 class SpxPen {
 private:
 	GdObj id;
-	Node *root;
+	Node *manager_root = nullptr;
+	Node2D *pen_root = nullptr;
 	Line2D *current_line = nullptr;
 	bool is_pen_down = false;
 	float min_draw_distance = 1.0f;
@@ -60,6 +61,7 @@ private:
 	Ref<Texture2D> stamp_texture;
 
 private:
+	void _destroy_pen_root();
 	Line2D *_create_new_line();
 	void _start_new_line();
 	Color _get_current_color() const;
