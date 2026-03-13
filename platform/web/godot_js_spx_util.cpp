@@ -76,6 +76,8 @@ void writeUint32LE(uint8_t* bytes, uint32_t value) {
     bytes[3] = (value >> 24) & 0xFF;
 }
 
+static_assert(sizeof(bool) == 1, "Boolean size must be 1 byte for web array bridge");
+
 extern "C" {
 
 // other functions
@@ -443,6 +445,115 @@ GdArrayInfo* deserializeGdArray(uint8_t* bytes, int byteSize) {
     return info;
 }
 
+GdArrayInfo* deserializeGdArrayRaw(uint8_t* bytes, int byteSize, int32_t arraySize, int32_t arrayType) {
+    if (arraySize < 0 || byteSize < 0) {
+        return nullptr;
+    }
+    if (byteSize > 0 && bytes == nullptr) {
+        return nullptr;
+    }
+
+    GdArrayInfo* info = (GdArrayInfo*)malloc(sizeof(GdArrayInfo));
+    void* data = nullptr;
+    if (info == nullptr) {
+        return nullptr;
+    }
+
+    info->size = arraySize;
+    info->type = arrayType;
+    info->data = nullptr;
+
+    switch (arrayType) {
+        case GD_ARRAY_TYPE_INT64:
+        case GD_ARRAY_TYPE_GDOBJ: {
+            int64_t requiredBytes = int64_t(arraySize) * sizeof(int64_t);
+            if (byteSize != requiredBytes) {
+                goto cleanup;
+            }
+            if (arraySize == 0) {
+                return info;
+            }
+            data = malloc(requiredBytes);
+            if (data == nullptr) {
+                goto cleanup;
+            }
+            int64_t* int_data = (int64_t*)data;
+            if (isLittleEndian()) {
+                memcpy(data, bytes, requiredBytes);
+            } else {
+                for (int64_t i = 0; i < arraySize; i++) {
+                    int_data[i] = (int64_t)readUint64LE(bytes + i * 8);
+                }
+            }
+            break;
+        }
+        case GD_ARRAY_TYPE_FLOAT: {
+            int64_t requiredBytes = int64_t(arraySize) * sizeof(float);
+            if (byteSize != requiredBytes) {
+                goto cleanup;
+            }
+            if (arraySize == 0) {
+                return info;
+            }
+            data = malloc(requiredBytes);
+            if (data == nullptr) {
+                goto cleanup;
+            }
+            float* float_data = (float*)data;
+            if (isLittleEndian()) {
+                memcpy(data, bytes, requiredBytes);
+            } else {
+                for (int64_t i = 0; i < arraySize; i++) {
+                    uint32_t bits = readUint32LE(bytes + i * 4);
+                    memcpy(&float_data[i], &bits, sizeof(float));
+                }
+            }
+            break;
+        }
+        case GD_ARRAY_TYPE_BOOL: {
+            if (byteSize != arraySize) {
+                goto cleanup;
+            }
+            if (arraySize == 0) {
+                return info;
+            }
+            data = malloc(arraySize * sizeof(bool));
+            if (data == nullptr) {
+                goto cleanup;
+            }
+            bool* bool_data = (bool*)data;
+            for (int64_t i = 0; i < arraySize; i++) {
+                bool_data[i] = bytes[i] != 0;
+            }
+            break;
+        }
+        case GD_ARRAY_TYPE_BYTE: {
+            if (byteSize != arraySize) {
+                goto cleanup;
+            }
+            if (arraySize == 0) {
+                return info;
+            }
+            data = malloc(arraySize);
+            if (data == nullptr) {
+                goto cleanup;
+            }
+            memcpy(data, bytes, arraySize);
+            break;
+        }
+        default:
+            goto cleanup;
+    }
+
+    info->data = data;
+    return info;
+
+cleanup:
+    free(data);
+    free(info);
+    return nullptr;
+}
+
 uint8_t* serializeGdArray(GdArrayInfo* info, int* outSize) {
     if (info == nullptr) {
         print_line("serializeGdArray null");
@@ -556,6 +667,18 @@ EMSCRIPTEN_KEEPALIVE
 GdArray* gdspx_to_gd_array(uint8_t* bytes, int byteSize) {
     GdArray* p_gdstr = gdspx_alloc_array();
     GdArrayInfo* info = deserializeGdArray(bytes, byteSize);
+    *p_gdstr = info;
+    return p_gdstr;
+}
+
+EMSCRIPTEN_KEEPALIVE
+GdArray* gdspx_to_gd_array_raw(uint8_t* bytes, int byteSize, int32_t arraySize, int32_t arrayType) {
+    GdArrayInfo* info = deserializeGdArrayRaw(bytes, byteSize, arraySize, arrayType);
+    if (info == nullptr) {
+        return nullptr;
+    }
+
+    GdArray* p_gdstr = gdspx_alloc_array();
     *p_gdstr = info;
     return p_gdstr;
 }

@@ -318,10 +318,25 @@ function ToGdArray(array) {
     if (!array) {
         throw new Error('Invalid array structure. Expected {type, count, data}');
     }
+    if (array.__gdspx_fast_array === true) {
+        const data = array.data;
+        const dataSize = data.length;
+        const dataPtr = Module._cmalloc(dataSize);
+        try {
+            if (dataSize > 0) {
+                Module.HEAPU8.set(data, dataPtr);
+            }
+            return Module._gdspx_to_gd_array_raw(dataPtr, dataSize, array.count, array.type);
+        } finally {
+            Module._cfree(dataPtr);
+        }
+    }
     const dataSize = array.length;
     const dataPtr = Module._cmalloc(dataSize);
     try {
-        Module.HEAPU8.set(array, dataPtr);
+        if (dataSize > 0) {
+            Module.HEAPU8.set(array, dataPtr);
+        }
         const gdArrayPtr = Module._gdspx_to_gd_array(dataPtr, dataSize);
         return gdArrayPtr;
     } finally {
