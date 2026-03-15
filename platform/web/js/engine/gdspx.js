@@ -2503,19 +2503,47 @@ gdspx_sprite_get_pixel_collision_sampling_step() {
 }
 gdspx_sprite_batch_update_transforms(buffer) {
 	var _gdFuncPtr = Module._gdspx_sprite_batch_update_transforms; 
+	var _gdRawFuncPtr = Module._gdspx_sprite_batch_update_transforms_raw; 
 	
+	if (_gdRawFuncPtr && buffer && buffer.__gdspx_fast_array === true && buffer.type === 2) {
+		try {
+			var _arg0 = CopyFastArrayToWasm(buffer);
+			_gdRawFuncPtr(_arg0, buffer.count);
+			return;
+		} catch (_rawErr) {
+			console.error("[spx-webffi] raw batch_update_transforms failed", {
+				count: buffer.count,
+				dataLength: buffer.data ? buffer.data.length : null,
+				type: buffer.type,
+				error: _rawErr,
+			});
+		}
+	}
 	var _arg0 = ToGdArray(buffer);
 	_gdFuncPtr(_arg0);
 	FreeGdArray(_arg0); 
-
 }
 gdspx_sprite_batch_update_visuals(buffer) {
 	var _gdFuncPtr = Module._gdspx_sprite_batch_update_visuals; 
+	var _gdRawFuncPtr = Module._gdspx_sprite_batch_update_visuals_raw; 
 	
+	if (_gdRawFuncPtr && buffer && buffer.__gdspx_fast_array === true && buffer.type === 2) {
+		try {
+			var _arg0 = CopyFastArrayToWasm(buffer);
+			_gdRawFuncPtr(_arg0, buffer.count);
+			return;
+		} catch (_rawErr) {
+			console.error("[spx-webffi] raw batch_update_visuals failed", {
+				count: buffer.count,
+				dataLength: buffer.data ? buffer.data.length : null,
+				type: buffer.type,
+				error: _rawErr,
+			});
+		}
+	}
 	var _arg0 = ToGdArray(buffer);
 	_gdFuncPtr(_arg0);
 	FreeGdArray(_arg0); 
-
 }
 gdspx_sprite_batch_retrieve_positions(objs) {
 	var _gdFuncPtr = Module._gdspx_sprite_batch_retrieve_positions; 
