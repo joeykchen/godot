@@ -248,7 +248,6 @@ void SpxSprite::on_start() {
 		visible_notifier->connect("screen_exited", Callable(this, "on_sprite_screen_exited"));
 		visible_notifier->connect("screen_entered", Callable(this, "on_sprite_screen_entered"));
 	}
-	_sync_current_frame_visual_state();
 	_update_physics_mode();
 }
 
@@ -311,7 +310,6 @@ void SpxSprite::on_sprite_frames_set_changed() {
 	if (!Spx::initialed) {
 		return;
 	}
-	_sync_current_frame_visual_state();
 	SPX_CALLBACK->func_on_sprite_frames_set_changed(this->gid);
 }
 
@@ -319,7 +317,6 @@ void SpxSprite::on_sprite_animation_changed() {
 	if (!Spx::initialed) {
 		return;
 	}
-	_sync_current_frame_visual_state();
 	SPX_CALLBACK->func_on_sprite_animation_changed(this->gid);
 }
 
@@ -328,9 +325,11 @@ void SpxSprite::on_sprite_frame_changed() {
 		return;
 	}
 
-	_sync_current_frame_visual_state();
+	// Handle dynamic frame offset
+	_on_frame_changed();
 
 	SPX_CALLBACK->func_on_sprite_frame_changed(this->gid);
+	_update_current_frame_shader_uv_rect();
 }
 
 void SpxSprite::on_sprite_animation_looped() {
@@ -391,11 +390,6 @@ void SpxSprite::set_material_shader(GdString path) {
 	default_material.ptr()->set_shader(shader);
 	// uv_effect dependon texture repeat
 	anim2d->set_texture_repeat(TEXTURE_REPEAT_ENABLED);
-	last_synced_frames.unref();
-	last_synced_animation = StringName();
-	last_synced_frame = -1;
-	has_last_synced_uv_rect = false;
-	_sync_current_frame_visual_state();
 }
 
 GdString SpxSprite::get_material_shader() {
@@ -561,8 +555,8 @@ void SpxSprite::play_anim(GdString p_name, GdFloat p_speed, GdBool isLoop, GdBoo
 			frames = svgMgr->get_svg_animation(base_anim_key, target_scale);
 			final_anim_key = base_anim_key;
 		} else {
-			// Use base animation for non-SVG animations.
 			final_anim_key = base_anim_key;
+			// Use base animation for non-SVG animations.
 			frames = resMgr->get_anim_frames(final_anim_key);
 		}
 		anim2d->set_sprite_frames(frames);
@@ -975,35 +969,13 @@ void SpxSprite::_on_frame_changed() {
 	}
 }
 
-void SpxSprite::_sync_current_frame_visual_state() {
-	if (anim2d == nullptr) {
+void SpxSprite::_update_current_frame_shader_uv_rect() {
+	if (anim2d == nullptr || default_material.is_null()) {
 		return;
 	}
 
-	Ref<SpriteFrames> current_frames = anim2d->get_sprite_frames();
-	StringName current_animation = anim2d->get_animation();
-	int current_frame = anim2d->get_frame();
-
-	if (last_synced_frames == current_frames &&
-			last_synced_animation == current_animation &&
-			last_synced_frame == current_frame) {
-		return;
-	}
-
-	_on_frame_changed();
-
-	if (!default_material.is_null()) {
-		Rect2 uv_rect = anim2d->get_uv_rect();
-		if (!has_last_synced_uv_rect || last_synced_uv_rect != uv_rect) {
-			default_material->set_shader_parameter("atlas_uv_rect2", uv_rect);
-			last_synced_uv_rect = uv_rect;
-			has_last_synced_uv_rect = true;
-		}
-	}
-
-	last_synced_frames = current_frames;
-	last_synced_animation = current_animation;
-	last_synced_frame = current_frame;
+	Rect2 uv_rect = anim2d->get_uv_rect();
+	default_material->set_shader_parameter("atlas_uv_rect2", uv_rect);
 }
 
 void SpxSprite::set_dynamic_frame_offset_enabled(GdBool enabled) {
