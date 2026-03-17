@@ -1110,7 +1110,9 @@ GdVec2 SpxSpriteMgr::get_pivot(GdObj obj) {
 	return GdVec2(pivot.x, -pivot.y);
 }
 
-void SpxSpriteMgr::batch_update_transforms(GdArray buffer) {
+namespace {
+
+void batch_update_transforms_impl(SpxSpriteMgr *mgr, const float *buffer_data, int len) {
 	// Buffer format with header: [updateCount, deleteCount, update_data..., delete_ids...]
 	// - Header: [updateCount, deleteCount]
 	// - Update section: [id, x, y, rotation, scaleX, scaleY, offsetX, offsetY, visible, ...] (9 fields per sprite)
@@ -1118,17 +1120,13 @@ void SpxSpriteMgr::batch_update_transforms(GdArray buffer) {
 	const int FIELDS_PER_SPRITE = 9;
 	const int HEADER_SIZE = 2;
 
-	if (!buffer) {
+	if (buffer_data == nullptr) {
 		return;
 	}
 
-	auto len = buffer->size;
 	if (len < HEADER_SIZE) {
 		return;
 	}
-
-	// Get pointer to buffer data for faster access
-	const float *buffer_data = SpxBaseMgr::get_array<float>(buffer, 0);
 
 	// Read header using direct array access
 	int update_count = static_cast<int>(buffer_data[0]);
@@ -1160,7 +1158,7 @@ void SpxSpriteMgr::batch_update_transforms(GdArray buffer) {
 
 		idx += FIELDS_PER_SPRITE;
 
-		SpxSprite *sprite = get_sprite(sprite_id);
+		SpxSprite *sprite = mgr->get_sprite(sprite_id);
 		if (sprite == nullptr) {
 			continue;
 		}
@@ -1180,7 +1178,7 @@ void SpxSpriteMgr::batch_update_transforms(GdArray buffer) {
 		auto sprite_id = static_cast<GdObj>(buffer_data[idx]);
 		idx++;
 
-		SpxSprite *sprite = get_sprite(sprite_id);
+		SpxSprite *sprite = mgr->get_sprite(sprite_id);
 		if (sprite != nullptr) {
 			sprite->set_block_signals(true);
 			sprite->queue_free();
@@ -1188,7 +1186,7 @@ void SpxSpriteMgr::batch_update_transforms(GdArray buffer) {
 	}
 }
 
-void SpxSpriteMgr::batch_update_visuals(GdArray buffer) {
+void batch_update_visuals_impl(SpxSpriteMgr *mgr, const float *buffer_data, int len) {
 	// Buffer format: [count, entry0..., entry1..., ...]
 	// Each entry (9 floats): [spriteId, renderScaleX, renderScaleY, zIndex, flags, uvX, uvY, uvW, uvH]
 	const int VISUAL_FIELDS_PER_SPRITE = 9;
@@ -1196,16 +1194,13 @@ void SpxSpriteMgr::batch_update_visuals(GdArray buffer) {
 	const int FLAG_HAS_ZINDEX = 1;
 	const int FLAG_HAS_UV_REMAP = 2;
 
-	if (!buffer) {
+	if (buffer_data == nullptr) {
 		return;
 	}
 
-	auto len = buffer->size;
 	if (len < HEADER_SIZE) {
 		return;
 	}
-
-	const float *buffer_data = SpxBaseMgr::get_array<float>(buffer, 0);
 
 	int count = static_cast<int>(buffer_data[0]);
 
@@ -1232,7 +1227,7 @@ void SpxSpriteMgr::batch_update_visuals(GdArray buffer) {
 
 		idx += VISUAL_FIELDS_PER_SPRITE;
 
-		SpxSprite *sprite = get_sprite(sprite_id);
+		SpxSprite *sprite = mgr->get_sprite(sprite_id);
 		if (sprite == nullptr) {
 			continue;
 		}
@@ -1251,6 +1246,36 @@ void SpxSpriteMgr::batch_update_visuals(GdArray buffer) {
 			sprite->set_material_params_vec4(SpxReturnStr(uv_param), GdVec4(uv_x, uv_y, uv_w, uv_h));
 		}
 	}
+}
+
+} // namespace
+
+void SpxSpriteMgr::batch_update_transforms(GdArray buffer) {
+	if (!buffer) {
+		return;
+	}
+
+	const int len = buffer->size;
+	if (len < 2) {
+		return;
+	}
+
+	const float *buffer_data = SpxBaseMgr::get_array<float>(buffer, 0);
+	batch_update_transforms_impl(this, buffer_data, len);
+}
+
+void SpxSpriteMgr::batch_update_visuals(GdArray buffer) {
+	if (!buffer) {
+		return;
+	}
+
+	const int len = buffer->size;
+	if (len < 1) {
+		return;
+	}
+
+	const float *buffer_data = SpxBaseMgr::get_array<float>(buffer, 0);
+	batch_update_visuals_impl(this, buffer_data, len);
 }
 
 GdArray SpxSpriteMgr::batch_retrieve_positions(GdArray objs) {

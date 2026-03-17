@@ -314,22 +314,41 @@ function FreeGdRect2(ptr) {
     Module._gdspx_free_rect2(ptr);
 }
 
+const gdArrayScratchByType = new Map();
+
+function getGdArrayScratch(arrayType, minSize) {
+    let scratch = gdArrayScratchByType.get(arrayType);
+    if (!scratch) {
+        scratch = { ptr: 0, capacity: 0 };
+        gdArrayScratchByType.set(arrayType, scratch);
+    }
+    if (minSize > scratch.capacity) {
+        if (scratch.ptr !== 0) {
+            Module._cfree(scratch.ptr);
+        }
+        scratch.ptr = minSize > 0 ? Module._cmalloc(minSize) : 0;
+        scratch.capacity = minSize;
+    }
+    return scratch;
+}
+
+function CopyFastArrayToWasm(array) {
+    const data = array.data;
+    const dataSize = data.length;
+    const scratch = getGdArrayScratch(array.type, dataSize);
+    if (dataSize > 0) {
+        Module.HEAPU8.set(data, scratch.ptr);
+    }
+    return scratch.ptr;
+}
+
 function ToGdArray(array) {
     if (!array) {
         throw new Error('Invalid array structure. Expected {type, count, data}');
     }
     if (array.__gdspx_fast_array === true) {
-        const data = array.data;
-        const dataSize = data.length;
-        const dataPtr = Module._cmalloc(dataSize);
-        try {
-            if (dataSize > 0) {
-                Module.HEAPU8.set(data, dataPtr);
-            }
-            return Module._gdspx_to_gd_array_raw(dataPtr, dataSize, array.count, array.type);
-        } finally {
-            Module._cfree(dataPtr);
-        }
+        const dataPtr = CopyFastArrayToWasm(array);
+        return Module._gdspx_to_gd_array_raw(dataPtr, array.data.length, array.count, array.type);
     }
     const dataSize = array.length;
     const dataPtr = Module._cmalloc(dataSize);
