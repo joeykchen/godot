@@ -137,9 +137,6 @@ public:
 	void destroy_all_sprites();
 	void collect_sortable_sprites(Vector<ISortableSprite *> &out);
 
-	void batch_update_transforms_raw(const float *buffer_data, int len);
-	void batch_update_visuals_raw(const float *buffer_data, int len);
-
 public:
 	void set_dont_destroy_on_load(GdObj obj);
 	// process
@@ -294,8 +291,8 @@ public:
 	GdInt get_pixel_collision_sampling_step();
 
 	// batch sync
-	void batch_update_transforms(GdArray buffer);
-	void batch_update_visuals(GdArray buffer);
+	void batch_update_transforms(const float *buffer_data, int len);
+	void batch_update_visuals(const float *buffer_data, int len);
 	GdArray batch_retrieve_positions(GdArray objs);
 };
 
