@@ -116,7 +116,7 @@ private:
 	GdBool _check_collision(GdObj obj, ColorCheckFunc check_func);
 	bool _check_pixel_collision_between(SpxSprite *sprite_a, SpxSprite *sprite_b, GdFloat alpha_threshold);
 	void _notify_pixel_collision_enter(const TriggerPair &pair);
-	void _notify_pixel_collision_exit(const TriggerPair &pair);
+	void _notify_pixel_collision_exit(const TriggerPair &pair, GdObj skip_id = NULL_OBJECT_ID);
 	bool _erase_pixel_collision_pair(const TriggerPair &pair);
 	void _remove_collision_pairs_for_sprite(GdObj obj);
 	void _check_pixel_collision_events();

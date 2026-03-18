@@ -1055,6 +1055,8 @@ void SpxSpriteMgr::on_trigger_enter(GdInt self_id, GdInt other_id) {
 void SpxSpriteMgr::on_trigger_exit(GdInt self_id, GdInt other_id) {
 	if (physicsMgr->is_collision_by_pixel) {
 		const TriggerPair pair(self_id, other_id);
+		// Trigger separation ends the broad-phase candidate pair, so pixel collision
+		// tracking must stop immediately instead of waiting for another pixel check.
 		bounding_collision_pairs.erase(pair);
 		if (_erase_pixel_collision_pair(pair)) {
 			_notify_pixel_collision_exit(pair);
@@ -1069,9 +1071,13 @@ void SpxSpriteMgr::_notify_pixel_collision_enter(const TriggerPair &pair) {
 	SPX_CALLBACK->func_on_trigger_enter(pair.id2, pair.id1);
 }
 
-void SpxSpriteMgr::_notify_pixel_collision_exit(const TriggerPair &pair) {
-	SPX_CALLBACK->func_on_trigger_exit(pair.id1, pair.id2);
-	SPX_CALLBACK->func_on_trigger_exit(pair.id2, pair.id1);
+void SpxSpriteMgr::_notify_pixel_collision_exit(const TriggerPair &pair, GdObj skip_id) {
+	if (pair.id1 != skip_id) {
+		SPX_CALLBACK->func_on_trigger_exit(pair.id1, pair.id2);
+	}
+	if (pair.id2 != skip_id) {
+		SPX_CALLBACK->func_on_trigger_exit(pair.id2, pair.id1);
+	}
 }
 
 bool SpxSpriteMgr::_erase_pixel_collision_pair(const TriggerPair &pair) {
@@ -1079,21 +1085,26 @@ bool SpxSpriteMgr::_erase_pixel_collision_pair(const TriggerPair &pair) {
 }
 
 void SpxSpriteMgr::_remove_collision_pairs_for_sprite(GdObj obj) {
-	Vector<TriggerPair> pairs_to_remove;
-	for (const auto &pair : bounding_collision_pairs) {
-		if (pair.id1 == obj || pair.id2 == obj) {
-			pairs_to_remove.push_back(pair);
-		}
-	}
-	for (const auto &pair : pixel_collision_pairs) {
-		if (pair.id1 == obj || pair.id2 == obj) {
-			pairs_to_remove.push_back(pair);
+	Vector<TriggerPair> exit_triggers;
+	for (auto it = pixel_collision_pairs.begin(); it != pixel_collision_pairs.end();) {
+		if (it->id1 == obj || it->id2 == obj) {
+			exit_triggers.push_back(*it);
+			it = pixel_collision_pairs.erase(it);
+		} else {
+			++it;
 		}
 	}
 
-	for (const auto &pair : pairs_to_remove) {
-		bounding_collision_pairs.erase(pair);
-		pixel_collision_pairs.erase(pair);
+	for (auto it = bounding_collision_pairs.begin(); it != bounding_collision_pairs.end();) {
+		if (it->id1 == obj || it->id2 == obj) {
+			it = bounding_collision_pairs.erase(it);
+		} else {
+			++it;
+		}
+	}
+
+	for (const auto &pair : exit_triggers) {
+		_notify_pixel_collision_exit(pair, obj);
 	}
 }
 
