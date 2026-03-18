@@ -132,6 +132,9 @@ public:
 	void destroy_all_sprites();
 	void collect_sortable_sprites(Vector<ISortableSprite *> &out);
 
+	void batch_update_transforms_raw(const float *buffer_data, int len);
+	void batch_update_visuals_raw(const float *buffer_data, int len);
+
 public:
 	void set_dont_destroy_on_load(GdObj obj);
 	// process
