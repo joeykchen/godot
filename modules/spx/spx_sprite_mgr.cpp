@@ -148,6 +148,7 @@ SpxSprite *SpxSpriteMgr::get_sprite(GdObj obj) {
 }
 
 void SpxSpriteMgr::on_sprite_destroy(SpxSprite *sprite) {
+	_remove_collision_pairs_for_sprite(sprite->get_gid());
 	if (id_objects.erase(sprite->get_gid())) {
 		SPX_CALLBACK->func_on_sprite_destroyed(sprite->get_gid());
 	}
@@ -908,8 +909,11 @@ GdBool SpxSpriteMgr::check_collision_with_sprite(GdObj obj, GdObj obj_b, GdFloat
 		return sprite->check_collision(sprite_target.get(), false, false);
 	}
 
-	// Original pixel-perfect collision logic
-	AnimatedSprite2D *anim1 = sprite->anim2d;
+	return _check_pixel_collision_between(sprite.get(), sprite_target.get(), alpha_threshold);
+}
+
+bool SpxSpriteMgr::_check_pixel_collision_between(SpxSprite *sprite_a, SpxSprite *sprite_b, GdFloat alpha_threshold) {
+	AnimatedSprite2D *anim1 = sprite_a->anim2d;
 	if (!anim1) {
 		return false;
 	}
@@ -923,7 +927,7 @@ GdBool SpxSpriteMgr::check_collision_with_sprite(GdObj obj, GdObj obj_b, GdFloat
 	Vector2i size1 = image1->get_size();
 	auto trans1 = transform1.affine_inverse();
 
-	AnimatedSprite2D *anim2 = sprite_target->anim2d;
+	AnimatedSprite2D *anim2 = sprite_b->anim2d;
 	if (!anim2) {
 		return false;
 	}
@@ -1050,52 +1054,83 @@ void SpxSpriteMgr::on_trigger_enter(GdInt self_id, GdInt other_id) {
 }
 void SpxSpriteMgr::on_trigger_exit(GdInt self_id, GdInt other_id) {
 	if (physicsMgr->is_collision_by_pixel) {
-		bounding_collision_pairs.erase(TriggerPair(self_id, other_id));
+		const TriggerPair pair(self_id, other_id);
+		bounding_collision_pairs.erase(pair);
+		if (_erase_pixel_collision_pair(pair)) {
+			_notify_pixel_collision_exit(pair);
+		}
 	} else {
 		SPX_CALLBACK->func_on_trigger_exit(self_id, other_id);
 	}
 }
 
+void SpxSpriteMgr::_notify_pixel_collision_enter(const TriggerPair &pair) {
+	SPX_CALLBACK->func_on_trigger_enter(pair.id1, pair.id2);
+	SPX_CALLBACK->func_on_trigger_enter(pair.id2, pair.id1);
+}
+
+void SpxSpriteMgr::_notify_pixel_collision_exit(const TriggerPair &pair) {
+	SPX_CALLBACK->func_on_trigger_exit(pair.id1, pair.id2);
+	SPX_CALLBACK->func_on_trigger_exit(pair.id2, pair.id1);
+}
+
+bool SpxSpriteMgr::_erase_pixel_collision_pair(const TriggerPair &pair) {
+	return pixel_collision_pairs.erase(pair) > 0;
+}
+
+void SpxSpriteMgr::_remove_collision_pairs_for_sprite(GdObj obj) {
+	Vector<TriggerPair> pairs_to_remove;
+	for (const auto &pair : bounding_collision_pairs) {
+		if (pair.id1 == obj || pair.id2 == obj) {
+			pairs_to_remove.push_back(pair);
+		}
+	}
+	for (const auto &pair : pixel_collision_pairs) {
+		if (pair.id1 == obj || pair.id2 == obj) {
+			pairs_to_remove.push_back(pair);
+		}
+	}
+
+	for (const auto &pair : pairs_to_remove) {
+		bounding_collision_pairs.erase(pair);
+		pixel_collision_pairs.erase(pair);
+	}
+}
+
 void SpxSpriteMgr::_check_pixel_collision_events() {
-	// trigger pixel collision events
-	if (physicsMgr->is_collision_by_pixel) {
-		Vector<TriggerPair> triggers;
-		Vector<TriggerPair> delete_triggers;
-		for (auto &trigger : bounding_collision_pairs) {
-			auto sprite1 = get_sprite(trigger.id1);
-			if (sprite1 == nullptr) {
-				delete_triggers.push_back(trigger);
-				continue;
-			}
-			auto sprite2 = get_sprite(trigger.id2);
-			if (sprite2 == nullptr) {
-				delete_triggers.push_back(trigger);
-				continue;
-			}
+	if (!physicsMgr->is_collision_by_pixel || bounding_collision_pairs.empty()) {
+		return;
+	}
+
+	Vector<TriggerPair> enter_triggers;
+	Vector<TriggerPair> exit_triggers;
+
+	for (auto it = bounding_collision_pairs.begin(); it != bounding_collision_pairs.end();) {
+		const TriggerPair trigger = *it;
+		SpxSprite *sprite1 = get_sprite(trigger.id1);
+		SpxSprite *sprite2 = get_sprite(trigger.id2);
+		if (sprite1 == nullptr || sprite2 == nullptr) {
+			_erase_pixel_collision_pair(trigger);
+			it = bounding_collision_pairs.erase(it);
+			continue;
 		}
 
-		for (auto &trigger : delete_triggers) {
-			pixel_collision_pairs.erase(trigger);
-			bounding_collision_pairs.erase(trigger);
-		}
-		// check collision by pixel
-		for (auto &trigger : bounding_collision_pairs) {
-			auto is_collide = check_collision_with_sprite(trigger.id1, trigger.id2, DEFAULT_COLLISION_ALPHA_THRESHOLD, true);
-			if (is_collide) {
-				if (pixel_collision_pairs.find(trigger) == pixel_collision_pairs.end()) {
-					pixel_collision_pairs.insert(trigger);
-					triggers.push_back(trigger);
-				}
-			} else {
-				pixel_collision_pairs.erase(trigger);
+		if (_check_pixel_collision_between(sprite1, sprite2, DEFAULT_COLLISION_ALPHA_THRESHOLD)) {
+			if (pixel_collision_pairs.insert(trigger).second) {
+				enter_triggers.push_back(trigger);
 			}
+		} else if (_erase_pixel_collision_pair(trigger)) {
+			exit_triggers.push_back(trigger);
 		}
 
-		// trigger pixel collision enter events
-		for (auto &trigger : triggers) {
-			SPX_CALLBACK->func_on_trigger_enter(trigger.id1, trigger.id2);
-			SPX_CALLBACK->func_on_trigger_enter(trigger.id2, trigger.id1);
-		}
+		++it;
+	}
+
+	for (const auto &trigger : exit_triggers) {
+		_notify_pixel_collision_exit(trigger);
+	}
+	for (const auto &trigger : enter_triggers) {
+		_notify_pixel_collision_enter(trigger);
 	}
 }
 
