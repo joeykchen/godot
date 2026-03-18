@@ -1112,7 +1112,7 @@ GdVec2 SpxSpriteMgr::get_pivot(GdObj obj) {
 
 namespace {
 
-void batch_update_transforms_impl(SpxSpriteMgr *mgr, const float *buffer_data, int len) {
+void batch_update_transforms_impl(SpxSpriteMgr *mgr, const float *buffer_data, int len, const char *op_name) {
 	// Buffer format with header: [updateCount, deleteCount, update_data..., delete_ids...]
 	// - Header: [updateCount, deleteCount]
 	// - Update section: [id, x, y, rotation, scaleX, scaleY, offsetX, offsetY, visible, ...] (9 fields per sprite)
@@ -1135,7 +1135,7 @@ void batch_update_transforms_impl(SpxSpriteMgr *mgr, const float *buffer_data, i
 	// Validate buffer size
 	int expected_size = HEADER_SIZE + update_count * FIELDS_PER_SPRITE + delete_count;
 	if (len != expected_size) {
-		print_error("batch_update_transforms: buffer size " + itos(len) +
+		print_error(String(op_name) + ": buffer size " + itos(len) +
 				" does not match expected size " + itos(expected_size) +
 				" (updateCount=" + itos(update_count) + ", deleteCount=" + itos(delete_count) + ")");
 		return;
@@ -1186,7 +1186,7 @@ void batch_update_transforms_impl(SpxSpriteMgr *mgr, const float *buffer_data, i
 	}
 }
 
-void batch_update_visuals_impl(SpxSpriteMgr *mgr, const float *buffer_data, int len) {
+void batch_update_visuals_impl(SpxSpriteMgr *mgr, const float *buffer_data, int len, const char *op_name) {
 	// Buffer format: [count, entry0..., entry1..., ...]
 	// Each entry (9 floats): [spriteId, renderScaleX, renderScaleY, zIndex, flags, uvX, uvY, uvW, uvH]
 	const int VISUAL_FIELDS_PER_SPRITE = 9;
@@ -1206,7 +1206,7 @@ void batch_update_visuals_impl(SpxSpriteMgr *mgr, const float *buffer_data, int 
 
 	int expected_size = HEADER_SIZE + count * VISUAL_FIELDS_PER_SPRITE;
 	if (len != expected_size) {
-		print_error("batch_update_visuals: buffer size " + itos(len) +
+		print_error(String(op_name) + ": buffer size " + itos(len) +
 				" does not match expected size " + itos(expected_size) +
 				" (count=" + itos(count) + ")");
 		return;
@@ -1261,7 +1261,7 @@ void SpxSpriteMgr::batch_update_transforms(GdArray buffer) {
 	}
 
 	const float *buffer_data = SpxBaseMgr::get_array<float>(buffer, 0);
-	batch_update_transforms_impl(this, buffer_data, len);
+	batch_update_transforms_impl(this, buffer_data, len, "batch_update_transforms");
 }
 
 void SpxSpriteMgr::batch_update_visuals(GdArray buffer) {
@@ -1275,7 +1275,23 @@ void SpxSpriteMgr::batch_update_visuals(GdArray buffer) {
 	}
 
 	const float *buffer_data = SpxBaseMgr::get_array<float>(buffer, 0);
-	batch_update_visuals_impl(this, buffer_data, len);
+	batch_update_visuals_impl(this, buffer_data, len, "batch_update_visuals");
+}
+
+void SpxSpriteMgr::batch_update_transforms_raw(const float *buffer_data, int len) {
+	if (buffer_data == nullptr || len < 2) {
+		return;
+	}
+
+	batch_update_transforms_impl(this, buffer_data, len, "batch_update_transforms_raw");
+}
+
+void SpxSpriteMgr::batch_update_visuals_raw(const float *buffer_data, int len) {
+	if (buffer_data == nullptr || len < 1) {
+		return;
+	}
+
+	batch_update_visuals_impl(this, buffer_data, len, "batch_update_visuals_raw");
 }
 
 GdArray SpxSpriteMgr::batch_retrieve_positions(GdArray objs) {
