@@ -800,11 +800,11 @@ static void gdextension_spx_sprite_set_pixel_collision_sampling_step(GdInt step)
 static void gdextension_spx_sprite_get_pixel_collision_sampling_step(GdInt *ret_val) {
 	*ret_val = spriteMgr->get_pixel_collision_sampling_step();
 }
-static void gdextension_spx_sprite_batch_update_transforms(GdArray buffer) {
-	spriteMgr->batch_update_transforms(buffer);
+static void gdextension_spx_sprite_batch_update_transforms(const float *buffer_data, int len) {
+	spriteMgr->batch_update_transforms(buffer_data, len);
 }
-static void gdextension_spx_sprite_batch_update_visuals(GdArray buffer) {
-	spriteMgr->batch_update_visuals(buffer);
+static void gdextension_spx_sprite_batch_update_visuals(const float *buffer_data, int len) {
+	spriteMgr->batch_update_visuals(buffer_data, len);
 }
 static void gdextension_spx_sprite_batch_retrieve_positions(GdArray objs, GdArray *ret_val) {
 	*ret_val = spriteMgr->batch_retrieve_positions(objs);

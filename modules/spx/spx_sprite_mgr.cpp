@@ -1296,48 +1296,20 @@ void batch_update_visuals_impl(SpxSpriteMgr *mgr, const float *buffer_data, int 
 
 } // namespace
 
-void SpxSpriteMgr::batch_update_transforms(GdArray buffer) {
-	if (!buffer) {
-		return;
-	}
-
-	const int len = buffer->size;
-	if (len < 2) {
-		return;
-	}
-
-	const float *buffer_data = SpxBaseMgr::get_array<float>(buffer, 0);
-	batch_update_transforms_impl(this, buffer_data, len, "batch_update_transforms");
-}
-
-void SpxSpriteMgr::batch_update_visuals(GdArray buffer) {
-	if (!buffer) {
-		return;
-	}
-
-	const int len = buffer->size;
-	if (len < 1) {
-		return;
-	}
-
-	const float *buffer_data = SpxBaseMgr::get_array<float>(buffer, 0);
-	batch_update_visuals_impl(this, buffer_data, len, "batch_update_visuals");
-}
-
-void SpxSpriteMgr::batch_update_transforms_raw(const float *buffer_data, int len) {
+void SpxSpriteMgr::batch_update_transforms(const float *buffer_data, int len) {
 	if (buffer_data == nullptr || len < 2) {
 		return;
 	}
 
-	batch_update_transforms_impl(this, buffer_data, len, "batch_update_transforms_raw");
+	batch_update_transforms_impl(this, buffer_data, len, "batch_update_transforms");
 }
 
-void SpxSpriteMgr::batch_update_visuals_raw(const float *buffer_data, int len) {
+void SpxSpriteMgr::batch_update_visuals(const float *buffer_data, int len) {
 	if (buffer_data == nullptr || len < 1) {
 		return;
 	}
 
-	batch_update_visuals_impl(this, buffer_data, len, "batch_update_visuals_raw");
+	batch_update_visuals_impl(this, buffer_data, len, "batch_update_visuals");
 }
 
 GdArray SpxSpriteMgr::batch_retrieve_positions(GdArray objs) {
