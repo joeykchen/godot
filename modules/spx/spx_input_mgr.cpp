@@ -38,6 +38,9 @@
 
 void SpxInputMgr::on_start() {
 	SpxBaseMgr::on_start();
+	if (input_proxy && !input_proxy->is_queued_for_deletion()) {
+		return;
+	}
 	input_proxy = memnew(SpxInputProxy);
 	input_proxy->set_name("input_proxy");
 	get_spx_root()->add_child(input_proxy);
@@ -47,6 +50,7 @@ void SpxInputMgr::on_start() {
 void SpxInputMgr::on_reset(int reset_code) {
 	if (input_proxy) {
 		input_proxy->queue_free();
+		input_proxy = nullptr;
 	}
 }
 
