@@ -43,7 +43,7 @@ public:
 	void on_reset(int reset_code) override;
 
 protected:
-	SpxInputProxy *input_proxy;
+	SpxInputProxy *input_proxy = nullptr;
 
 public:
 	GdVec2 get_global_mouse_pos();

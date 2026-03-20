@@ -44,5 +44,17 @@ void SpxInputProxy::input(const Ref<InputEvent> &p_event) {
 		} else if (k->is_released()) {
 			SPX_CALLBACK->func_on_key_released((GdInt)k->get_keycode());
 		}
+		return;
+	}
+
+	Ref<InputEventMouseButton> mb = p_event;
+	if (!mb.is_valid()) {
+		return;
+	}
+
+	if (mb->is_pressed()) {
+		SPX_CALLBACK->func_on_mouse_pressed((GdInt)mb->get_button_index());
+	} else if (mb->is_released()) {
+		SPX_CALLBACK->func_on_mouse_released((GdInt)mb->get_button_index());
 	}
 }
