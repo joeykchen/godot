@@ -640,6 +640,10 @@ void gdspx_sprite_create_sprite(GdString *path, GdVec2 *pos, GdObj *ret_val) {
 	*ret_val = spriteMgr->create_sprite(*path, *pos);
 }
 EMSCRIPTEN_KEEPALIVE
+void gdspx_sprite_create_empty_sprite(GdVec2 *pos, GdObj *ret_val) {
+	*ret_val = spriteMgr->create_bare_sprite(*pos);
+}
+EMSCRIPTEN_KEEPALIVE
 void gdspx_sprite_clone_sprite(GdObj *obj, GdObj *ret_val) {
 	*ret_val = spriteMgr->clone_sprite(*obj);
 }
