@@ -1,7 +1,35 @@
+const DIRECT_CALLBACK_HANDLER_SLOTS = globalThis.__spxDirectCallbackHandlerSlots || (globalThis.__spxDirectCallbackHandlerSlots = Object.create(null));
+
 const GodotGdspx = {
 	$GodotGdspx__deps: ['$GodotConfig', '$GodotRuntime', '$GodotFS'],
 	$GodotGdspx: {
-		callN: function (exportName, eventName, ...args) {
+		getDirectHandler: function (exportName) {
+			const directHandler = DIRECT_CALLBACK_HANDLER_SLOTS[exportName];
+			return typeof directHandler === 'function' ? directHandler : null;
+		},
+
+		// Direct callbacks use native BigInt object ids to avoid boxing on the hot
+		// path. The FFI fallback keeps the legacy { low, high } shape for
+		// compatibility with older callback bridges.
+		toCallbackInt: function (ptr, directHandler) {
+			if (typeof directHandler === 'function') {
+				return GodotRuntime.ToJsBigInt(ptr);
+			}
+			return GodotRuntime.ToJsInt(ptr);
+		},
+
+		toCallbackObj: function (ptr, directHandler) {
+			if (typeof directHandler === 'function') {
+				return GodotRuntime.ToJsBigObj(ptr);
+			}
+			return GodotRuntime.ToJsObj(ptr);
+		},
+
+		callN: function (exportName, eventName, directHandler, ...args) {
+			if (typeof directHandler === 'function') {
+				directHandler(...args);
+				return;
+			}
 			if (!FFI) {
 				return;
 			}
@@ -16,19 +44,19 @@ const GodotGdspx = {
 		},
 
 		callDirect: function (exportName, ...args) {
-			GodotGdspx.callN(exportName, null, ...args);
+			GodotGdspx.callN(exportName, null, null, ...args);
 		},
 
-		call0: function (exportName, eventName) {
-			GodotGdspx.callN(exportName, eventName);
+		call0: function (exportName, eventName, directHandler = null) {
+			GodotGdspx.callN(exportName, eventName, directHandler);
 		},
 
-		call1: function (exportName, eventName, arg0) {
-			GodotGdspx.callN(exportName, eventName, arg0);
+		call1: function (exportName, eventName, arg0, directHandler = null) {
+			GodotGdspx.callN(exportName, eventName, directHandler, arg0);
 		},
 
-		call2: function (exportName, eventName, arg0, arg1) {
-			GodotGdspx.callN(exportName, eventName, arg0, arg1);
+		call2: function (exportName, eventName, arg0, arg1, directHandler = null) {
+			GodotGdspx.callN(exportName, eventName, directHandler, arg0, arg1);
 		},
 	},
 
@@ -45,22 +73,26 @@ const GodotGdspx = {
 
 	godot_js_spx_on_engine_update__sig: 'vf',
 	godot_js_spx_on_engine_update: function (delta) {
-		GodotGdspx.call1("gdspx_on_engine_update", "OnEngineUpdate", delta);
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_engine_update");
+		GodotGdspx.call1("gdspx_on_engine_update", "OnEngineUpdate", delta, directHandler);
 	},
 
 	godot_js_spx_on_engine_fixed_update__sig: 'vf',
 	godot_js_spx_on_engine_fixed_update: function (delta) {
-		GodotGdspx.call1("gdspx_on_engine_fixed_update", "OnEngineFixedUpdate", delta);
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_engine_fixed_update");
+		GodotGdspx.call1("gdspx_on_engine_fixed_update", "OnEngineFixedUpdate", delta, directHandler);
 	},
 
 	godot_js_spx_on_engine_destroy__sig: 'v',
 	godot_js_spx_on_engine_destroy: function () {
-		GodotGdspx.call0("gdspx_on_engine_destroy", "OnEngineDestroy");
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_engine_destroy");
+		GodotGdspx.call0("gdspx_on_engine_destroy", "OnEngineDestroy", directHandler);
 	},
 
 	godot_js_spx_on_engine_reset__sig: 'v',
 	godot_js_spx_on_engine_reset: function () {
-		GodotGdspx.call0("gdspx_on_engine_reset", "OnEngineReset");
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_engine_reset");
+		GodotGdspx.call0("gdspx_on_engine_reset", "OnEngineReset", directHandler);
 	},
 
 	godot_js_spx_on_reset_done__sig: 'vi',
@@ -71,16 +103,19 @@ const GodotGdspx = {
 
 	godot_js_spx_on_engine_pause__sig: 'vi',
 	godot_js_spx_on_engine_pause: function (is_on) {
-		GodotGdspx.call1("gdspx_on_engine_pause", "OnEnginePause", is_on);
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_engine_pause");
+		GodotGdspx.call1("gdspx_on_engine_pause", "OnEnginePause", is_on, directHandler);
 	},
 
 	godot_js_spx_on_scene_sprite_instantiated__sig: 'vii',
 	godot_js_spx_on_scene_sprite_instantiated: function (obj, type_name) {
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_scene_sprite_instantiated");
 		GodotGdspx.call2(
 			"gdspx_on_scene_sprite_instantiated",
 			"OnSceneSpriteInstantiated",
-			GodotRuntime.ToJsObj(obj),
-			GodotRuntime.parseString(type_name)
+			GodotGdspx.toCallbackObj(obj, directHandler),
+			GodotRuntime.parseString(type_name),
+			directHandler
 		);
 	},
 
@@ -96,82 +131,98 @@ const GodotGdspx = {
 
 	godot_js_spx_on_sprite_ready__sig: 'vi',
 	godot_js_spx_on_sprite_ready: function (obj) {
-		GodotGdspx.call1("gdspx_on_sprite_ready", "OnSpriteReady", GodotRuntime.ToJsObj(obj));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_sprite_ready");
+		GodotGdspx.call1("gdspx_on_sprite_ready", "OnSpriteReady", GodotGdspx.toCallbackObj(obj, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_sprite_updated__sig: 'vf',
 	godot_js_spx_on_sprite_updated: function (delta) {
-		GodotGdspx.call1("gdspx_on_sprite_updated", "OnSpriteUpdated", delta);
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_sprite_updated");
+		GodotGdspx.call1("gdspx_on_sprite_updated", "OnSpriteUpdated", delta, directHandler);
 	},
 
 	godot_js_spx_on_sprite_fixed_updated__sig: 'vf',
 	godot_js_spx_on_sprite_fixed_updated: function (delta) {
-		GodotGdspx.call1("gdspx_on_sprite_fixed_updated", "OnSpriteFixedUpdated", delta);
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_sprite_fixed_updated");
+		GodotGdspx.call1("gdspx_on_sprite_fixed_updated", "OnSpriteFixedUpdated", delta, directHandler);
 	},
 
 	godot_js_spx_on_sprite_destroyed__sig: 'vi',
 	godot_js_spx_on_sprite_destroyed: function (obj) {
-		GodotGdspx.call1("gdspx_on_sprite_destroyed", "OnSpriteDestroyed", GodotRuntime.ToJsObj(obj));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_sprite_destroyed");
+		GodotGdspx.call1("gdspx_on_sprite_destroyed", "OnSpriteDestroyed", GodotGdspx.toCallbackObj(obj, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_sprite_frames_set_changed__sig: 'vi',
 	godot_js_spx_on_sprite_frames_set_changed: function (obj) {
-		GodotGdspx.call1("gdspx_on_sprite_frames_set_changed", "OnSpriteFramesSetChanged", GodotRuntime.ToJsObj(obj));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_sprite_frames_set_changed");
+		GodotGdspx.call1("gdspx_on_sprite_frames_set_changed", "OnSpriteFramesSetChanged", GodotGdspx.toCallbackObj(obj, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_sprite_animation_changed__sig: 'vi',
 	godot_js_spx_on_sprite_animation_changed: function (obj) {
-		GodotGdspx.call1("gdspx_on_sprite_animation_changed", "OnSpriteAnimationChanged", GodotRuntime.ToJsObj(obj));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_sprite_animation_changed");
+		GodotGdspx.call1("gdspx_on_sprite_animation_changed", "OnSpriteAnimationChanged", GodotGdspx.toCallbackObj(obj, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_sprite_frame_changed__sig: 'vi',
 	godot_js_spx_on_sprite_frame_changed: function (obj) {
-		GodotGdspx.call1("gdspx_on_sprite_frame_changed", "OnSpriteFrameChanged", GodotRuntime.ToJsObj(obj));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_sprite_frame_changed");
+		GodotGdspx.call1("gdspx_on_sprite_frame_changed", "OnSpriteFrameChanged", GodotGdspx.toCallbackObj(obj, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_sprite_animation_looped__sig: 'vi',
 	godot_js_spx_on_sprite_animation_looped: function (obj) {
-		GodotGdspx.call1("gdspx_on_sprite_animation_looped", "OnSpriteAnimationLooped", GodotRuntime.ToJsObj(obj));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_sprite_animation_looped");
+		GodotGdspx.call1("gdspx_on_sprite_animation_looped", "OnSpriteAnimationLooped", GodotGdspx.toCallbackObj(obj, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_sprite_animation_finished__sig: 'vi',
 	godot_js_spx_on_sprite_animation_finished: function (obj) {
-		GodotGdspx.call1("gdspx_on_sprite_animation_finished", "OnSpriteAnimationFinished", GodotRuntime.ToJsObj(obj));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_sprite_animation_finished");
+		GodotGdspx.call1("gdspx_on_sprite_animation_finished", "OnSpriteAnimationFinished", GodotGdspx.toCallbackObj(obj, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_sprite_vfx_finished__sig: 'vi',
 	godot_js_spx_on_sprite_vfx_finished: function (obj) {
-		GodotGdspx.call1("gdspx_on_sprite_vfx_finished", "OnSpriteVfxFinished", GodotRuntime.ToJsObj(obj));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_sprite_vfx_finished");
+		GodotGdspx.call1("gdspx_on_sprite_vfx_finished", "OnSpriteVfxFinished", GodotGdspx.toCallbackObj(obj, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_sprite_screen_exited__sig: 'vi',
 	godot_js_spx_on_sprite_screen_exited: function (obj) {
-		GodotGdspx.call1("gdspx_on_sprite_screen_exited", "OnSpriteScreenExited", GodotRuntime.ToJsObj(obj));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_sprite_screen_exited");
+		GodotGdspx.call1("gdspx_on_sprite_screen_exited", "OnSpriteScreenExited", GodotGdspx.toCallbackObj(obj, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_sprite_screen_entered__sig: 'vi',
 	godot_js_spx_on_sprite_screen_entered: function (obj) {
-		GodotGdspx.call1("gdspx_on_sprite_screen_entered", "OnSpriteScreenEntered", GodotRuntime.ToJsObj(obj));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_sprite_screen_entered");
+		GodotGdspx.call1("gdspx_on_sprite_screen_entered", "OnSpriteScreenEntered", GodotGdspx.toCallbackObj(obj, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_mouse_pressed__sig: 'vi',
 	godot_js_spx_on_mouse_pressed: function (keyid) {
-		GodotGdspx.call1("gdspx_on_mouse_pressed", "OnMousePressed", GodotRuntime.ToJsInt(keyid));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_mouse_pressed");
+		GodotGdspx.call1("gdspx_on_mouse_pressed", "OnMousePressed", GodotGdspx.toCallbackInt(keyid, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_mouse_released__sig: 'vi',
 	godot_js_spx_on_mouse_released: function (keyid) {
-		GodotGdspx.call1("gdspx_on_mouse_released", "OnMouseReleased", GodotRuntime.ToJsInt(keyid));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_mouse_released");
+		GodotGdspx.call1("gdspx_on_mouse_released", "OnMouseReleased", GodotGdspx.toCallbackInt(keyid, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_key_pressed__sig: 'vi',
 	godot_js_spx_on_key_pressed: function (keyid) {
-		GodotGdspx.call1("gdspx_on_key_pressed", "OnKeyPressed", GodotRuntime.ToJsInt(keyid));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_key_pressed");
+		GodotGdspx.call1("gdspx_on_key_pressed", "OnKeyPressed", GodotGdspx.toCallbackInt(keyid, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_key_released__sig: 'vi',
 	godot_js_spx_on_key_released: function (keyid) {
-		GodotGdspx.call1("gdspx_on_key_released", "OnKeyReleased", GodotRuntime.ToJsInt(keyid));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_key_released");
+		GodotGdspx.call1("gdspx_on_key_released", "OnKeyReleased", GodotGdspx.toCallbackInt(keyid, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_action_pressed__sig: 'vi',
@@ -196,77 +247,92 @@ const GodotGdspx = {
 
 	godot_js_spx_on_collision_enter__sig: 'vii',
 	godot_js_spx_on_collision_enter: function (self_id, other_id) {
-		GodotGdspx.call2("gdspx_on_collision_enter", "OnCollisionEnter", GodotRuntime.ToJsInt(self_id), GodotRuntime.ToJsInt(other_id));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_collision_enter");
+		GodotGdspx.call2("gdspx_on_collision_enter", "OnCollisionEnter", GodotGdspx.toCallbackInt(self_id, directHandler), GodotGdspx.toCallbackInt(other_id, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_collision_stay__sig: 'vii',
 	godot_js_spx_on_collision_stay: function (self_id, other_id) {
-		GodotGdspx.call2("gdspx_on_collision_stay", "OnCollisionStay", GodotRuntime.ToJsInt(self_id), GodotRuntime.ToJsInt(other_id));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_collision_stay");
+		GodotGdspx.call2("gdspx_on_collision_stay", "OnCollisionStay", GodotGdspx.toCallbackInt(self_id, directHandler), GodotGdspx.toCallbackInt(other_id, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_collision_exit__sig: 'vii',
 	godot_js_spx_on_collision_exit: function (self_id, other_id) {
-		GodotGdspx.call2("gdspx_on_collision_exit", "OnCollisionExit", GodotRuntime.ToJsInt(self_id), GodotRuntime.ToJsInt(other_id));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_collision_exit");
+		GodotGdspx.call2("gdspx_on_collision_exit", "OnCollisionExit", GodotGdspx.toCallbackInt(self_id, directHandler), GodotGdspx.toCallbackInt(other_id, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_trigger_enter__sig: 'vii',
 	godot_js_spx_on_trigger_enter: function (self_id, other_id) {
-		GodotGdspx.call2("gdspx_on_trigger_enter", "OnTriggerEnter", GodotRuntime.ToJsInt(self_id), GodotRuntime.ToJsInt(other_id));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_trigger_enter");
+		GodotGdspx.call2("gdspx_on_trigger_enter", "OnTriggerEnter", GodotGdspx.toCallbackInt(self_id, directHandler), GodotGdspx.toCallbackInt(other_id, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_trigger_stay__sig: 'vii',
 	godot_js_spx_on_trigger_stay: function (self_id, other_id) {
-		GodotGdspx.call2("gdspx_on_trigger_stay", "OnTriggerStay", GodotRuntime.ToJsInt(self_id), GodotRuntime.ToJsInt(other_id));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_trigger_stay");
+		GodotGdspx.call2("gdspx_on_trigger_stay", "OnTriggerStay", GodotGdspx.toCallbackInt(self_id, directHandler), GodotGdspx.toCallbackInt(other_id, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_trigger_exit__sig: 'vii',
 	godot_js_spx_on_trigger_exit: function (self_id, other_id) {
-		GodotGdspx.call2("gdspx_on_trigger_exit", "OnTriggerExit", GodotRuntime.ToJsInt(self_id), GodotRuntime.ToJsInt(other_id));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_trigger_exit");
+		GodotGdspx.call2("gdspx_on_trigger_exit", "OnTriggerExit", GodotGdspx.toCallbackInt(self_id, directHandler), GodotGdspx.toCallbackInt(other_id, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_ui_ready__sig: 'vi',
 	godot_js_spx_on_ui_ready: function (obj) {
-		GodotGdspx.call1("gdspx_on_ui_ready", "OnUiReady", GodotRuntime.ToJsObj(obj));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_ui_ready");
+		GodotGdspx.call1("gdspx_on_ui_ready", "OnUiReady", GodotGdspx.toCallbackObj(obj, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_ui_updated__sig: 'vi',
 	godot_js_spx_on_ui_updated: function (obj) {
-		GodotGdspx.call1("gdspx_on_ui_updated", "OnUiUpdated", GodotRuntime.ToJsObj(obj));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_ui_updated");
+		GodotGdspx.call1("gdspx_on_ui_updated", "OnUiUpdated", GodotGdspx.toCallbackObj(obj, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_ui_destroyed__sig: 'vi',
 	godot_js_spx_on_ui_destroyed: function (obj) {
-		GodotGdspx.call1("gdspx_on_ui_destroyed", "OnUiDestroyed", GodotRuntime.ToJsObj(obj));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_ui_destroyed");
+		GodotGdspx.call1("gdspx_on_ui_destroyed", "OnUiDestroyed", GodotGdspx.toCallbackObj(obj, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_ui_pressed__sig: 'vi',
 	godot_js_spx_on_ui_pressed: function (obj) {
-		GodotGdspx.call1("gdspx_on_ui_pressed", "OnUiPressed", GodotRuntime.ToJsObj(obj));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_ui_pressed");
+		GodotGdspx.call1("gdspx_on_ui_pressed", "OnUiPressed", GodotGdspx.toCallbackObj(obj, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_ui_released__sig: 'vi',
 	godot_js_spx_on_ui_released: function (obj) {
-		GodotGdspx.call1("gdspx_on_ui_released", "OnUiReleased", GodotRuntime.ToJsObj(obj));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_ui_released");
+		GodotGdspx.call1("gdspx_on_ui_released", "OnUiReleased", GodotGdspx.toCallbackObj(obj, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_ui_hovered__sig: 'vi',
 	godot_js_spx_on_ui_hovered: function (obj) {
-		GodotGdspx.call1("gdspx_on_ui_hovered", "OnUiHovered", GodotRuntime.ToJsObj(obj));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_ui_hovered");
+		GodotGdspx.call1("gdspx_on_ui_hovered", "OnUiHovered", GodotGdspx.toCallbackObj(obj, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_ui_clicked__sig: 'vi',
 	godot_js_spx_on_ui_clicked: function (obj) {
-		GodotGdspx.call1("gdspx_on_ui_clicked", "OnUiClicked", GodotRuntime.ToJsObj(obj));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_ui_clicked");
+		GodotGdspx.call1("gdspx_on_ui_clicked", "OnUiClicked", GodotGdspx.toCallbackObj(obj, directHandler), directHandler);
 	},
 
 	godot_js_spx_on_ui_toggle__sig: 'vii',
 	godot_js_spx_on_ui_toggle: function (obj, is_on) {
-		GodotGdspx.call2("gdspx_on_ui_toggle", "OnUiToggle", GodotRuntime.ToJsObj(obj), is_on);
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_ui_toggle");
+		GodotGdspx.call2("gdspx_on_ui_toggle", "OnUiToggle", GodotGdspx.toCallbackObj(obj, directHandler), is_on, directHandler);
 	},
 
 	godot_js_spx_on_ui_text_changed__sig: 'vii',
 	godot_js_spx_on_ui_text_changed: function (obj, text) {
-		GodotGdspx.call2("gdspx_on_ui_text_changed", "OnUiTextChanged", GodotRuntime.ToJsObj(obj), GodotRuntime.parseString(text));
+		const directHandler = GodotGdspx.getDirectHandler("gdspx_on_ui_text_changed");
+		GodotGdspx.call2("gdspx_on_ui_text_changed", "OnUiTextChanged", GodotGdspx.toCallbackObj(obj, directHandler), GodotRuntime.parseString(text), directHandler);
 	},
 };
 
