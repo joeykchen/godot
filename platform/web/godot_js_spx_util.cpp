@@ -5,6 +5,9 @@
 #include <string.h>
 #include <cstdlib>
 #include <cstdint>
+#include <string_view>
+#include <unordered_map>
+#include <vector>
 #include <emscripten/emscripten.h>
 
 static ObjectPool<GdVec2> vec2Pool(100);
@@ -18,6 +21,73 @@ static ObjectPool<GdVec4> vec4Pool(100);
 static ObjectPool<GdColor> colorPool(100);
 static ObjectPool<GdRect2> rect2Pool(100);
 static ObjectPool<GdArray> arrayPool(100);
+
+struct CachedGdStringEntry {
+    char *data = nullptr;
+    uint32_t len = 0;
+    uint64_t refcount = 0;
+    uint64_t last_used_tick = 0;
+};
+
+static constexpr size_t GDSPX_STRING_CACHE_MAX_ENTRIES = 128;
+static constexpr uint32_t GDSPX_STRING_CACHE_MAX_LEN = 256;
+static std::vector<CachedGdStringEntry> gdspxStringCache;
+static std::unordered_map<std::string_view, size_t> gdspxStringCacheByValue;
+static std::unordered_map<const char *, size_t> gdspxStringCacheByPtr;
+static uint64_t gdspxStringCacheTick = 0;
+
+static CachedGdStringEntry *find_cached_gdstring_by_value(const char *str, uint32_t len) {
+    auto it = gdspxStringCacheByValue.find(std::string_view(str, len));
+    if (it == gdspxStringCacheByValue.end()) {
+        return nullptr;
+    }
+    return &gdspxStringCache[it->second];
+}
+
+static CachedGdStringEntry *find_cached_gdstring_by_ptr(const char *ptr) {
+    auto it = gdspxStringCacheByPtr.find(ptr);
+    if (it == gdspxStringCacheByPtr.end()) {
+        return nullptr;
+    }
+    return &gdspxStringCache[it->second];
+}
+
+static bool should_cache_gdstring(uint32_t len) {
+    return len <= GDSPX_STRING_CACHE_MAX_LEN;
+}
+
+static void remove_cached_gdstring_at(size_t index) {
+    CachedGdStringEntry &entry = gdspxStringCache[index];
+    gdspxStringCacheByValue.erase(std::string_view(entry.data, entry.len));
+    gdspxStringCacheByPtr.erase(entry.data);
+    free(entry.data);
+
+    size_t last_index = gdspxStringCache.size() - 1;
+    if (index != last_index) {
+        std::swap(gdspxStringCache[index], gdspxStringCache[last_index]);
+        const CachedGdStringEntry &moved = gdspxStringCache[index];
+        gdspxStringCacheByValue[std::string_view(moved.data, moved.len)] = index;
+        gdspxStringCacheByPtr[moved.data] = index;
+    }
+    gdspxStringCache.pop_back();
+}
+
+static bool evict_oldest_unused_gdstring() {
+    size_t oldest_index = static_cast<size_t>(-1);
+    uint64_t oldest_tick = UINT64_MAX;
+    for (size_t i = 0; i < gdspxStringCache.size(); i++) {
+        const auto &entry = gdspxStringCache[i];
+        if (entry.refcount == 0 && entry.last_used_tick < oldest_tick) {
+            oldest_tick = entry.last_used_tick;
+            oldest_index = i;
+        }
+    }
+    if (oldest_index == static_cast<size_t>(-1)) {
+        return false;
+    }
+    remove_cached_gdstring_at(oldest_index);
+    return true;
+}
 
 // Check if the machine is little-endian
 inline bool isLittleEndian() {
@@ -275,9 +345,37 @@ GdString* gdspx_alloc_string() {
 EMSCRIPTEN_KEEPALIVE
 GdString* gdspx_new_string(const char* str, uint32_t len) {
     GdString* ptr = gdspx_alloc_string();
+    CachedGdStringEntry *cached = find_cached_gdstring_by_value(str, len);
+    if (cached != nullptr) {
+        cached->refcount += 1;
+        cached->last_used_tick = ++gdspxStringCacheTick;
+        *ptr = cached->data;
+        return ptr;
+    }
+
     char* result = (char*)malloc(len + 1);
-	strcpy(result, str);
+    if (result == nullptr) {
+        stringPool.release(ptr);
+        return nullptr;
+    }
+    memcpy(result, str, len);
+    result[len] = '\0';
     *ptr = result;
+
+    if (should_cache_gdstring(len)) {
+        if (gdspxStringCache.size() >= GDSPX_STRING_CACHE_MAX_ENTRIES && !evict_oldest_unused_gdstring()) {
+            return ptr;
+        }
+        size_t cache_index = gdspxStringCache.size();
+        gdspxStringCache.push_back(CachedGdStringEntry{
+            result,
+            len,
+            1,
+            ++gdspxStringCacheTick,
+        });
+        gdspxStringCacheByValue[std::string_view(result, len)] = cache_index;
+        gdspxStringCacheByPtr[result] = cache_index;
+    }
     return ptr;
 }
 
@@ -288,6 +386,12 @@ const char* gdspx_get_string(GdString* ptr) {
 
 EMSCRIPTEN_KEEPALIVE
 void gdspx_free_cstr(const char* str) {
+    if (str == nullptr) {
+        return;
+    }
+    if (find_cached_gdstring_by_ptr(str) != nullptr) {
+        return;
+    }
     free((void*)str);
     str = nullptr;
 }
@@ -300,11 +404,19 @@ int32_t gdspx_get_string_len(GdString* ptr) {
 
 EMSCRIPTEN_KEEPALIVE
 void gdspx_free_string(GdString* p_gdstr) {
-    if(p_gdstr == nullptr || *p_gdstr == nullptr) {
+    if (p_gdstr == nullptr || *p_gdstr == nullptr) {
         print_line("gdspx_free_string: null pointer or null internal string");
         return;
     }
-    free((void*)*p_gdstr);
+
+    CachedGdStringEntry *cached = find_cached_gdstring_by_ptr((const char *)*p_gdstr);
+    if (cached != nullptr) {
+        if (cached->refcount > 0) {
+            cached->refcount -= 1;
+        }
+    } else {
+        free((void*)*p_gdstr);
+    }
     *p_gdstr = nullptr;
     stringPool.release(p_gdstr);
 }

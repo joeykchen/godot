@@ -152,8 +152,8 @@ function ToGdObj(value) {
 
 function ToJsObj(ptr) {
     const dataView = GetHeapDataView();
-    const low = dataView.getUint32(ptr, true);  // 低32位
-    const high = dataView.getUint32(ptr + 4, true);  // 高32位
+    const low = dataView.getUint32(ptr, true);
+    const high = dataView.getUint32(ptr + 4, true);
     return {
         low: low,
         high: high
@@ -260,10 +260,10 @@ function ToJsString(gdstrPtr) {
 
 function toJsString(gdstrPtr, isFree) {
     EnsureGdspxFunctionPointers();
-    const length = gdspxGetStringLen(gdstrPtr)
-    const ptr = gdspxGetString(gdstrPtr)
+    const length = gdspxGetStringLen(gdstrPtr);
+    const ptr = gdspxGetString(gdstrPtr);
     const stringBytes = Module.HEAPU8.subarray(ptr, ptr + length);
-    const result = GDSPX_UTF8_DECODER.decode(stringBytes)
+    const result = GDSPX_UTF8_DECODER.decode(stringBytes);
     if (isFree) {
         gdspxFreeCstr(ptr);
     }
@@ -499,7 +499,6 @@ function ToJsArray(gdArrayPtr) {
     try {
         const serializedPtr = gdspxToJsArray(gdArrayPtr, outputSizePtr);
         if (!serializedPtr) {
-            console.log("ToJsArray serializedPtr == null");
             return null;
         }
         const outputSize = Module.HEAP32[outputSizePtr >> 2];
