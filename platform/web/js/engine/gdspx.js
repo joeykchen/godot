@@ -371,9 +371,16 @@ gdspx_input_get_global_mouse_pos() {
 	var _gdFuncPtr = Module._gdspx_input_get_global_mouse_pos; 
 	var _retValue = AllocGdVec2();
 	_gdFuncPtr(_retValue);
-	var _finalRetValue = ToJsVec2(_retValue);
-	FreeGdVec2(_retValue); 
-	return _finalRetValue
+	var _scratch = GdspxFuncs._inputMousePosScratch;
+	if (!_scratch) {
+		_scratch = GdspxFuncs._inputMousePosScratch = { x: 0, y: 0 };
+	}
+	var _floatIndex = _retValue / 4;
+	var _heap = Module.HEAPF32;
+	_scratch.x = _heap[_floatIndex];
+	_scratch.y = _heap[_floatIndex + 1];
+	FreeGdVec2(_retValue);
+	return _scratch
 }
 gdspx_input_get_key(key) {
 	var _gdFuncPtr = Module._gdspx_input_get_key; 
