@@ -162,6 +162,7 @@ public:
 	GdBool is_debug_collision_visible(GdObj obj);
 	GdObj create_backdrop(GdString path);
 	GdObj create_sprite(GdString path, GdVec2 pos);
+	GdObj create_bare_sprite(GdVec2 pos);
 	GdObj clone_sprite(GdObj obj);
 	GdBool destroy_sprite(GdObj obj);
 	GdBool is_sprite_alive(GdObj obj);

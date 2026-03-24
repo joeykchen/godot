@@ -479,6 +479,9 @@ static void gdextension_spx_sprite_create_backdrop(GdString path, GdObj *ret_val
 static void gdextension_spx_sprite_create_sprite(GdString path, GdVec2 pos, GdObj *ret_val) {
 	*ret_val = spriteMgr->create_sprite(path, pos);
 }
+static void gdextension_spx_sprite_create_empty_sprite(GdVec2 pos, GdObj *ret_val) {
+	*ret_val = spriteMgr->create_bare_sprite(pos);
+}
 static void gdextension_spx_sprite_clone_sprite(GdObj obj, GdObj *ret_val) {
 	*ret_val = spriteMgr->clone_sprite(obj);
 }
@@ -1144,6 +1147,7 @@ void gdextension_spx_setup_interface() {
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_is_debug_collision_visible);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_create_backdrop);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_create_sprite);
+	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_create_empty_sprite);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_clone_sprite);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_destroy_sprite);
 	REGISTER_SPX_INTERFACE_FUNC(spx_sprite_is_sprite_alive);

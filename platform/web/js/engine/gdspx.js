@@ -1388,6 +1388,16 @@ gdspx_sprite_create_sprite(path,pos) {
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
+gdspx_sprite_create_empty_sprite(pos) {
+	var _gdFuncPtr = Module._gdspx_sprite_create_empty_sprite; 
+	var _retValue = AllocGdObj();
+	var _arg0 = ToGdVec2(pos);
+	_gdFuncPtr(_arg0, _retValue);
+	FreeGdVec2(_arg0); 
+	var _finalRetValue = ToJsObj(_retValue);
+	FreeGdObj(_retValue); 
+	return _finalRetValue
+}
 gdspx_sprite_clone_sprite(obj) {
 	var _gdFuncPtr = Module._gdspx_sprite_clone_sprite; 
 	var _retValue = AllocGdObj();

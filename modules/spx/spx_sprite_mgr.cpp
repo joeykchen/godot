@@ -256,6 +256,10 @@ GdInt SpxSpriteMgr::create_sprite(GdString path, GdVec2 pos) {
 	return _create_sprite(path, pos, false);
 }
 
+GdObj SpxSpriteMgr::create_bare_sprite(GdVec2 pos) {
+	return _create_sprite("", pos, false);
+}
+
 // sprite
 GdInt SpxSpriteMgr::_create_sprite(GdString path, GdVec2 pos, GdBool is_backdrop) {
 	const String path_str = SpxStr(path);
