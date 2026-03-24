@@ -1,8 +1,112 @@
-// TODO @jiepengtan cache function pointer
+const GDSPX_HAS_BIG_INT64 = typeof DataView.prototype.getBigInt64 === 'function';
+const GDSPX_UTF8_ENCODER = new TextEncoder();
+const GDSPX_UTF8_DECODER = new TextDecoder("utf-8");
+
+let gdspxFunctionPointerModule = null;
+let gdspxMalloc = null;
+let gdspxFree = null;
+let gdspxAllocArray = null;
+let gdspxAllocBool = null;
+let gdspxAllocColor = null;
+let gdspxAllocFloat = null;
+let gdspxAllocInt = null;
+let gdspxAllocObj = null;
+let gdspxAllocRect2 = null;
+let gdspxAllocString = null;
+let gdspxAllocVec2 = null;
+let gdspxAllocVec3 = null;
+let gdspxAllocVec4 = null;
+let gdspxFreeArray = null;
+let gdspxFreeBool = null;
+let gdspxFreeColor = null;
+let gdspxFreeCstr = null;
+let gdspxFreeFloat = null;
+let gdspxFreeInt = null;
+let gdspxFreeObj = null;
+let gdspxFreeRect2 = null;
+let gdspxFreeString = null;
+let gdspxFreeVec2 = null;
+let gdspxFreeVec3 = null;
+let gdspxFreeVec4 = null;
+let gdspxGetString = null;
+let gdspxGetStringLen = null;
+let gdspxNewBool = null;
+let gdspxNewColor = null;
+let gdspxNewFloat = null;
+let gdspxNewInt = null;
+let gdspxNewObj = null;
+let gdspxNewRect2 = null;
+let gdspxNewString = null;
+let gdspxNewVec2 = null;
+let gdspxNewVec3 = null;
+let gdspxNewVec4 = null;
+let gdspxToGdArray = null;
+let gdspxToGdArrayRaw = null;
+let gdspxToJsArray = null;
+
+function EnsureGdspxFunctionPointers() {
+    if (gdspxFunctionPointerModule === Module) {
+        return;
+    }
+    gdspxMalloc = Module._cmalloc;
+    gdspxFree = Module._cfree;
+    gdspxAllocArray = Module._gdspx_alloc_array;
+    gdspxAllocBool = Module._gdspx_alloc_bool;
+    gdspxAllocColor = Module._gdspx_alloc_color;
+    gdspxAllocFloat = Module._gdspx_alloc_float;
+    gdspxAllocInt = Module._gdspx_alloc_int;
+    gdspxAllocObj = Module._gdspx_alloc_obj;
+    gdspxAllocRect2 = Module._gdspx_alloc_rect2;
+    gdspxAllocString = Module._gdspx_alloc_string;
+    gdspxAllocVec2 = Module._gdspx_alloc_vec2;
+    gdspxAllocVec3 = Module._gdspx_alloc_vec3;
+    gdspxAllocVec4 = Module._gdspx_alloc_vec4;
+    gdspxFreeArray = Module._gdspx_free_array;
+    gdspxFreeBool = Module._gdspx_free_bool;
+    gdspxFreeColor = Module._gdspx_free_color;
+    gdspxFreeCstr = Module._gdspx_free_cstr;
+    gdspxFreeFloat = Module._gdspx_free_float;
+    gdspxFreeInt = Module._gdspx_free_int;
+    gdspxFreeObj = Module._gdspx_free_obj;
+    gdspxFreeRect2 = Module._gdspx_free_rect2;
+    gdspxFreeString = Module._gdspx_free_string;
+    gdspxFreeVec2 = Module._gdspx_free_vec2;
+    gdspxFreeVec3 = Module._gdspx_free_vec3;
+    gdspxFreeVec4 = Module._gdspx_free_vec4;
+    gdspxGetString = Module._gdspx_get_string;
+    gdspxGetStringLen = Module._gdspx_get_string_len;
+    gdspxNewBool = Module._gdspx_new_bool;
+    gdspxNewColor = Module._gdspx_new_color;
+    gdspxNewFloat = Module._gdspx_new_float;
+    gdspxNewInt = Module._gdspx_new_int;
+    gdspxNewObj = Module._gdspx_new_obj;
+    gdspxNewRect2 = Module._gdspx_new_rect2;
+    gdspxNewString = Module._gdspx_new_string;
+    gdspxNewVec2 = Module._gdspx_new_vec2;
+    gdspxNewVec3 = Module._gdspx_new_vec3;
+    gdspxNewVec4 = Module._gdspx_new_vec4;
+    gdspxToGdArray = Module._gdspx_to_gd_array;
+    gdspxToGdArrayRaw = Module._gdspx_to_gd_array_raw;
+    gdspxToJsArray = Module._gdspx_to_js_array;
+    gdspxFunctionPointerModule = Module;
+}
+
+let gdspxHeapDataViewBuffer = null;
+let gdspxHeapDataView = null;
+
+function GetHeapDataView() {
+    const memoryBuffer = Module.HEAPU8.buffer;
+    if (gdspxHeapDataViewBuffer !== memoryBuffer) {
+        gdspxHeapDataViewBuffer = memoryBuffer;
+        gdspxHeapDataView = new DataView(memoryBuffer);
+    }
+    return gdspxHeapDataView;
+}
 
 // Bool-related functions
 function ToGdBool(value) {
-    return Module._gdspx_new_bool(value);
+    EnsureGdspxFunctionPointers();
+    return gdspxNewBool(value);
 }
 
 function ToJsBool(ptr) {
@@ -12,7 +116,8 @@ function ToJsBool(ptr) {
 }
 
 function AllocGdBool() {
-    return Module._gdspx_alloc_bool();
+    EnsureGdspxFunctionPointers();
+    return gdspxAllocBool();
 }
 
 function PrintGdBool(ptr) {
@@ -20,12 +125,10 @@ function PrintGdBool(ptr) {
 }
 
 function FreeGdBool(ptr) {
-    Module._gdspx_free_bool(ptr);
+    EnsureGdspxFunctionPointers();
+    gdspxFreeBool(ptr);
 }
 
-
-
-// Object-related functions
 function ToGdObject(object) {
     return ToGdObj(object);
 }
@@ -43,23 +146,27 @@ function PrintGdObject(ptr) {
 }
 
 function ToGdObj(value) {
-    return Module._gdspx_new_obj(value.high, value.low);
+    EnsureGdspxFunctionPointers();
+    return gdspxNewObj(value.high, value.low);
 }
 
 function ToJsObj(ptr) {
-    const memoryBuffer = Module.HEAPU8.buffer;
-    const dataView = new DataView(memoryBuffer);
+    const dataView = GetHeapDataView();
     const low = dataView.getUint32(ptr, true);  // 低32位
     const high = dataView.getUint32(ptr + 4, true);  // 高32位
-    //const int64Value = BigInt(high) << 32n | BigInt(low);
     return {
         low: low,
         high: high
     };
 }
 
+function ToJsBigObj(ptr) {
+    return ToJsBigInt(ptr);
+}
+
 function AllocGdObj() {
-    return Module._gdspx_alloc_obj();
+    EnsureGdspxFunctionPointers();
+    return gdspxAllocObj();
 }
 
 function PrintGdObj(ptr) {
@@ -67,17 +174,17 @@ function PrintGdObj(ptr) {
 }
 
 function FreeGdObj(ptr) {
-    Module._gdspx_free_obj(ptr);
+    EnsureGdspxFunctionPointers();
+    gdspxFreeObj(ptr);
 }
 
-// Int-related functions
 function ToGdInt(value) {
-    return Module._gdspx_new_int(value.high, value.low);
+    EnsureGdspxFunctionPointers();
+    return gdspxNewInt(value.high, value.low);
 }
 
 function ToJsInt(ptr) {
-    const memoryBuffer = Module.HEAPU8.buffer;
-    const dataView = new DataView(memoryBuffer);
+    const dataView = GetHeapDataView();
     const low = dataView.getUint32(ptr, true);  // 低32位
     const high = dataView.getUint32(ptr + 4, true);  // 高32位
     return {
@@ -85,8 +192,20 @@ function ToJsInt(ptr) {
         high: high
     };
 }
+
+function ToJsBigInt(ptr) {
+    const dataView = GetHeapDataView();
+    if (GDSPX_HAS_BIG_INT64) {
+        return dataView.getBigInt64(ptr, true);
+    }
+    const low = dataView.getUint32(ptr, true);
+    const high = dataView.getUint32(ptr + 4, true);
+    return BigInt.asIntN(64, (BigInt(high) << 32n) | BigInt(low));
+}
+
 function AllocGdInt() {
-    return Module._gdspx_alloc_int();
+    EnsureGdspxFunctionPointers();
+    return gdspxAllocInt();
 }
 
 function PrintGdInt(ptr) {
@@ -94,13 +213,13 @@ function PrintGdInt(ptr) {
 }
 
 function FreeGdInt(ptr) {
-    Module._gdspx_free_int(ptr);
+    EnsureGdspxFunctionPointers();
+    gdspxFreeInt(ptr);
 }
 
-
-// Float-related functions
 function ToGdFloat(value) {
-    return Module._gdspx_new_float(value);
+    EnsureGdspxFunctionPointers();
+    return gdspxNewFloat(value);
 }
 
 function ToJsFloat(ptr) {
@@ -111,7 +230,8 @@ function ToJsFloat(ptr) {
 }
 
 function AllocGdFloat() {
-    return Module._gdspx_alloc_float();
+    EnsureGdspxFunctionPointers();
+    return gdspxAllocFloat();
 }
 
 function PrintGdFloat(ptr) {
@@ -119,55 +239,54 @@ function PrintGdFloat(ptr) {
 }
 
 function FreeGdFloat(ptr) {
-    Module._gdspx_free_float(ptr);
+    EnsureGdspxFunctionPointers();
+    gdspxFreeFloat(ptr);
 }
 
-// String-related functions
 function ToGdString(str) {
-    const encoder = new TextEncoder();
-    const stringBytes = encoder.encode(str);
-    const ptr = Module._cmalloc(stringBytes.length + 1);
+    EnsureGdspxFunctionPointers();
+    const stringBytes = GDSPX_UTF8_ENCODER.encode(str);
+    const ptr = gdspxMalloc(stringBytes.length + 1);
     Module.HEAPU8.set(stringBytes, ptr);
     Module.HEAPU8[ptr + stringBytes.length] = 0;
-    const gdstrPtr = Module._gdspx_new_string(ptr, stringBytes.length);
-    Module._cfree(ptr);
+    const gdstrPtr = gdspxNewString(ptr, stringBytes.length);
+    gdspxFree(ptr);
     return gdstrPtr;
 }
 
 function ToJsString(gdstrPtr) {
-    return _toJsString(gdstrPtr, false);
+    return toJsString(gdstrPtr, false);
 }
 
-function _toJsString(gdstrPtr, isFree) {
-    const length = Module._gdspx_get_string_len(gdstrPtr)
-    const ptr = Module._gdspx_get_string(gdstrPtr)
+function toJsString(gdstrPtr, isFree) {
+    EnsureGdspxFunctionPointers();
+    const length = gdspxGetStringLen(gdstrPtr)
+    const ptr = gdspxGetString(gdstrPtr)
     const stringBytes = Module.HEAPU8.subarray(ptr, ptr + length);
-    const nonSharedBytes = stringBytes.slice();
-    const decoder = new TextDecoder("utf-8")
-    const result = decoder.decode(nonSharedBytes)
+    const result = GDSPX_UTF8_DECODER.decode(stringBytes)
     if (isFree) {
-        Module._gdspx_free_cstr(ptr);
+        gdspxFreeCstr(ptr);
     }
     return result;
 }
 
-
 function AllocGdString() {
-    return Module._gdspx_alloc_string();
+    EnsureGdspxFunctionPointers();
+    return gdspxAllocString();
 }
+
 function PrintGdString(gdstrPtr) {
-    console.log(_toJsString(gdstrPtr, false));
+    console.log(toJsString(gdstrPtr, false));
 }
 
 function FreeGdString(ptr) {
-    Module._gdspx_free_string(ptr);
+    EnsureGdspxFunctionPointers();
+    gdspxFreeString(ptr);
 }
 
-
-
-// Vec2-related functions
 function ToGdVec2(vec) {
-    return Module._gdspx_new_vec2(vec.x, vec.y);
+    EnsureGdspxFunctionPointers();
+    return gdspxNewVec2(vec.x, vec.y);
 }
 
 function ToJsVec2(ptr) {
@@ -180,7 +299,8 @@ function ToJsVec2(ptr) {
 }
 
 function AllocGdVec2() {
-    return Module._gdspx_alloc_vec2();
+    EnsureGdspxFunctionPointers();
+    return gdspxAllocVec2();
 }
 
 function PrintGdVec2(ptr) {
@@ -188,13 +308,13 @@ function PrintGdVec2(ptr) {
 }
 
 function FreeGdVec2(ptr) {
-    Module._gdspx_free_vec2(ptr);
+    EnsureGdspxFunctionPointers();
+    gdspxFreeVec2(ptr);
 }
 
-
-// Vec3-related functions
 function ToGdVec3(vec) {
-    return Module._gdspx_new_vec3(vec.x, vec.y, vec.z);
+    EnsureGdspxFunctionPointers();
+    return gdspxNewVec3(vec.x, vec.y, vec.z);
 }
 
 function ToJsVec3(ptr) {
@@ -208,7 +328,8 @@ function ToJsVec3(ptr) {
 }
 
 function AllocGdVec3() {
-    return Module._gdspx_alloc_vec3();
+    EnsureGdspxFunctionPointers();
+    return gdspxAllocVec3();
 }
 
 function PrintGdVec3(ptr) {
@@ -217,13 +338,13 @@ function PrintGdVec3(ptr) {
 }
 
 function FreeGdVec3(ptr) {
-    Module._gdspx_free_vec3(ptr);
+    EnsureGdspxFunctionPointers();
+    gdspxFreeVec3(ptr);
 }
 
-
-// Vec4-related functions
 function ToGdVec4(vec) {
-    return Module._gdspx_new_vec4(vec.x, vec.y, vec.z, vec.w);
+    EnsureGdspxFunctionPointers();
+    return gdspxNewVec4(vec.x, vec.y, vec.z, vec.w);
 }
 
 function ToJsVec4(ptr) {
@@ -238,7 +359,8 @@ function ToJsVec4(ptr) {
 }
 
 function AllocGdVec4() {
-    return Module._gdspx_alloc_vec4();
+    EnsureGdspxFunctionPointers();
+    return gdspxAllocVec4();
 }
 
 function PrintGdVec4(ptr) {
@@ -247,13 +369,13 @@ function PrintGdVec4(ptr) {
 }
 
 function FreeGdVec4(ptr) {
-    Module._gdspx_free_vec4(ptr);
+    EnsureGdspxFunctionPointers();
+    gdspxFreeVec4(ptr);
 }
 
-
-// Color-related functions
 function ToGdColor(color) {
-    return Module._gdspx_new_color(color.r, color.g, color.b, color.a);
+    EnsureGdspxFunctionPointers();
+    return gdspxNewColor(color.r, color.g, color.b, color.a);
 }
 
 function ToJsColor(ptr) {
@@ -268,7 +390,8 @@ function ToJsColor(ptr) {
 }
 
 function AllocGdColor() {
-    return Module._gdspx_alloc_color();
+    EnsureGdspxFunctionPointers();
+    return gdspxAllocColor();
 }
 
 function PrintGdColor(ptr) {
@@ -277,13 +400,13 @@ function PrintGdColor(ptr) {
 }
 
 function FreeGdColor(ptr) {
-    Module._gdspx_free_color(ptr);
+    EnsureGdspxFunctionPointers();
+    gdspxFreeColor(ptr);
 }
 
-
-// Rect2-related functions
 function ToGdRect2(rect) {
-    return Module._gdspx_new_rect2(rect.position.x, rect.position.y, rect.size.x, rect.size.y);
+    EnsureGdspxFunctionPointers();
+    return gdspxNewRect2(rect.position.x, rect.position.y, rect.size.x, rect.size.y);
 }
 
 function ToJsRect2(ptr) {
@@ -302,7 +425,8 @@ function ToJsRect2(ptr) {
 }
 
 function AllocGdRect2() {
-    return Module._gdspx_alloc_rect2();
+    EnsureGdspxFunctionPointers();
+    return gdspxAllocRect2();
 }
 
 function PrintGdRect2(ptr) {
@@ -311,12 +435,14 @@ function PrintGdRect2(ptr) {
 }
 
 function FreeGdRect2(ptr) {
-    Module._gdspx_free_rect2(ptr);
+    EnsureGdspxFunctionPointers();
+    gdspxFreeRect2(ptr);
 }
 
 const gdArrayScratchByType = new Map();
 
 function getGdArrayScratch(arrayType, minSize) {
+    EnsureGdspxFunctionPointers();
     let scratch = gdArrayScratchByType.get(arrayType);
     if (!scratch) {
         scratch = { ptr: 0, capacity: 0 };
@@ -324,9 +450,9 @@ function getGdArrayScratch(arrayType, minSize) {
     }
     if (minSize > scratch.capacity) {
         if (scratch.ptr !== 0) {
-            Module._cfree(scratch.ptr);
+            gdspxFree(scratch.ptr);
         }
-        scratch.ptr = minSize > 0 ? Module._cmalloc(minSize) : 0;
+        scratch.ptr = minSize > 0 ? gdspxMalloc(minSize) : 0;
         scratch.capacity = minSize;
     }
     return scratch;
@@ -343,33 +469,35 @@ function CopyFastArrayToWasm(array) {
 }
 
 function ToGdArray(array) {
+    EnsureGdspxFunctionPointers();
     if (!array) {
         throw new Error('Invalid array structure. Expected {type, count, data}');
     }
     if (array.__gdspx_fast_array === true) {
         const dataPtr = CopyFastArrayToWasm(array);
-        return Module._gdspx_to_gd_array_raw(dataPtr, array.data.length, array.count, array.type);
+        return gdspxToGdArrayRaw(dataPtr, array.data.length, array.count, array.type);
     }
     const dataSize = array.length;
-    const dataPtr = Module._cmalloc(dataSize);
+    const dataPtr = gdspxMalloc(dataSize);
     try {
         if (dataSize > 0) {
             Module.HEAPU8.set(array, dataPtr);
         }
-        const gdArrayPtr = Module._gdspx_to_gd_array(dataPtr, dataSize);
+        const gdArrayPtr = gdspxToGdArray(dataPtr, dataSize);
         return gdArrayPtr;
     } finally {
-        Module._cfree(dataPtr);
+        gdspxFree(dataPtr);
     }
 }
 
 function ToJsArray(gdArrayPtr) {
+    EnsureGdspxFunctionPointers();
     if (!gdArrayPtr) {
         return null;
     }
-    const outputSizePtr = Module._cmalloc(4);
+    const outputSizePtr = gdspxMalloc(4);
     try {
-        const serializedPtr = Module._gdspx_to_js_array(gdArrayPtr, outputSizePtr);
+        const serializedPtr = gdspxToJsArray(gdArrayPtr, outputSizePtr);
         if (!serializedPtr) {
             console.log("ToJsArray serializedPtr == null");
             return null;
@@ -377,16 +505,16 @@ function ToJsArray(gdArrayPtr) {
         const outputSize = Module.HEAP32[outputSizePtr >> 2];
         const data = new Uint8Array(outputSize);
         data.set(Module.HEAPU8.subarray(serializedPtr, serializedPtr + outputSize));
-        Module._cfree(serializedPtr);
+        gdspxFree(serializedPtr);
         return data;
     } finally {
-        Module._cfree(outputSizePtr);
+        gdspxFree(outputSizePtr);
     }
 }
 
-
 function AllocGdArray() {
-    return Module._gdspx_alloc_array();
+    EnsureGdspxFunctionPointers();
+    return gdspxAllocArray();
 }
 
 function PrintGdArray(ptr) {
@@ -395,5 +523,6 @@ function PrintGdArray(ptr) {
 }
 
 function FreeGdArray(ptr) {
-    Module._gdspx_free_array(ptr);
+    EnsureGdspxFunctionPointers();
+    gdspxFreeArray(ptr);
 }
