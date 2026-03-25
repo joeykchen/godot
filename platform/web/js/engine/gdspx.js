@@ -1388,8 +1388,8 @@ gdspx_sprite_create_sprite(path,pos) {
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_create_empty_sprite(pos) {
-	var _gdFuncPtr = Module._gdspx_sprite_create_empty_sprite; 
+gdspx_sprite_create_bare_sprite(pos) {
+	var _gdFuncPtr = Module._gdspx_sprite_create_bare_sprite; 
 	var _retValue = AllocGdObj();
 	var _arg0 = ToGdVec2(pos);
 	_gdFuncPtr(_arg0, _retValue);
