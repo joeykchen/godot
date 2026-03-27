@@ -38,6 +38,7 @@
 #include "scene/main/canvas_layer.h"
 #include "scene/main/scene_tree.h"
 #include "scene/main/window.h"
+#include "servers/display_server.h"
 #include "servers/rendering_server.h"
 
 #include "gdextension_spx_ext.h"
@@ -251,7 +252,6 @@ void SpxEngine::on_exit(int exit_code) {
 		return;
 	}
 
-	capture_last_frame();
 	has_exit = true;
 
 	_notify_managers_exit(exit_code);
@@ -465,6 +465,12 @@ Ref<Image> SpxEngine::_get_viewport_image() const {
 	if (!vp) {
 		return Ref<Image>();
 	}
+
+	DisplayServer *display_server = DisplayServer::get_singleton();
+	if (!display_server || !display_server->window_can_draw()) {
+		return Ref<Image>();
+	}
+
 	return vp->get_texture()->get_image();
 }
 
