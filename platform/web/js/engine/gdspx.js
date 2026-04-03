@@ -18,7 +18,7 @@ constructor() {
 
 _getGdIntScratch() {
 	var _scratch = this._gdIntScratch;
-	if (!_scratch) {
+	if (_scratch == null) {
 		_scratch = this._gdIntScratch = { low: 0, high: 0 };
 	}
 	return _scratch;
@@ -26,7 +26,7 @@ _getGdIntScratch() {
 
 _getGdObjScratch() {
 	var _scratch = this._gdObjScratch;
-	if (!_scratch) {
+	if (_scratch == null) {
 		_scratch = this._gdObjScratch = { low: 0, high: 0 };
 	}
 	return _scratch;
@@ -410,7 +410,7 @@ gdspx_input_get_global_mouse_pos() {
 	var _retValue = AllocGdVec2();
 	_gdFuncPtr(_retValue);
 	var _scratch = this._inputMousePosScratch;
-	if (!_scratch) {
+	if (_scratch == null) {
 		_scratch = this._inputMousePosScratch = { x: 0, y: 0 };
 	}
 	var _floatIndex = _retValue / 4;
