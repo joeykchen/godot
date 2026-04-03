@@ -7,6 +7,30 @@
 //   code.
 //----------------------------------------------------------------------------*/
 class GdspxFuncs {
+_getGdDataView() {
+	var _buffer = Module.HEAPU8.buffer;
+	var _view = this._gdDataView;
+	if (!_view || _view.buffer !== _buffer) {
+		_view = this._gdDataView = new DataView(_buffer);
+	}
+	return _view;
+}
+
+_getGdIntScratch(key) {
+	var _scratch = this[key];
+	if (!_scratch) {
+		_scratch = this[key] = { low: 0, high: 0 };
+	}
+	return _scratch;
+}
+
+_readGdIntLike(ptr, scratchKey) {
+	var _view = this._getGdDataView();
+	var _scratch = this._getGdIntScratch(scratchKey);
+	_scratch.low = _view.getUint32(ptr, true);
+	_scratch.high = _view.getUint32(ptr + 4, true);
+	return _scratch;
+}
 gdspx_audio_stop_all() {
 	var _gdFuncPtr = Module._gdspx_audio_stop_all; 
 	
@@ -17,84 +41,84 @@ gdspx_audio_create_audio() {
 	var _gdFuncPtr = Module._gdspx_audio_create_audio; 
 	var _retValue = AllocGdObj();
 	_gdFuncPtr(_retValue);
-	var _finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdObjScratch");
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
-gdspx_audio_destroy_audio(obj) {
+gdspx_audio_destroy_audio(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_audio_destroy_audio; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0);
 	FreeGdObj(_arg0); 
 
 }
-gdspx_audio_set_pitch(obj,pitch) {
+gdspx_audio_set_pitch(obj_low,obj_high,pitch) {
 	var _gdFuncPtr = Module._gdspx_audio_set_pitch; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdFloat(pitch);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
-gdspx_audio_get_pitch(obj) {
+gdspx_audio_get_pitch(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_audio_get_pitch; 
 	var _retValue = AllocGdFloat();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
-gdspx_audio_set_pan(obj,pan) {
+gdspx_audio_set_pan(obj_low,obj_high,pan) {
 	var _gdFuncPtr = Module._gdspx_audio_set_pan; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdFloat(pan);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
-gdspx_audio_get_pan(obj) {
+gdspx_audio_get_pan(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_audio_get_pan; 
 	var _retValue = AllocGdFloat();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
-gdspx_audio_set_volume(obj,volume) {
+gdspx_audio_set_volume(obj_low,obj_high,volume) {
 	var _gdFuncPtr = Module._gdspx_audio_set_volume; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdFloat(volume);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
-gdspx_audio_get_volume(obj) {
+gdspx_audio_get_volume(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_audio_get_volume; 
 	var _retValue = AllocGdFloat();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
-gdspx_audio_play_with_attenuation(obj,path,owner_id,attenuation,max_distance) {
+gdspx_audio_play_with_attenuation(obj_low,obj_high,path,owner_id_low,owner_id_high,attenuation,max_distance) {
 	var _gdFuncPtr = Module._gdspx_audio_play_with_attenuation; 
 	var _retValue = AllocGdInt();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(path);
-	var _arg2 = ToGdObj(owner_id);
+	var _arg2 = Module._gdspx_new_obj(owner_id_low, owner_id_high);
 	var _arg3 = ToGdFloat(attenuation);
 	var _arg4 = ToGdFloat(max_distance);
 	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _arg4, _retValue);
@@ -103,90 +127,90 @@ gdspx_audio_play_with_attenuation(obj,path,owner_id,attenuation,max_distance) {
 	FreeGdObj(_arg2); 
 	FreeGdFloat(_arg3); 
 	FreeGdFloat(_arg4); 
-	var _finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdIntScratch");
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
-gdspx_audio_play(obj,path) {
+gdspx_audio_play(obj_low,obj_high,path) {
 	var _gdFuncPtr = Module._gdspx_audio_play; 
 	var _retValue = AllocGdInt();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(path);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
-	var _finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdIntScratch");
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
-gdspx_audio_pause(aid) {
+gdspx_audio_pause(aid_low,aid_high) {
 	var _gdFuncPtr = Module._gdspx_audio_pause; 
 	
-	var _arg0 = ToGdInt(aid);
+	var _arg0 = Module._gdspx_new_int(aid_low, aid_high);
 	_gdFuncPtr(_arg0);
 	FreeGdInt(_arg0); 
 
 }
-gdspx_audio_resume(aid) {
+gdspx_audio_resume(aid_low,aid_high) {
 	var _gdFuncPtr = Module._gdspx_audio_resume; 
 	
-	var _arg0 = ToGdInt(aid);
+	var _arg0 = Module._gdspx_new_int(aid_low, aid_high);
 	_gdFuncPtr(_arg0);
 	FreeGdInt(_arg0); 
 
 }
-gdspx_audio_stop(aid) {
+gdspx_audio_stop(aid_low,aid_high) {
 	var _gdFuncPtr = Module._gdspx_audio_stop; 
 	
-	var _arg0 = ToGdInt(aid);
+	var _arg0 = Module._gdspx_new_int(aid_low, aid_high);
 	_gdFuncPtr(_arg0);
 	FreeGdInt(_arg0); 
 
 }
-gdspx_audio_set_loop(aid,loop) {
+gdspx_audio_set_loop(aid_low,aid_high,loop) {
 	var _gdFuncPtr = Module._gdspx_audio_set_loop; 
 	
-	var _arg0 = ToGdInt(aid);
+	var _arg0 = Module._gdspx_new_int(aid_low, aid_high);
 	var _arg1 = ToGdBool(loop);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdInt(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
-gdspx_audio_get_loop(aid) {
+gdspx_audio_get_loop(aid_low,aid_high) {
 	var _gdFuncPtr = Module._gdspx_audio_get_loop; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdInt(aid);
+	var _arg0 = Module._gdspx_new_int(aid_low, aid_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdInt(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_audio_get_timer(aid) {
+gdspx_audio_get_timer(aid_low,aid_high) {
 	var _gdFuncPtr = Module._gdspx_audio_get_timer; 
 	var _retValue = AllocGdFloat();
-	var _arg0 = ToGdInt(aid);
+	var _arg0 = Module._gdspx_new_int(aid_low, aid_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdInt(_arg0); 
 	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
-gdspx_audio_set_timer(aid,time) {
+gdspx_audio_set_timer(aid_low,aid_high,time) {
 	var _gdFuncPtr = Module._gdspx_audio_set_timer; 
 	
-	var _arg0 = ToGdInt(aid);
+	var _arg0 = Module._gdspx_new_int(aid_low, aid_high);
 	var _arg1 = ToGdFloat(time);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdInt(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
-gdspx_audio_is_playing(aid) {
+gdspx_audio_is_playing(aid_low,aid_high) {
 	var _gdFuncPtr = Module._gdspx_audio_is_playing; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdInt(aid);
+	var _arg0 = Module._gdspx_new_int(aid_low, aid_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdInt(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
@@ -249,11 +273,11 @@ gdspx_camera_get_stage_limits_rect() {
 	FreeGdRect2(_retValue); 
 	return _finalRetValue
 }
-gdspx_camera_set_camera_limit(side,limit) {
+gdspx_camera_set_camera_limit(side_low,side_high,limit_low,limit_high) {
 	var _gdFuncPtr = Module._gdspx_camera_set_camera_limit; 
 	
-	var _arg0 = ToGdInt(side);
-	var _arg1 = ToGdInt(limit);
+	var _arg0 = Module._gdspx_new_int(side_low, side_high);
+	var _arg1 = Module._gdspx_new_int(limit_low, limit_high);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdInt(_arg0); 
 	FreeGdInt(_arg1); 
@@ -303,18 +327,18 @@ gdspx_debug_debug_draw_line(from,to,color) {
 	FreeGdColor(_arg2); 
 
 }
-gdspx_ext_request_exit(exit_code) {
+gdspx_ext_request_exit(exit_code_low,exit_code_high) {
 	var _gdFuncPtr = Module._gdspx_ext_request_exit; 
 	
-	var _arg0 = ToGdInt(exit_code);
+	var _arg0 = Module._gdspx_new_int(exit_code_low, exit_code_high);
 	_gdFuncPtr(_arg0);
 	FreeGdInt(_arg0); 
 
 }
-gdspx_ext_request_reset(exit_code) {
+gdspx_ext_request_reset(exit_code_low,exit_code_high) {
 	var _gdFuncPtr = Module._gdspx_ext_request_reset; 
 	
-	var _arg0 = ToGdInt(exit_code);
+	var _arg0 = Module._gdspx_new_int(exit_code_low, exit_code_high);
 	_gdFuncPtr(_arg0);
 	FreeGdInt(_arg0); 
 
@@ -359,10 +383,10 @@ gdspx_ext_next_frame() {
 	_gdFuncPtr();
 
 }
-gdspx_ext_set_layer_sorter_mode(mode) {
+gdspx_ext_set_layer_sorter_mode(mode_low,mode_high) {
 	var _gdFuncPtr = Module._gdspx_ext_set_layer_sorter_mode; 
 	
-	var _arg0 = ToGdInt(mode);
+	var _arg0 = Module._gdspx_new_int(mode_low, mode_high);
 	_gdFuncPtr(_arg0);
 	FreeGdInt(_arg0); 
 
@@ -382,33 +406,33 @@ gdspx_input_get_global_mouse_pos() {
 	FreeGdVec2(_retValue);
 	return _scratch
 }
-gdspx_input_get_key(key) {
+gdspx_input_get_key(key_low,key_high) {
 	var _gdFuncPtr = Module._gdspx_input_get_key; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdInt(key);
+	var _arg0 = Module._gdspx_new_int(key_low, key_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdInt(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_input_get_mouse_state(mouse_id) {
+gdspx_input_get_mouse_state(mouse_id_low,mouse_id_high) {
 	var _gdFuncPtr = Module._gdspx_input_get_mouse_state; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdInt(mouse_id);
+	var _arg0 = Module._gdspx_new_int(mouse_id_low, mouse_id_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdInt(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_input_get_key_state(key) {
+gdspx_input_get_key_state(key_low,key_high) {
 	var _gdFuncPtr = Module._gdspx_input_get_key_state; 
 	var _retValue = AllocGdInt();
-	var _arg0 = ToGdInt(key);
+	var _arg0 = Module._gdspx_new_int(key_low, key_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdInt(_arg0); 
-	var _finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdIntScratch");
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
@@ -476,10 +500,10 @@ gdspx_navigation_setup_path_finder(with_jump) {
 	FreeGdBool(_arg0); 
 
 }
-gdspx_navigation_set_obstacle(obj,enabled) {
+gdspx_navigation_set_obstacle(obj_low,obj_high,enabled) {
 	var _gdFuncPtr = Module._gdspx_navigation_set_obstacle; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdBool(enabled);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
@@ -510,69 +534,69 @@ gdspx_pen_create_pen() {
 	var _gdFuncPtr = Module._gdspx_pen_create_pen; 
 	var _retValue = AllocGdObj();
 	_gdFuncPtr(_retValue);
-	var _finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdObjScratch");
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
-gdspx_pen_destroy_pen(obj) {
+gdspx_pen_destroy_pen(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_pen_destroy_pen; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0);
 	FreeGdObj(_arg0); 
 
 }
-gdspx_pen_pen_stamp(obj) {
+gdspx_pen_pen_stamp(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_pen_pen_stamp; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0);
 	FreeGdObj(_arg0); 
 
 }
-gdspx_pen_move_pen_to(obj,position) {
+gdspx_pen_move_pen_to(obj_low,obj_high,position) {
 	var _gdFuncPtr = Module._gdspx_pen_move_pen_to; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdVec2(position);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
-gdspx_pen_pen_down(obj,move_by_mouse) {
+gdspx_pen_pen_down(obj_low,obj_high,move_by_mouse) {
 	var _gdFuncPtr = Module._gdspx_pen_pen_down; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdBool(move_by_mouse);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
-gdspx_pen_pen_up(obj) {
+gdspx_pen_pen_up(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_pen_pen_up; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0);
 	FreeGdObj(_arg0); 
 
 }
-gdspx_pen_set_pen_color_to(obj,color) {
+gdspx_pen_set_pen_color_to(obj_low,obj_high,color) {
 	var _gdFuncPtr = Module._gdspx_pen_set_pen_color_to; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdColor(color);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdColor(_arg1); 
 
 }
-gdspx_pen_change_pen_by(obj,property,amount) {
+gdspx_pen_change_pen_by(obj_low,obj_high,property_low,property_high,amount) {
 	var _gdFuncPtr = Module._gdspx_pen_change_pen_by; 
 	
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdInt(property);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
+	var _arg1 = Module._gdspx_new_int(property_low, property_high);
 	var _arg2 = ToGdFloat(amount);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdObj(_arg0); 
@@ -580,11 +604,11 @@ gdspx_pen_change_pen_by(obj,property,amount) {
 	FreeGdFloat(_arg2); 
 
 }
-gdspx_pen_set_pen_to(obj,property,value) {
+gdspx_pen_set_pen_to(obj_low,obj_high,property_low,property_high,value) {
 	var _gdFuncPtr = Module._gdspx_pen_set_pen_to; 
 	
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdInt(property);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
+	var _arg1 = Module._gdspx_new_int(property_low, property_high);
 	var _arg2 = ToGdFloat(value);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdObj(_arg0); 
@@ -592,56 +616,56 @@ gdspx_pen_set_pen_to(obj,property,value) {
 	FreeGdFloat(_arg2); 
 
 }
-gdspx_pen_change_pen_size_by(obj,amount) {
+gdspx_pen_change_pen_size_by(obj_low,obj_high,amount) {
 	var _gdFuncPtr = Module._gdspx_pen_change_pen_size_by; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdFloat(amount);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
-gdspx_pen_set_pen_size_to(obj,size) {
+gdspx_pen_set_pen_size_to(obj_low,obj_high,size) {
 	var _gdFuncPtr = Module._gdspx_pen_set_pen_size_to; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdFloat(size);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
-gdspx_pen_set_pen_stamp_texture(obj,texture_path) {
+gdspx_pen_set_pen_stamp_texture(obj_low,obj_high,texture_path) {
 	var _gdFuncPtr = Module._gdspx_pen_set_pen_stamp_texture; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(texture_path);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
 
 }
-gdspx_physics_raycast(from,to,collision_mask) {
+gdspx_physics_raycast(from,to,collision_mask_low,collision_mask_high) {
 	var _gdFuncPtr = Module._gdspx_physics_raycast; 
 	var _retValue = AllocGdObj();
 	var _arg0 = ToGdVec2(from);
 	var _arg1 = ToGdVec2(to);
-	var _arg2 = ToGdInt(collision_mask);
+	var _arg2 = Module._gdspx_new_int(collision_mask_low, collision_mask_high);
 	_gdFuncPtr(_arg0, _arg1, _arg2, _retValue);
 	FreeGdVec2(_arg0); 
 	FreeGdVec2(_arg1); 
 	FreeGdInt(_arg2); 
-	var _finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdObjScratch");
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
-gdspx_physics_check_collision(from,to,collision_mask,collide_with_areas,collide_with_bodies) {
+gdspx_physics_check_collision(from,to,collision_mask_low,collision_mask_high,collide_with_areas,collide_with_bodies) {
 	var _gdFuncPtr = Module._gdspx_physics_check_collision; 
 	var _retValue = AllocGdBool();
 	var _arg0 = ToGdVec2(from);
 	var _arg1 = ToGdVec2(to);
-	var _arg2 = ToGdInt(collision_mask);
+	var _arg2 = Module._gdspx_new_int(collision_mask_low, collision_mask_high);
 	var _arg3 = ToGdBool(collide_with_areas);
 	var _arg4 = ToGdBool(collide_with_bodies);
 	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _arg4, _retValue);
@@ -654,21 +678,21 @@ gdspx_physics_check_collision(from,to,collision_mask,collide_with_areas,collide_
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_physics_check_touched_camera_boundaries(obj) {
+gdspx_physics_check_touched_camera_boundaries(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_physics_check_touched_camera_boundaries; 
 	var _retValue = AllocGdInt();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	var _finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdIntScratch");
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
-gdspx_physics_check_touched_camera_boundary(obj,board_type) {
+gdspx_physics_check_touched_camera_boundary(obj_low,obj_high,board_type_low,board_type_high) {
 	var _gdFuncPtr = Module._gdspx_physics_check_touched_camera_boundary; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdInt(board_type);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
+	var _arg1 = Module._gdspx_new_int(board_type_low, board_type_high);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
@@ -676,31 +700,31 @@ gdspx_physics_check_touched_camera_boundary(obj,board_type) {
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_physics_check_nearest_touched_camera_boundary(obj) {
+gdspx_physics_check_nearest_touched_camera_boundary(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_physics_check_nearest_touched_camera_boundary; 
 	var _retValue = AllocGdInt();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	var _finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdIntScratch");
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
-gdspx_physics_check_touched_stage_boundaries(obj) {
+gdspx_physics_check_touched_stage_boundaries(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_physics_check_touched_stage_boundaries; 
 	var _retValue = AllocGdInt();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	var _finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdIntScratch");
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
-gdspx_physics_check_touched_stage_boundary(obj,board_type) {
+gdspx_physics_check_touched_stage_boundary(obj_low,obj_high,board_type_low,board_type_high) {
 	var _gdFuncPtr = Module._gdspx_physics_check_touched_stage_boundary; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdInt(board_type);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
+	var _arg1 = Module._gdspx_new_int(board_type_low, board_type_high);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
@@ -708,13 +732,13 @@ gdspx_physics_check_touched_stage_boundary(obj,board_type) {
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_physics_check_nearest_touched_stage_boundary(obj) {
+gdspx_physics_check_nearest_touched_stage_boundary(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_physics_check_nearest_touched_stage_boundary; 
 	var _retValue = AllocGdInt();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	var _finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdIntScratch");
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
@@ -774,12 +798,12 @@ gdspx_physics_get_global_air_drag() {
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
-gdspx_physics_check_collision_rect(pos,size,collision_mask) {
+gdspx_physics_check_collision_rect(pos,size,collision_mask_low,collision_mask_high) {
 	var _gdFuncPtr = Module._gdspx_physics_check_collision_rect; 
 	var _retValue = AllocGdArray();
 	var _arg0 = ToGdVec2(pos);
 	var _arg1 = ToGdVec2(size);
-	var _arg2 = ToGdInt(collision_mask);
+	var _arg2 = Module._gdspx_new_int(collision_mask_low, collision_mask_high);
 	_gdFuncPtr(_arg0, _arg1, _arg2, _retValue);
 	FreeGdVec2(_arg0); 
 	FreeGdVec2(_arg1); 
@@ -788,12 +812,12 @@ gdspx_physics_check_collision_rect(pos,size,collision_mask) {
 	FreeGdArray(_retValue); 
 	return _finalRetValue
 }
-gdspx_physics_check_collision_circle(pos,radius,collision_mask) {
+gdspx_physics_check_collision_circle(pos,radius,collision_mask_low,collision_mask_high) {
 	var _gdFuncPtr = Module._gdspx_physics_check_collision_circle; 
 	var _retValue = AllocGdArray();
 	var _arg0 = ToGdVec2(pos);
 	var _arg1 = ToGdFloat(radius);
-	var _arg2 = ToGdInt(collision_mask);
+	var _arg2 = Module._gdspx_new_int(collision_mask_low, collision_mask_high);
 	_gdFuncPtr(_arg0, _arg1, _arg2, _retValue);
 	FreeGdVec2(_arg0); 
 	FreeGdFloat(_arg1); 
@@ -802,13 +826,13 @@ gdspx_physics_check_collision_circle(pos,radius,collision_mask) {
 	FreeGdArray(_retValue); 
 	return _finalRetValue
 }
-gdspx_physics_raycast_with_details(from,to,ignore_sprites,collision_mask,collide_with_areas,collide_with_bodies) {
+gdspx_physics_raycast_with_details(from,to,ignore_sprites,collision_mask_low,collision_mask_high,collide_with_areas,collide_with_bodies) {
 	var _gdFuncPtr = Module._gdspx_physics_raycast_with_details; 
 	var _retValue = AllocGdArray();
 	var _arg0 = ToGdVec2(from);
 	var _arg1 = ToGdVec2(to);
 	var _arg2 = ToGdArray(ignore_sprites);
-	var _arg3 = ToGdInt(collision_mask);
+	var _arg3 = Module._gdspx_new_int(collision_mask_low, collision_mask_high);
 	var _arg4 = ToGdBool(collide_with_areas);
 	var _arg5 = ToGdBool(collide_with_bodies);
 	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _retValue);
@@ -838,11 +862,11 @@ gdspx_platform_set_stretch_aspect(is_keep) {
 	FreeGdBool(_arg0); 
 
 }
-gdspx_platform_set_stretch_content_scale(width,height) {
+gdspx_platform_set_stretch_content_scale(width_low,width_high,height_low,height_high) {
 	var _gdFuncPtr = Module._gdspx_platform_set_stretch_content_scale; 
 	
-	var _arg0 = ToGdInt(width);
-	var _arg1 = ToGdInt(height);
+	var _arg0 = Module._gdspx_new_int(width_low, width_high);
+	var _arg1 = Module._gdspx_new_int(height_low, height_high);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdInt(_arg0); 
 	FreeGdInt(_arg1); 
@@ -864,11 +888,11 @@ gdspx_platform_get_window_position() {
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
-gdspx_platform_set_window_size(width,height,with_content_scale) {
+gdspx_platform_set_window_size(width_low,width_high,height_low,height_high,with_content_scale) {
 	var _gdFuncPtr = Module._gdspx_platform_set_window_size; 
 	
-	var _arg0 = ToGdInt(width);
-	var _arg1 = ToGdInt(height);
+	var _arg0 = Module._gdspx_new_int(width_low, width_high);
+	var _arg1 = Module._gdspx_new_int(height_low, height_high);
 	var _arg2 = ToGdBool(with_content_scale);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdInt(_arg0); 
@@ -952,14 +976,14 @@ gdspx_platform_get_max_fps() {
 	var _gdFuncPtr = Module._gdspx_platform_get_max_fps; 
 	var _retValue = AllocGdInt();
 	_gdFuncPtr(_retValue);
-	var _finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdIntScratch");
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
-gdspx_platform_set_max_fps(fps) {
+gdspx_platform_set_max_fps(fps_low,fps_high) {
 	var _gdFuncPtr = Module._gdspx_platform_set_max_fps; 
 	
-	var _arg0 = ToGdInt(fps);
+	var _arg0 = Module._gdspx_new_int(fps_low, fps_high);
 	_gdFuncPtr(_arg0);
 	FreeGdInt(_arg0); 
 
@@ -990,13 +1014,13 @@ gdspx_platform_is_in_persistant_data_dir(path) {
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_res_create_animation(p_sprite_type,p_anim_name,p_json_ctx,fps,is_atlas) {
+gdspx_res_create_animation(p_sprite_type,p_anim_name,p_json_ctx,fps_low,fps_high,is_atlas) {
 	var _gdFuncPtr = Module._gdspx_res_create_animation; 
 	
 	var _arg0 = ToGdString(p_sprite_type);
 	var _arg1 = ToGdString(p_anim_name);
 	var _arg2 = ToGdString(p_json_ctx);
-	var _arg3 = ToGdInt(fps);
+	var _arg3 = Module._gdspx_new_int(fps_low, fps_high);
 	var _arg4 = ToGdBool(is_atlas);
 	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _arg4);
 	FreeGdString(_arg0); 
@@ -1104,7 +1128,7 @@ gdspx_scene_reload_current_scene() {
 	var _gdFuncPtr = Module._gdspx_scene_reload_current_scene; 
 	var _retValue = AllocGdInt();
 	_gdFuncPtr(_retValue);
-	var _finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdIntScratch");
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
@@ -1120,34 +1144,34 @@ gdspx_scene_clear_pure_sprites() {
 	_gdFuncPtr();
 
 }
-gdspx_scene_create_pure_sprite(texture_path,pos,zindex) {
+gdspx_scene_create_pure_sprite(texture_path,pos,zindex_low,zindex_high) {
 	var _gdFuncPtr = Module._gdspx_scene_create_pure_sprite; 
 	
 	var _arg0 = ToGdString(texture_path);
 	var _arg1 = ToGdVec2(pos);
-	var _arg2 = ToGdInt(zindex);
+	var _arg2 = Module._gdspx_new_int(zindex_low, zindex_high);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdString(_arg0); 
 	FreeGdVec2(_arg1); 
 	FreeGdInt(_arg2); 
 
 }
-gdspx_scene_destroy_pure_sprite(id) {
+gdspx_scene_destroy_pure_sprite(id_low,id_high) {
 	var _gdFuncPtr = Module._gdspx_scene_destroy_pure_sprite; 
 	
-	var _arg0 = ToGdObj(id);
+	var _arg0 = Module._gdspx_new_obj(id_low, id_high);
 	_gdFuncPtr(_arg0);
 	FreeGdObj(_arg0); 
 
 }
-gdspx_scene_create_render_sprite(texture_path,pos,degree,scale,zindex,pivot) {
+gdspx_scene_create_render_sprite(texture_path,pos,degree,scale,zindex_low,zindex_high,pivot) {
 	var _gdFuncPtr = Module._gdspx_scene_create_render_sprite; 
 	var _retValue = AllocGdObj();
 	var _arg0 = ToGdString(texture_path);
 	var _arg1 = ToGdVec2(pos);
 	var _arg2 = ToGdFloat(degree);
 	var _arg3 = ToGdVec2(scale);
-	var _arg4 = ToGdInt(zindex);
+	var _arg4 = Module._gdspx_new_int(zindex_low, zindex_high);
 	var _arg5 = ToGdVec2(pivot);
 	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _retValue);
 	FreeGdString(_arg0); 
@@ -1156,20 +1180,20 @@ gdspx_scene_create_render_sprite(texture_path,pos,degree,scale,zindex,pivot) {
 	FreeGdVec2(_arg3); 
 	FreeGdInt(_arg4); 
 	FreeGdVec2(_arg5); 
-	var _finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdObjScratch");
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
-gdspx_scene_create_static_sprite(texture_path,pos,degree,scale,zindex,pivot,collider_type,collider_pivot,collider_params) {
+gdspx_scene_create_static_sprite(texture_path,pos,degree,scale,zindex_low,zindex_high,pivot,collider_type_low,collider_type_high,collider_pivot,collider_params) {
 	var _gdFuncPtr = Module._gdspx_scene_create_static_sprite; 
 	var _retValue = AllocGdObj();
 	var _arg0 = ToGdString(texture_path);
 	var _arg1 = ToGdVec2(pos);
 	var _arg2 = ToGdFloat(degree);
 	var _arg3 = ToGdVec2(scale);
-	var _arg4 = ToGdInt(zindex);
+	var _arg4 = Module._gdspx_new_int(zindex_low, zindex_high);
 	var _arg5 = ToGdVec2(pivot);
-	var _arg6 = ToGdInt(collider_type);
+	var _arg6 = Module._gdspx_new_int(collider_type_low, collider_type_high);
 	var _arg7 = ToGdVec2(collider_pivot);
 	var _arg8 = ToGdArray(collider_params);
 	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8, _retValue);
@@ -1182,72 +1206,72 @@ gdspx_scene_create_static_sprite(texture_path,pos,degree,scale,zindex,pivot,coll
 	FreeGdInt(_arg6); 
 	FreeGdVec2(_arg7); 
 	FreeGdArray(_arg8); 
-	var _finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdObjScratch");
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_dont_destroy_on_load(obj) {
+gdspx_sprite_set_dont_destroy_on_load(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_dont_destroy_on_load; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0);
 	FreeGdObj(_arg0); 
 
 }
-gdspx_sprite_set_process(obj,is_on) {
+gdspx_sprite_set_process(obj_low,obj_high,is_on) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_process; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdBool(is_on);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
-gdspx_sprite_set_physic_process(obj,is_on) {
+gdspx_sprite_set_physic_process(obj_low,obj_high,is_on) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_physic_process; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdBool(is_on);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
-gdspx_sprite_set_type_name(obj,type_name) {
+gdspx_sprite_set_type_name(obj_low,obj_high,type_name) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_type_name; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(type_name);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
 
 }
-gdspx_sprite_set_pivot(obj,pivot) {
+gdspx_sprite_set_pivot(obj_low,obj_high,pivot) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_pivot; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdVec2(pivot);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
-gdspx_sprite_get_pivot(obj) {
+gdspx_sprite_get_pivot(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_pivot; 
 	var _retValue = AllocGdVec2();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_child_position(obj,path,pos) {
+gdspx_sprite_set_child_position(obj_low,obj_high,path,pos) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_child_position; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(path);
 	var _arg2 = ToGdVec2(pos);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
@@ -1256,10 +1280,10 @@ gdspx_sprite_set_child_position(obj,path,pos) {
 	FreeGdVec2(_arg2); 
 
 }
-gdspx_sprite_get_child_position(obj,path) {
+gdspx_sprite_get_child_position(obj_low,obj_high,path) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_child_position; 
 	var _retValue = AllocGdVec2();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(path);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
@@ -1268,10 +1292,10 @@ gdspx_sprite_get_child_position(obj,path) {
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_child_rotation(obj,path,rot) {
+gdspx_sprite_set_child_rotation(obj_low,obj_high,path,rot) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_child_rotation; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(path);
 	var _arg2 = ToGdFloat(rot);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
@@ -1280,10 +1304,10 @@ gdspx_sprite_set_child_rotation(obj,path,rot) {
 	FreeGdFloat(_arg2); 
 
 }
-gdspx_sprite_get_child_rotation(obj,path) {
+gdspx_sprite_get_child_rotation(obj_low,obj_high,path) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_child_rotation; 
 	var _retValue = AllocGdFloat();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(path);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
@@ -1292,10 +1316,10 @@ gdspx_sprite_get_child_rotation(obj,path) {
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_child_scale(obj,path,scale) {
+gdspx_sprite_set_child_scale(obj_low,obj_high,path,scale) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_child_scale; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(path);
 	var _arg2 = ToGdVec2(scale);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
@@ -1304,10 +1328,10 @@ gdspx_sprite_set_child_scale(obj,path,scale) {
 	FreeGdVec2(_arg2); 
 
 }
-gdspx_sprite_get_child_scale(obj,path) {
+gdspx_sprite_get_child_scale(obj_low,obj_high,path) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_child_scale; 
 	var _retValue = AllocGdVec2();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(path);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
@@ -1316,11 +1340,11 @@ gdspx_sprite_get_child_scale(obj,path) {
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_check_collision(obj,target,is_src_trigger,is_dst_trigger) {
+gdspx_sprite_check_collision(obj_low,obj_high,target_low,target_high,is_src_trigger,is_dst_trigger) {
 	var _gdFuncPtr = Module._gdspx_sprite_check_collision; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdObj(target);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
+	var _arg1 = Module._gdspx_new_obj(target_low, target_high);
 	var _arg2 = ToGdBool(is_src_trigger);
 	var _arg3 = ToGdBool(is_dst_trigger);
 	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _retValue);
@@ -1332,10 +1356,10 @@ gdspx_sprite_check_collision(obj,target,is_src_trigger,is_dst_trigger) {
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_check_collision_with_point(obj,point,is_trigger) {
+gdspx_sprite_check_collision_with_point(obj_low,obj_high,point,is_trigger) {
 	var _gdFuncPtr = Module._gdspx_sprite_check_collision_with_point; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdVec2(point);
 	var _arg2 = ToGdBool(is_trigger);
 	_gdFuncPtr(_arg0, _arg1, _arg2, _retValue);
@@ -1346,20 +1370,20 @@ gdspx_sprite_check_collision_with_point(obj,point,is_trigger) {
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_debug_collision_visible(obj,visible) {
+gdspx_sprite_set_debug_collision_visible(obj_low,obj_high,visible) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_debug_collision_visible; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdBool(visible);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
-gdspx_sprite_is_debug_collision_visible(obj) {
+gdspx_sprite_is_debug_collision_visible(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_is_debug_collision_visible; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
@@ -1372,7 +1396,7 @@ gdspx_sprite_create_backdrop(path) {
 	var _arg0 = ToGdString(path);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdString(_arg0); 
-	var _finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdObjScratch");
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
@@ -1384,7 +1408,7 @@ gdspx_sprite_create_sprite(path,pos) {
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdString(_arg0); 
 	FreeGdVec2(_arg1); 
-	var _finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdObjScratch");
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
@@ -1394,164 +1418,164 @@ gdspx_sprite_create_bare_sprite(pos) {
 	var _arg0 = ToGdVec2(pos);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdVec2(_arg0); 
-	var _finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdObjScratch");
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_clone_sprite(obj) {
+gdspx_sprite_clone_sprite(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_clone_sprite; 
 	var _retValue = AllocGdObj();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	var _finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdObjScratch");
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_destroy_sprite(obj) {
+gdspx_sprite_destroy_sprite(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_destroy_sprite; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_is_sprite_alive(obj) {
+gdspx_sprite_is_sprite_alive(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_is_sprite_alive; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_position(obj,pos) {
+gdspx_sprite_set_position(obj_low,obj_high,pos) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_position; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdVec2(pos);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
-gdspx_sprite_get_position(obj) {
+gdspx_sprite_get_position(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_position; 
 	var _retValue = AllocGdVec2();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_rotation(obj,rot) {
+gdspx_sprite_set_rotation(obj_low,obj_high,rot) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_rotation; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdFloat(rot);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
-gdspx_sprite_get_rotation(obj) {
+gdspx_sprite_get_rotation(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_rotation; 
 	var _retValue = AllocGdFloat();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_scale(obj,scale) {
+gdspx_sprite_set_scale(obj_low,obj_high,scale) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_scale; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdVec2(scale);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
-gdspx_sprite_get_scale(obj) {
+gdspx_sprite_get_scale(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_scale; 
 	var _retValue = AllocGdVec2();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_render_scale(obj,scale) {
+gdspx_sprite_set_render_scale(obj_low,obj_high,scale) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_render_scale; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdVec2(scale);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
-gdspx_sprite_get_render_scale(obj) {
+gdspx_sprite_get_render_scale(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_render_scale; 
 	var _retValue = AllocGdVec2();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_color(obj,color) {
+gdspx_sprite_set_color(obj_low,obj_high,color) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_color; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdColor(color);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdColor(_arg1); 
 
 }
-gdspx_sprite_get_color(obj) {
+gdspx_sprite_get_color(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_color; 
 	var _retValue = AllocGdColor();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsColor(_retValue);
 	FreeGdColor(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_material_shader(obj,path) {
+gdspx_sprite_set_material_shader(obj_low,obj_high,path) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_material_shader; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(path);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
 
 }
-gdspx_sprite_get_material_shader(obj) {
+gdspx_sprite_get_material_shader(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_material_shader; 
 	var _retValue = AllocGdString();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsString(_retValue);
 	FreeGdString(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_material_params(obj,effect,amount) {
+gdspx_sprite_set_material_params(obj_low,obj_high,effect,amount) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_material_params; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(effect);
 	var _arg2 = ToGdFloat(amount);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
@@ -1560,10 +1584,10 @@ gdspx_sprite_set_material_params(obj,effect,amount) {
 	FreeGdFloat(_arg2); 
 
 }
-gdspx_sprite_get_material_params(obj,effect) {
+gdspx_sprite_get_material_params(obj_low,obj_high,effect) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_material_params; 
 	var _retValue = AllocGdFloat();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(effect);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
@@ -1572,10 +1596,10 @@ gdspx_sprite_get_material_params(obj,effect) {
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_material_params_vec(obj,effect,x,y,z,w) {
+gdspx_sprite_set_material_params_vec(obj_low,obj_high,effect,x,y,z,w) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_material_params_vec; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(effect);
 	var _arg2 = ToGdFloat(x);
 	var _arg3 = ToGdFloat(y);
@@ -1590,10 +1614,10 @@ gdspx_sprite_set_material_params_vec(obj,effect,x,y,z,w) {
 	FreeGdFloat(_arg5); 
 
 }
-gdspx_sprite_set_material_params_vec4(obj,effect,vec4) {
+gdspx_sprite_set_material_params_vec4(obj_low,obj_high,effect,vec4) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_material_params_vec4; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(effect);
 	var _arg2 = ToGdVec4(vec4);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
@@ -1602,10 +1626,10 @@ gdspx_sprite_set_material_params_vec4(obj,effect,vec4) {
 	FreeGdVec4(_arg2); 
 
 }
-gdspx_sprite_get_material_params_vec4(obj,effect) {
+gdspx_sprite_get_material_params_vec4(obj_low,obj_high,effect) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_material_params_vec4; 
 	var _retValue = AllocGdVec4();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(effect);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
@@ -1614,10 +1638,10 @@ gdspx_sprite_get_material_params_vec4(obj,effect) {
 	FreeGdVec4(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_material_params_color(obj,effect,color) {
+gdspx_sprite_set_material_params_color(obj_low,obj_high,effect,color) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_material_params_color; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(effect);
 	var _arg2 = ToGdColor(color);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
@@ -1626,10 +1650,10 @@ gdspx_sprite_set_material_params_color(obj,effect,color) {
 	FreeGdColor(_arg2); 
 
 }
-gdspx_sprite_get_material_params_color(obj,effect) {
+gdspx_sprite_get_material_params_color(obj_low,obj_high,effect) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_material_params_color; 
 	var _retValue = AllocGdColor();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(effect);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
@@ -1638,10 +1662,10 @@ gdspx_sprite_get_material_params_color(obj,effect) {
 	FreeGdColor(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_texture_atlas(obj,path,rect2) {
+gdspx_sprite_set_texture_atlas(obj_low,obj_high,path,rect2) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_texture_atlas; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(path);
 	var _arg2 = ToGdRect2(rect2);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
@@ -1650,20 +1674,20 @@ gdspx_sprite_set_texture_atlas(obj,path,rect2) {
 	FreeGdRect2(_arg2); 
 
 }
-gdspx_sprite_set_texture(obj,path) {
+gdspx_sprite_set_texture(obj_low,obj_high,path) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_texture; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(path);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
 
 }
-gdspx_sprite_set_texture_atlas_direct(obj,path,rect2) {
+gdspx_sprite_set_texture_atlas_direct(obj_low,obj_high,path,rect2) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_texture_atlas_direct; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(path);
 	var _arg2 = ToGdRect2(rect2);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
@@ -1672,70 +1696,70 @@ gdspx_sprite_set_texture_atlas_direct(obj,path,rect2) {
 	FreeGdRect2(_arg2); 
 
 }
-gdspx_sprite_set_texture_direct(obj,path) {
+gdspx_sprite_set_texture_direct(obj_low,obj_high,path) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_texture_direct; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(path);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
 
 }
-gdspx_sprite_get_texture(obj) {
+gdspx_sprite_get_texture(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_texture; 
 	var _retValue = AllocGdString();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsString(_retValue);
 	FreeGdString(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_visible(obj,visible) {
+gdspx_sprite_set_visible(obj_low,obj_high,visible) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_visible; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdBool(visible);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
-gdspx_sprite_get_visible(obj) {
+gdspx_sprite_get_visible(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_visible; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_get_z_index(obj) {
+gdspx_sprite_get_z_index(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_z_index; 
 	var _retValue = AllocGdInt();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	var _finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdIntScratch");
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_z_index(obj,z) {
+gdspx_sprite_set_z_index(obj_low,obj_high,z_low,z_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_z_index; 
 	
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdInt(z);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
+	var _arg1 = Module._gdspx_new_int(z_low, z_high);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
 
 }
-gdspx_sprite_play_anim(obj,p_name,p_speed,isLoop,p_revert) {
+gdspx_sprite_play_anim(obj_low,obj_high,p_name,p_speed,isLoop,p_revert) {
 	var _gdFuncPtr = Module._gdspx_sprite_play_anim; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(p_name);
 	var _arg2 = ToGdFloat(p_speed);
 	var _arg3 = ToGdBool(isLoop);
@@ -1748,584 +1772,584 @@ gdspx_sprite_play_anim(obj,p_name,p_speed,isLoop,p_revert) {
 	FreeGdBool(_arg4); 
 
 }
-gdspx_sprite_play_backwards_anim(obj,p_name) {
+gdspx_sprite_play_backwards_anim(obj_low,obj_high,p_name) {
 	var _gdFuncPtr = Module._gdspx_sprite_play_backwards_anim; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(p_name);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
 
 }
-gdspx_sprite_pause_anim(obj) {
+gdspx_sprite_pause_anim(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_pause_anim; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0);
 	FreeGdObj(_arg0); 
 
 }
-gdspx_sprite_stop_anim(obj) {
+gdspx_sprite_stop_anim(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_stop_anim; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0);
 	FreeGdObj(_arg0); 
 
 }
-gdspx_sprite_is_playing_anim(obj) {
+gdspx_sprite_is_playing_anim(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_is_playing_anim; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_anim(obj,p_name) {
+gdspx_sprite_set_anim(obj_low,obj_high,p_name) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_anim; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(p_name);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
 
 }
-gdspx_sprite_get_anim(obj) {
+gdspx_sprite_get_anim(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_anim; 
 	var _retValue = AllocGdString();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsString(_retValue);
 	FreeGdString(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_anim_frame(obj,p_frame) {
+gdspx_sprite_set_anim_frame(obj_low,obj_high,p_frame_low,p_frame_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_anim_frame; 
 	
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdInt(p_frame);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
+	var _arg1 = Module._gdspx_new_int(p_frame_low, p_frame_high);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
 
 }
-gdspx_sprite_get_anim_frame(obj) {
+gdspx_sprite_get_anim_frame(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_anim_frame; 
 	var _retValue = AllocGdInt();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	var _finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdIntScratch");
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_anim_speed_scale(obj,p_speed_scale) {
+gdspx_sprite_set_anim_speed_scale(obj_low,obj_high,p_speed_scale) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_anim_speed_scale; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdFloat(p_speed_scale);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
-gdspx_sprite_get_anim_speed_scale(obj) {
+gdspx_sprite_get_anim_speed_scale(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_anim_speed_scale; 
 	var _retValue = AllocGdFloat();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_get_anim_playing_speed(obj) {
+gdspx_sprite_get_anim_playing_speed(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_anim_playing_speed; 
 	var _retValue = AllocGdFloat();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_anim_centered(obj,p_center) {
+gdspx_sprite_set_anim_centered(obj_low,obj_high,p_center) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_anim_centered; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdBool(p_center);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
-gdspx_sprite_is_anim_centered(obj) {
+gdspx_sprite_is_anim_centered(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_is_anim_centered; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_anim_offset(obj,p_offset) {
+gdspx_sprite_set_anim_offset(obj_low,obj_high,p_offset) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_anim_offset; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdVec2(p_offset);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
-gdspx_sprite_get_anim_offset(obj) {
+gdspx_sprite_get_anim_offset(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_anim_offset; 
 	var _retValue = AllocGdVec2();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_anim_flip_h(obj,p_flip) {
+gdspx_sprite_set_anim_flip_h(obj_low,obj_high,p_flip) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_anim_flip_h; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdBool(p_flip);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
-gdspx_sprite_is_anim_flipped_h(obj) {
+gdspx_sprite_is_anim_flipped_h(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_is_anim_flipped_h; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_anim_flip_v(obj,p_flip) {
+gdspx_sprite_set_anim_flip_v(obj_low,obj_high,p_flip) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_anim_flip_v; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdBool(p_flip);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
-gdspx_sprite_is_anim_flipped_v(obj) {
+gdspx_sprite_is_anim_flipped_v(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_is_anim_flipped_v; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_get_current_anim_name(obj) {
+gdspx_sprite_get_current_anim_name(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_current_anim_name; 
 	var _retValue = AllocGdString();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsString(_retValue);
 	FreeGdString(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_velocity(obj,velocity) {
+gdspx_sprite_set_velocity(obj_low,obj_high,velocity) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_velocity; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdVec2(velocity);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
-gdspx_sprite_get_velocity(obj) {
+gdspx_sprite_get_velocity(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_velocity; 
 	var _retValue = AllocGdVec2();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_is_on_floor(obj) {
+gdspx_sprite_is_on_floor(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_is_on_floor; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_is_on_floor_only(obj) {
+gdspx_sprite_is_on_floor_only(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_is_on_floor_only; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_is_on_wall(obj) {
+gdspx_sprite_is_on_wall(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_is_on_wall; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_is_on_wall_only(obj) {
+gdspx_sprite_is_on_wall_only(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_is_on_wall_only; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_is_on_ceiling(obj) {
+gdspx_sprite_is_on_ceiling(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_is_on_ceiling; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_is_on_ceiling_only(obj) {
+gdspx_sprite_is_on_ceiling_only(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_is_on_ceiling_only; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_get_last_motion(obj) {
+gdspx_sprite_get_last_motion(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_last_motion; 
 	var _retValue = AllocGdVec2();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_get_position_delta(obj) {
+gdspx_sprite_get_position_delta(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_position_delta; 
 	var _retValue = AllocGdVec2();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_get_floor_normal(obj) {
+gdspx_sprite_get_floor_normal(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_floor_normal; 
 	var _retValue = AllocGdVec2();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_get_wall_normal(obj) {
+gdspx_sprite_get_wall_normal(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_wall_normal; 
 	var _retValue = AllocGdVec2();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_get_real_velocity(obj) {
+gdspx_sprite_get_real_velocity(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_real_velocity; 
 	var _retValue = AllocGdVec2();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_move_and_slide(obj) {
+gdspx_sprite_move_and_slide(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_move_and_slide; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0);
 	FreeGdObj(_arg0); 
 
 }
-gdspx_sprite_set_gravity(obj,gravity) {
+gdspx_sprite_set_gravity(obj_low,obj_high,gravity) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_gravity; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdFloat(gravity);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
-gdspx_sprite_get_gravity(obj) {
+gdspx_sprite_get_gravity(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_gravity; 
 	var _retValue = AllocGdFloat();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_mass(obj,mass) {
+gdspx_sprite_set_mass(obj_low,obj_high,mass) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_mass; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdFloat(mass);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
-gdspx_sprite_get_mass(obj) {
+gdspx_sprite_get_mass(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_mass; 
 	var _retValue = AllocGdFloat();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_add_force(obj,force) {
+gdspx_sprite_add_force(obj_low,obj_high,force) {
 	var _gdFuncPtr = Module._gdspx_sprite_add_force; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdVec2(force);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
-gdspx_sprite_add_impulse(obj,impulse) {
+gdspx_sprite_add_impulse(obj_low,obj_high,impulse) {
 	var _gdFuncPtr = Module._gdspx_sprite_add_impulse; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdVec2(impulse);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
-gdspx_sprite_set_physics_mode(obj,mode) {
+gdspx_sprite_set_physics_mode(obj_low,obj_high,mode_low,mode_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_physics_mode; 
 	
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdInt(mode);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
+	var _arg1 = Module._gdspx_new_int(mode_low, mode_high);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
 
 }
-gdspx_sprite_get_physics_mode(obj) {
+gdspx_sprite_get_physics_mode(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_physics_mode; 
 	var _retValue = AllocGdInt();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	var _finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdIntScratch");
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_use_gravity(obj,enabled) {
+gdspx_sprite_set_use_gravity(obj_low,obj_high,enabled) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_use_gravity; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdBool(enabled);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
-gdspx_sprite_is_use_gravity(obj) {
+gdspx_sprite_is_use_gravity(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_is_use_gravity; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_gravity_scale(obj,scale) {
+gdspx_sprite_set_gravity_scale(obj_low,obj_high,scale) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_gravity_scale; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdFloat(scale);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
-gdspx_sprite_get_gravity_scale(obj) {
+gdspx_sprite_get_gravity_scale(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_gravity_scale; 
 	var _retValue = AllocGdFloat();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_drag(obj,drag) {
+gdspx_sprite_set_drag(obj_low,obj_high,drag) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_drag; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdFloat(drag);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
-gdspx_sprite_get_drag(obj) {
+gdspx_sprite_get_drag(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_drag; 
 	var _retValue = AllocGdFloat();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_friction(obj,friction) {
+gdspx_sprite_set_friction(obj_low,obj_high,friction) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_friction; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdFloat(friction);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
-gdspx_sprite_get_friction(obj) {
+gdspx_sprite_get_friction(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_friction; 
 	var _retValue = AllocGdFloat();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_collision_layer(obj,layer) {
+gdspx_sprite_set_collision_layer(obj_low,obj_high,layer_low,layer_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_collision_layer; 
 	
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdInt(layer);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
+	var _arg1 = Module._gdspx_new_int(layer_low, layer_high);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
 
 }
-gdspx_sprite_get_collision_layer(obj) {
+gdspx_sprite_get_collision_layer(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_collision_layer; 
 	var _retValue = AllocGdInt();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	var _finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdIntScratch");
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_collision_mask(obj,mask) {
+gdspx_sprite_set_collision_mask(obj_low,obj_high,mask_low,mask_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_collision_mask; 
 	
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdInt(mask);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
+	var _arg1 = Module._gdspx_new_int(mask_low, mask_high);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
 
 }
-gdspx_sprite_get_collision_mask(obj) {
+gdspx_sprite_get_collision_mask(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_collision_mask; 
 	var _retValue = AllocGdInt();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	var _finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdIntScratch");
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_trigger_layer(obj,layer) {
+gdspx_sprite_set_trigger_layer(obj_low,obj_high,layer_low,layer_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_trigger_layer; 
 	
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdInt(layer);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
+	var _arg1 = Module._gdspx_new_int(layer_low, layer_high);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
 
 }
-gdspx_sprite_get_trigger_layer(obj) {
+gdspx_sprite_get_trigger_layer(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_trigger_layer; 
 	var _retValue = AllocGdInt();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	var _finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdIntScratch");
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_trigger_mask(obj,mask) {
+gdspx_sprite_set_trigger_mask(obj_low,obj_high,mask_low,mask_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_trigger_mask; 
 	
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdInt(mask);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
+	var _arg1 = Module._gdspx_new_int(mask_low, mask_high);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
 
 }
-gdspx_sprite_get_trigger_mask(obj) {
+gdspx_sprite_get_trigger_mask(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_get_trigger_mask; 
 	var _retValue = AllocGdInt();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	var _finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdIntScratch");
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_collider_rect(obj,center,size) {
+gdspx_sprite_set_collider_rect(obj_low,obj_high,center,size) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_collider_rect; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdVec2(center);
 	var _arg2 = ToGdVec2(size);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
@@ -2334,10 +2358,10 @@ gdspx_sprite_set_collider_rect(obj,center,size) {
 	FreeGdVec2(_arg2); 
 
 }
-gdspx_sprite_set_collider_circle(obj,center,radius) {
+gdspx_sprite_set_collider_circle(obj_low,obj_high,center,radius) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_collider_circle; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdVec2(center);
 	var _arg2 = ToGdFloat(radius);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
@@ -2346,10 +2370,10 @@ gdspx_sprite_set_collider_circle(obj,center,radius) {
 	FreeGdFloat(_arg2); 
 
 }
-gdspx_sprite_set_collider_capsule(obj,center,size) {
+gdspx_sprite_set_collider_capsule(obj_low,obj_high,center,size) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_collider_capsule; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdVec2(center);
 	var _arg2 = ToGdVec2(size);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
@@ -2358,10 +2382,10 @@ gdspx_sprite_set_collider_capsule(obj,center,size) {
 	FreeGdVec2(_arg2); 
 
 }
-gdspx_sprite_set_collider_polygon(obj,center,points) {
+gdspx_sprite_set_collider_polygon(obj_low,obj_high,center,points) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_collider_polygon; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdVec2(center);
 	var _arg2 = ToGdArray(points);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
@@ -2370,30 +2394,30 @@ gdspx_sprite_set_collider_polygon(obj,center,points) {
 	FreeGdArray(_arg2); 
 
 }
-gdspx_sprite_set_collision_enabled(obj,enabled) {
+gdspx_sprite_set_collision_enabled(obj_low,obj_high,enabled) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_collision_enabled; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdBool(enabled);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
-gdspx_sprite_is_collision_enabled(obj) {
+gdspx_sprite_is_collision_enabled(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_is_collision_enabled; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_trigger_rect(obj,center,size) {
+gdspx_sprite_set_trigger_rect(obj_low,obj_high,center,size) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_trigger_rect; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdVec2(center);
 	var _arg2 = ToGdVec2(size);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
@@ -2402,10 +2426,10 @@ gdspx_sprite_set_trigger_rect(obj,center,size) {
 	FreeGdVec2(_arg2); 
 
 }
-gdspx_sprite_set_trigger_circle(obj,center,radius) {
+gdspx_sprite_set_trigger_circle(obj_low,obj_high,center,radius) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_trigger_circle; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdVec2(center);
 	var _arg2 = ToGdFloat(radius);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
@@ -2414,10 +2438,10 @@ gdspx_sprite_set_trigger_circle(obj,center,radius) {
 	FreeGdFloat(_arg2); 
 
 }
-gdspx_sprite_set_trigger_capsule(obj,center,size) {
+gdspx_sprite_set_trigger_capsule(obj_low,obj_high,center,size) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_trigger_capsule; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdVec2(center);
 	var _arg2 = ToGdVec2(size);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
@@ -2426,10 +2450,10 @@ gdspx_sprite_set_trigger_capsule(obj,center,size) {
 	FreeGdVec2(_arg2); 
 
 }
-gdspx_sprite_set_trigger_polygon(obj,center,points) {
+gdspx_sprite_set_trigger_polygon(obj_low,obj_high,center,points) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_trigger_polygon; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdVec2(center);
 	var _arg2 = ToGdArray(points);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
@@ -2438,30 +2462,30 @@ gdspx_sprite_set_trigger_polygon(obj,center,points) {
 	FreeGdArray(_arg2); 
 
 }
-gdspx_sprite_set_trigger_enabled(obj,trigger) {
+gdspx_sprite_set_trigger_enabled(obj_low,obj_high,trigger) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_trigger_enabled; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdBool(trigger);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
-gdspx_sprite_is_trigger_enabled(obj) {
+gdspx_sprite_is_trigger_enabled(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_is_trigger_enabled; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_check_collision_by_color(obj,color,color_threshold,alpha_threshold) {
+gdspx_sprite_check_collision_by_color(obj_low,obj_high,color,color_threshold,alpha_threshold) {
 	var _gdFuncPtr = Module._gdspx_sprite_check_collision_by_color; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdColor(color);
 	var _arg2 = ToGdFloat(color_threshold);
 	var _arg3 = ToGdFloat(alpha_threshold);
@@ -2474,10 +2498,10 @@ gdspx_sprite_check_collision_by_color(obj,color,color_threshold,alpha_threshold)
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_check_collision_by_alpha(obj,alpha_threshold) {
+gdspx_sprite_check_collision_by_alpha(obj_low,obj_high,alpha_threshold) {
 	var _gdFuncPtr = Module._gdspx_sprite_check_collision_by_alpha; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdFloat(alpha_threshold);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
@@ -2486,11 +2510,11 @@ gdspx_sprite_check_collision_by_alpha(obj,alpha_threshold) {
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_check_collision_with_sprite(obj,obj_b,alpha_threshold,use_pixel_perfect) {
+gdspx_sprite_check_collision_with_sprite(obj_low,obj_high,obj_b_low,obj_b_high,alpha_threshold,use_pixel_perfect) {
 	var _gdFuncPtr = Module._gdspx_sprite_check_collision_with_sprite; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdObj(obj_b);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
+	var _arg1 = Module._gdspx_new_obj(obj_b_low, obj_b_high);
 	var _arg2 = ToGdFloat(alpha_threshold);
 	var _arg3 = ToGdBool(use_pixel_perfect);
 	_gdFuncPtr(_arg0, _arg1, _arg2, _arg3, _retValue);
@@ -2502,10 +2526,10 @@ gdspx_sprite_check_collision_with_sprite(obj,obj_b,alpha_threshold,use_pixel_per
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_sprite_set_pixel_collision_sampling_step(step) {
+gdspx_sprite_set_pixel_collision_sampling_step(step_low,step_high) {
 	var _gdFuncPtr = Module._gdspx_sprite_set_pixel_collision_sampling_step; 
 	
-	var _arg0 = ToGdInt(step);
+	var _arg0 = Module._gdspx_new_int(step_low, step_high);
 	_gdFuncPtr(_arg0);
 	FreeGdInt(_arg0); 
 
@@ -2514,7 +2538,7 @@ gdspx_sprite_get_pixel_collision_sampling_step() {
 	var _gdFuncPtr = Module._gdspx_sprite_get_pixel_collision_sampling_step; 
 	var _retValue = AllocGdInt();
 	_gdFuncPtr(_retValue);
-	var _finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdIntScratch");
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
@@ -2540,10 +2564,10 @@ gdspx_sprite_batch_retrieve_positions(objs) {
 	FreeGdArray(_retValue); 
 	return _finalRetValue
 }
-gdspx_tilemap_open_draw_tiles_with_size(tile_size) {
+gdspx_tilemap_open_draw_tiles_with_size(tile_size_low,tile_size_high) {
 	var _gdFuncPtr = Module._gdspx_tilemap_open_draw_tiles_with_size; 
 	
-	var _arg0 = ToGdInt(tile_size);
+	var _arg0 = Module._gdspx_new_int(tile_size_low, tile_size_high);
 	_gdFuncPtr(_arg0);
 	FreeGdInt(_arg0); 
 
@@ -2554,10 +2578,10 @@ gdspx_tilemap_open_draw_tiles() {
 	_gdFuncPtr();
 
 }
-gdspx_tilemap_set_layer_index(index) {
+gdspx_tilemap_set_layer_index(index_low,index_high) {
 	var _gdFuncPtr = Module._gdspx_tilemap_set_layer_index; 
 	
-	var _arg0 = ToGdInt(index);
+	var _arg0 = Module._gdspx_new_int(index_low, index_high);
 	_gdFuncPtr(_arg0);
 	FreeGdInt(_arg0); 
 
@@ -2582,20 +2606,20 @@ gdspx_tilemap_set_tile_with_collision_info(texture_path,collision_points) {
 	FreeGdArray(_arg1); 
 
 }
-gdspx_tilemap_set_layer_offset(index,offset) {
+gdspx_tilemap_set_layer_offset(index_low,index_high,offset) {
 	var _gdFuncPtr = Module._gdspx_tilemap_set_layer_offset; 
 	
-	var _arg0 = ToGdInt(index);
+	var _arg0 = Module._gdspx_new_int(index_low, index_high);
 	var _arg1 = ToGdVec2(offset);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdInt(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
-gdspx_tilemap_get_layer_offset(index) {
+gdspx_tilemap_get_layer_offset(index_low,index_high) {
 	var _gdFuncPtr = Module._gdspx_tilemap_get_layer_offset; 
 	var _retValue = AllocGdVec2();
-	var _arg0 = ToGdInt(index);
+	var _arg0 = Module._gdspx_new_int(index_low, index_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdInt(_arg0); 
 	var _finalRetValue = ToJsVec2(_retValue);
@@ -2612,12 +2636,12 @@ gdspx_tilemap_place_tiles(positions,texture_path) {
 	FreeGdString(_arg1); 
 
 }
-gdspx_tilemap_place_tiles_with_layer(positions,texture_path,layer_index) {
+gdspx_tilemap_place_tiles_with_layer(positions,texture_path,layer_index_low,layer_index_high) {
 	var _gdFuncPtr = Module._gdspx_tilemap_place_tiles_with_layer; 
 	
 	var _arg0 = ToGdArray(positions);
 	var _arg1 = ToGdString(texture_path);
-	var _arg2 = ToGdInt(layer_index);
+	var _arg2 = Module._gdspx_new_int(layer_index_low, layer_index_high);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdArray(_arg0); 
 	FreeGdString(_arg1); 
@@ -2634,12 +2658,12 @@ gdspx_tilemap_place_tile(pos,texture_path) {
 	FreeGdString(_arg1); 
 
 }
-gdspx_tilemap_place_tile_with_layer(pos,texture_path,layer_index) {
+gdspx_tilemap_place_tile_with_layer(pos,texture_path,layer_index_low,layer_index_high) {
 	var _gdFuncPtr = Module._gdspx_tilemap_place_tile_with_layer; 
 	
 	var _arg0 = ToGdVec2(pos);
 	var _arg1 = ToGdString(texture_path);
-	var _arg2 = ToGdInt(layer_index);
+	var _arg2 = Module._gdspx_new_int(layer_index_low, layer_index_high);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
 	FreeGdVec2(_arg0); 
 	FreeGdString(_arg1); 
@@ -2654,11 +2678,11 @@ gdspx_tilemap_erase_tile(pos) {
 	FreeGdVec2(_arg0); 
 
 }
-gdspx_tilemap_erase_tile_with_layer(pos,layer_index) {
+gdspx_tilemap_erase_tile_with_layer(pos,layer_index_low,layer_index_high) {
 	var _gdFuncPtr = Module._gdspx_tilemap_erase_tile_with_layer; 
 	
 	var _arg0 = ToGdVec2(pos);
-	var _arg1 = ToGdInt(layer_index);
+	var _arg1 = Module._gdspx_new_int(layer_index_low, layer_index_high);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdVec2(_arg0); 
 	FreeGdInt(_arg1); 
@@ -2674,11 +2698,11 @@ gdspx_tilemap_get_tile(pos) {
 	FreeGdString(_retValue); 
 	return _finalRetValue
 }
-gdspx_tilemap_get_tile_with_layer(pos,layer_index) {
+gdspx_tilemap_get_tile_with_layer(pos,layer_index_low,layer_index_high) {
 	var _gdFuncPtr = Module._gdspx_tilemap_get_tile_with_layer; 
 	var _retValue = AllocGdString();
 	var _arg0 = ToGdVec2(pos);
-	var _arg1 = ToGdInt(layer_index);
+	var _arg1 = Module._gdspx_new_int(layer_index_low, layer_index_high);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdVec2(_arg0); 
 	FreeGdInt(_arg1); 
@@ -2736,19 +2760,19 @@ gdspx_tilemapparser_get_tilemap_layer_count(name) {
 	var _arg0 = ToGdString(name);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdString(_arg0); 
-	var _finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdIntScratch");
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
-gdspx_ui_bind_node(obj,rel_path) {
+gdspx_ui_bind_node(obj_low,obj_high,rel_path) {
 	var _gdFuncPtr = Module._gdspx_ui_bind_node; 
 	var _retValue = AllocGdObj();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(rel_path);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
-	var _finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdObjScratch");
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
@@ -2758,7 +2782,7 @@ gdspx_ui_create_node(path) {
 	var _arg0 = ToGdString(path);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdString(_arg0); 
-	var _finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdObjScratch");
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
@@ -2770,7 +2794,7 @@ gdspx_ui_create_button(path,text) {
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdString(_arg0); 
 	FreeGdString(_arg1); 
-	var _finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdObjScratch");
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
@@ -2782,7 +2806,7 @@ gdspx_ui_create_label(path,text) {
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdString(_arg0); 
 	FreeGdString(_arg1); 
-	var _finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdObjScratch");
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
@@ -2792,7 +2816,7 @@ gdspx_ui_create_image(path) {
 	var _arg0 = ToGdString(path);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdString(_arg0); 
-	var _finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdObjScratch");
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
@@ -2804,7 +2828,7 @@ gdspx_ui_create_toggle(path,value) {
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdString(_arg0); 
 	FreeGdBool(_arg1); 
-	var _finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdObjScratch");
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
@@ -2816,7 +2840,7 @@ gdspx_ui_create_slider(path,value) {
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdString(_arg0); 
 	FreeGdFloat(_arg1); 
-	var _finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdObjScratch");
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
@@ -2828,334 +2852,334 @@ gdspx_ui_create_input(path,text) {
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdString(_arg0); 
 	FreeGdString(_arg1); 
-	var _finalRetValue = ToJsObj(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdObjScratch");
 	FreeGdObj(_retValue); 
 	return _finalRetValue
 }
-gdspx_ui_destroy_node(obj) {
+gdspx_ui_destroy_node(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_ui_destroy_node; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_ui_get_type(obj) {
+gdspx_ui_get_type(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_ui_get_type; 
 	var _retValue = AllocGdInt();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	var _finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdIntScratch");
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
-gdspx_ui_set_text(obj,text) {
+gdspx_ui_set_text(obj_low,obj_high,text) {
 	var _gdFuncPtr = Module._gdspx_ui_set_text; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(text);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
 
 }
-gdspx_ui_get_text(obj) {
+gdspx_ui_get_text(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_ui_get_text; 
 	var _retValue = AllocGdString();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsString(_retValue);
 	FreeGdString(_retValue); 
 	return _finalRetValue
 }
-gdspx_ui_set_texture(obj,path) {
+gdspx_ui_set_texture(obj_low,obj_high,path) {
 	var _gdFuncPtr = Module._gdspx_ui_set_texture; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdString(path);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdString(_arg1); 
 
 }
-gdspx_ui_get_texture(obj) {
+gdspx_ui_get_texture(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_ui_get_texture; 
 	var _retValue = AllocGdString();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsString(_retValue);
 	FreeGdString(_retValue); 
 	return _finalRetValue
 }
-gdspx_ui_set_color(obj,color) {
+gdspx_ui_set_color(obj_low,obj_high,color) {
 	var _gdFuncPtr = Module._gdspx_ui_set_color; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdColor(color);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdColor(_arg1); 
 
 }
-gdspx_ui_get_color(obj) {
+gdspx_ui_get_color(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_ui_get_color; 
 	var _retValue = AllocGdColor();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsColor(_retValue);
 	FreeGdColor(_retValue); 
 	return _finalRetValue
 }
-gdspx_ui_set_font_size(obj,size) {
+gdspx_ui_set_font_size(obj_low,obj_high,size_low,size_high) {
 	var _gdFuncPtr = Module._gdspx_ui_set_font_size; 
 	
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdInt(size);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
+	var _arg1 = Module._gdspx_new_int(size_low, size_high);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
 
 }
-gdspx_ui_get_font_size(obj) {
+gdspx_ui_get_font_size(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_ui_get_font_size; 
 	var _retValue = AllocGdInt();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	var _finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdIntScratch");
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
-gdspx_ui_set_visible(obj,visible) {
+gdspx_ui_set_visible(obj_low,obj_high,visible) {
 	var _gdFuncPtr = Module._gdspx_ui_set_visible; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdBool(visible);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
-gdspx_ui_get_visible(obj) {
+gdspx_ui_get_visible(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_ui_get_visible; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_ui_set_interactable(obj,interactable) {
+gdspx_ui_set_interactable(obj_low,obj_high,interactable) {
 	var _gdFuncPtr = Module._gdspx_ui_set_interactable; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdBool(interactable);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdBool(_arg1); 
 
 }
-gdspx_ui_get_interactable(obj) {
+gdspx_ui_get_interactable(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_ui_get_interactable; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsBool(_retValue);
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_ui_set_rect(obj,rect) {
+gdspx_ui_set_rect(obj_low,obj_high,rect) {
 	var _gdFuncPtr = Module._gdspx_ui_set_rect; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdRect2(rect);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdRect2(_arg1); 
 
 }
-gdspx_ui_get_rect(obj) {
+gdspx_ui_get_rect(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_ui_get_rect; 
 	var _retValue = AllocGdRect2();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsRect2(_retValue);
 	FreeGdRect2(_retValue); 
 	return _finalRetValue
 }
-gdspx_ui_get_layout_direction(obj) {
+gdspx_ui_get_layout_direction(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_ui_get_layout_direction; 
 	var _retValue = AllocGdInt();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	var _finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdIntScratch");
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
-gdspx_ui_set_layout_direction(obj,value) {
+gdspx_ui_set_layout_direction(obj_low,obj_high,value_low,value_high) {
 	var _gdFuncPtr = Module._gdspx_ui_set_layout_direction; 
 	
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdInt(value);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
+	var _arg1 = Module._gdspx_new_int(value_low, value_high);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
 
 }
-gdspx_ui_get_layout_mode(obj) {
+gdspx_ui_get_layout_mode(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_ui_get_layout_mode; 
 	var _retValue = AllocGdInt();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	var _finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdIntScratch");
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
-gdspx_ui_set_layout_mode(obj,value) {
+gdspx_ui_set_layout_mode(obj_low,obj_high,value_low,value_high) {
 	var _gdFuncPtr = Module._gdspx_ui_set_layout_mode; 
 	
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdInt(value);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
+	var _arg1 = Module._gdspx_new_int(value_low, value_high);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
 
 }
-gdspx_ui_get_anchors_preset(obj) {
+gdspx_ui_get_anchors_preset(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_ui_get_anchors_preset; 
 	var _retValue = AllocGdInt();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
-	var _finalRetValue = ToJsInt(_retValue);
+	var _finalRetValue = this._readGdIntLike(_retValue, "_gdIntScratch");
 	FreeGdInt(_retValue); 
 	return _finalRetValue
 }
-gdspx_ui_set_anchors_preset(obj,value) {
+gdspx_ui_set_anchors_preset(obj_low,obj_high,value_low,value_high) {
 	var _gdFuncPtr = Module._gdspx_ui_set_anchors_preset; 
 	
-	var _arg0 = ToGdObj(obj);
-	var _arg1 = ToGdInt(value);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
+	var _arg1 = Module._gdspx_new_int(value_low, value_high);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdInt(_arg1); 
 
 }
-gdspx_ui_get_scale(obj) {
+gdspx_ui_get_scale(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_ui_get_scale; 
 	var _retValue = AllocGdVec2();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
-gdspx_ui_set_scale(obj,value) {
+gdspx_ui_set_scale(obj_low,obj_high,value) {
 	var _gdFuncPtr = Module._gdspx_ui_set_scale; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdVec2(value);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
-gdspx_ui_get_position(obj) {
+gdspx_ui_get_position(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_ui_get_position; 
 	var _retValue = AllocGdVec2();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
-gdspx_ui_set_position(obj,value) {
+gdspx_ui_set_position(obj_low,obj_high,value) {
 	var _gdFuncPtr = Module._gdspx_ui_set_position; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdVec2(value);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
-gdspx_ui_get_size(obj) {
+gdspx_ui_get_size(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_ui_get_size; 
 	var _retValue = AllocGdVec2();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
-gdspx_ui_set_size(obj,value) {
+gdspx_ui_set_size(obj_low,obj_high,value) {
 	var _gdFuncPtr = Module._gdspx_ui_set_size; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdVec2(value);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
-gdspx_ui_get_global_position(obj) {
+gdspx_ui_get_global_position(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_ui_get_global_position; 
 	var _retValue = AllocGdVec2();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsVec2(_retValue);
 	FreeGdVec2(_retValue); 
 	return _finalRetValue
 }
-gdspx_ui_set_global_position(obj,value) {
+gdspx_ui_set_global_position(obj_low,obj_high,value) {
 	var _gdFuncPtr = Module._gdspx_ui_set_global_position; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdVec2(value);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdVec2(_arg1); 
 
 }
-gdspx_ui_get_rotation(obj) {
+gdspx_ui_get_rotation(obj_low,obj_high) {
 	var _gdFuncPtr = Module._gdspx_ui_get_rotation; 
 	var _retValue = AllocGdFloat();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	_gdFuncPtr(_arg0, _retValue);
 	FreeGdObj(_arg0); 
 	var _finalRetValue = ToJsFloat(_retValue);
 	FreeGdFloat(_retValue); 
 	return _finalRetValue
 }
-gdspx_ui_set_rotation(obj,value) {
+gdspx_ui_set_rotation(obj_low,obj_high,value) {
 	var _gdFuncPtr = Module._gdspx_ui_set_rotation; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdFloat(value);
 	_gdFuncPtr(_arg0, _arg1);
 	FreeGdObj(_arg0); 
 	FreeGdFloat(_arg1); 
 
 }
-gdspx_ui_get_flip(obj,horizontal) {
+gdspx_ui_get_flip(obj_low,obj_high,horizontal) {
 	var _gdFuncPtr = Module._gdspx_ui_get_flip; 
 	var _retValue = AllocGdBool();
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdBool(horizontal);
 	_gdFuncPtr(_arg0, _arg1, _retValue);
 	FreeGdObj(_arg0); 
@@ -3164,10 +3188,10 @@ gdspx_ui_get_flip(obj,horizontal) {
 	FreeGdBool(_retValue); 
 	return _finalRetValue
 }
-gdspx_ui_set_flip(obj,horizontal,is_flip) {
+gdspx_ui_set_flip(obj_low,obj_high,horizontal,is_flip) {
 	var _gdFuncPtr = Module._gdspx_ui_set_flip; 
 	
-	var _arg0 = ToGdObj(obj);
+	var _arg0 = Module._gdspx_new_obj(obj_low, obj_high);
 	var _arg1 = ToGdBool(horizontal);
 	var _arg2 = ToGdBool(is_flip);
 	_gdFuncPtr(_arg0, _arg1, _arg2);
