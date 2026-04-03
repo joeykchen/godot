@@ -12,10 +12,6 @@ constructor() {
 	this._gdObjScratch = null;
 }
 
-_getGdDataView() {
-	return GetHeapDataView();
-}
-
 _getGdIntScratch() {
 	var _scratch = this._gdIntScratch;
 	if (!_scratch) {
@@ -39,9 +35,10 @@ _getGdObjScratch() {
  * immediately.
  */
 _readGdIntLike(ptr, scratch) {
-	var _view = this._getGdDataView();
-	scratch.low = _view.getUint32(ptr, true);
-	scratch.high = _view.getUint32(ptr + 4, true);
+	var _u32 = Module.HEAPU32;
+	var _word = ptr >> 2;
+	scratch.low = _u32[_word];
+	scratch.high = _u32[_word + 1];
 	return scratch;
 }
 gdspx_audio_stop_all() {
