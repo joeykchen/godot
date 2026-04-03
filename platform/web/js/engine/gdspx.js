@@ -8,6 +8,7 @@
 //----------------------------------------------------------------------------*/
 class GdspxFuncs {
 constructor() {
+	this._inputMousePosScratch = null;
 	this._gdIntScratch = null;
 	this._gdObjScratch = null;
 }
@@ -408,9 +409,9 @@ gdspx_input_get_global_mouse_pos() {
 	var _gdFuncPtr = Module._gdspx_input_get_global_mouse_pos; 
 	var _retValue = AllocGdVec2();
 	_gdFuncPtr(_retValue);
-	var _scratch = GdspxFuncs._inputMousePosScratch;
+	var _scratch = this._inputMousePosScratch;
 	if (!_scratch) {
-		_scratch = GdspxFuncs._inputMousePosScratch = { x: 0, y: 0 };
+		_scratch = this._inputMousePosScratch = { x: 0, y: 0 };
 	}
 	var _floatIndex = _retValue / 4;
 	var _heap = Module.HEAPF32;
