@@ -8,12 +8,7 @@
 //----------------------------------------------------------------------------*/
 class GdspxFuncs {
 _getGdDataView() {
-	var _buffer = Module.HEAPU8.buffer;
-	var _view = this._gdDataView;
-	if (!_view || _view.buffer !== _buffer) {
-		_view = this._gdDataView = new DataView(_buffer);
-	}
-	return _view;
+	return GetHeapDataView();
 }
 
 _getGdIntScratch(key) {
@@ -24,6 +19,12 @@ _getGdIntScratch(key) {
 	return _scratch;
 }
 
+/**
+ * Reads a GdInt/GdObj from wasm memory into a reusable scratch object.
+ * The returned object is mutable and will be overwritten by the next call
+ * that uses the same scratch key, so callers must consume or copy it
+ * immediately.
+ */
 _readGdIntLike(ptr, scratchKey) {
 	var _view = this._getGdDataView();
 	var _scratch = this._getGdIntScratch(scratchKey);
