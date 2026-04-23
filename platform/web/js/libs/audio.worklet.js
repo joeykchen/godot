@@ -104,6 +104,7 @@ class GodotProcessor extends AudioWorkletProcessor {
 		this.output_buffer = new Float32Array();
 		this.input = null;
 		this.input_buffer = new Float32Array();
+		this.input_transfer_pool = [];
 		this.port.onmessage = (event) => {
 			const cmd = event.data['cmd'];
 			const data = event.data['data'];
@@ -116,6 +117,17 @@ class GodotProcessor extends AudioWorkletProcessor {
 			Atomics.add(this.notifier, 0, 1);
 			Atomics.notify(this.notifier, 0);
 		}
+	}
+
+	static get_transfer_buffer(pool, size) {
+		for (let i = pool.length - 1; i >= 0; i--) {
+			const buffer = pool[i];
+			if (buffer.length === size) {
+				pool.splice(i, 1);
+				return buffer;
+			}
+		}
+		return new Float32Array(size);
 	}
 
 	parse_message(p_cmd, p_data) {
@@ -135,10 +147,20 @@ class GodotProcessor extends AudioWorkletProcessor {
 			this.input = null;
 			this.lock = null;
 			this.notifier = null;
+			this.input_transfer_pool.length = 0;
 		} else if (p_cmd === 'start_nothreads') {
 			this.output = new RingBuffer(p_data[0], p_data[0].length, false);
+			this.input_transfer_pool.length = 0;
 		} else if (p_cmd === 'chunk') {
-			this.output.write(p_data);
+			const buffer = p_data[0];
+			const size = p_data[1];
+			const chunk = new Float32Array(buffer, 0, size);
+			this.output.write(chunk);
+			this.port.postMessage({ 'cmd': 'chunk_recycle', 'data': buffer }, [buffer]);
+		} else if (p_cmd === 'input_recycle') {
+			if (p_data && this.input_transfer_pool.length < 8) {
+				this.input_transfer_pool.push(new Float32Array(p_data));
+			}
 		}
 	}
 
@@ -161,8 +183,9 @@ class GodotProcessor extends AudioWorkletProcessor {
 				this.input_buffer = new Float32Array(chunk);
 			}
 			if (!this.threads) {
-				GodotProcessor.write_input(this.input_buffer, input);
-				this.port.postMessage({ 'cmd': 'input', 'data': this.input_buffer });
+				const input_buffer = GodotProcessor.get_transfer_buffer(this.input_transfer_pool, chunk);
+				GodotProcessor.write_input(input_buffer, input);
+				this.port.postMessage({ 'cmd': 'input', 'data': [input_buffer.buffer, chunk] }, [input_buffer.buffer]);
 			} else if (this.input.space_left() >= chunk) {
 				GodotProcessor.write_input(this.input_buffer, input);
 				this.input.write(this.input_buffer);
