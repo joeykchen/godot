@@ -431,8 +431,11 @@ class SampleNode {
 		this._onended = null;
 		/** @type {AudioWorkletNode | null} */
 		this._positionWorklet = null;
+		/** @type {Promise<void> | null} */
 		this._positionWorkletPromise = null;
 		this._positionWorker = null;
+		/** @type {number} */
+		this._sourceStartOffset = this.offset;
 
 		this.setPlaybackRate(options.playbackRate ?? 44100);
 		this._source.buffer = this.getSample().getAudioBuffer();
@@ -457,6 +460,7 @@ class SampleNode {
 
 	/**
 	 * Gets the playback position.
+	 * May lazily initialize the position reporter while playback is active.
 	 * @returns {number}
 	 */
 	getPlaybackPosition() {
@@ -469,12 +473,21 @@ class SampleNode {
 		return this._playbackPosition;
 	}
 
+	/**
+	 * Reports a position-worklet initialization failure.
+	 * @param {Error} err
+	 * @returns {void}
+	 */
 	_reportPositionWorkletError(err) {
 		const newErr = new Error('Failed to create PositionWorklet.');
 		newErr.cause = err;
 		GodotRuntime.error(newErr);
 	}
 
+	/**
+	 * Estimates the playback position between reporter updates.
+	 * @returns {number}
+	 */
 	_estimatePlaybackPosition() {
 		if (this.isPaused) {
 			return this.offset + this.pauseTime;
@@ -482,7 +495,21 @@ class SampleNode {
 		if (!this.isStarted || !GodotAudio.ctx) {
 			return this._playbackPosition;
 		}
-		return this.offset + Math.max(GodotAudio.ctx.currentTime - this._sourceStartTime, 0);
+		const playbackRate = this._source ? this._source.playbackRate.value : this.getPlaybackRate() * this.getPitchScale();
+		return this._sourceStartOffset + Math.max(GodotAudio.ctx.currentTime - this._sourceStartTime, 0) * playbackRate;
+	}
+
+	/**
+	 * Anchors future playback-position estimates to the current audio clock.
+	 * @param {number} position
+	 * @returns {void}
+	 */
+	_setPlaybackPositionAnchor(position) {
+		this._playbackPosition = position;
+		this._sourceStartOffset = position;
+		if (GodotAudio.ctx) {
+			this._resetSourceStartTime();
+		}
 	}
 
 	/**
@@ -537,7 +564,7 @@ class SampleNode {
 		if (this.isStarted) {
 			return;
 		}
-		this._resetSourceStartTime();
+		this._setPlaybackPositionAnchor(this.offset);
 		this._source.start(this.startTime, this.offset);
 		this.isStarted = true;
 	}
@@ -556,7 +583,6 @@ class SampleNode {
 	restart() {
 		this.isPaused = false;
 		this.pauseTime = 0;
-		this._resetSourceStartTime();
 		this._restart();
 	}
 
@@ -621,7 +647,7 @@ class SampleNode {
 	async connectPositionWorklet(start) {
 		if (this._positionWorkletPromise != null) {
 			await this._positionWorkletPromise;
-			if (start) {
+			if (start && !this.isCanceled && this._source != null) {
 				this.start();
 			}
 			return;
@@ -649,7 +675,7 @@ class SampleNode {
 		} finally {
 			this._positionWorkletPromise = null;
 		}
-		if (start) {
+		if (start && !this.isCanceled && this._source != null) {
 			this.start();
 		}
 	}
@@ -670,7 +696,7 @@ class SampleNode {
 			this._positionWorklet.port.onmessage = (event) => {
 				switch (event.data['type']) {
 				case 'position':
-					this._playbackPosition = parseInt(event.data.data, 10) / this.getSample().sampleRate;
+					this._setPlaybackPositionAnchor(parseInt(event.data.data, 10) / this.getSample().sampleRate);
 					break;
 				default:
 					// Do nothing.
@@ -693,7 +719,7 @@ class SampleNode {
 			if (typeof positionWorker !== 'undefined') {
 				positionWorker.onMessage(event => {
 					if (event.type === 'position') {
-						this._playbackPosition = parseInt(event.data, 10) / this.getSample().sampleRate + this.offset;
+						this._setPlaybackPositionAnchor(parseInt(event.data, 10) / this.getSample().sampleRate + this.offset);
 					}
 				});
 			}
@@ -760,6 +786,9 @@ class SampleNode {
 	 * @returns {void}
 	 */
 	_syncPlaybackRate() {
+		if (this.isStarted && !this.isPaused && GodotAudio.ctx && this._source != null) {
+			this._setPlaybackPositionAnchor(this._estimatePlaybackPosition());
+		}
 		this._source.playbackRate.value = this.getPlaybackRate() * this.getPitchScale();
 	}
 
@@ -774,6 +803,7 @@ class SampleNode {
 		}
 		this._source = GodotAudio.ctx.createBufferSource();
 		this._source.buffer = this.getSample().getAudioBuffer();
+		this._source.playbackRate.value = this.getPlaybackRate() * this.getPitchScale();
 
 		// Make sure that we connect the new source to the sample node bus.
 		for (const sampleNodeBus of this._sampleNodeBuses.values()) {
@@ -784,6 +814,7 @@ class SampleNode {
 		const pauseTime = this.isPaused
 			? this.pauseTime
 			: 0;
+		this._setPlaybackPositionAnchor(this.offset + pauseTime);
 		if (this._positionWorklet != null) {
 			if(typeof miniEngine === 'undefined' || !miniEngine){
 				this._positionWorklet.port.postMessage({
@@ -809,9 +840,13 @@ class SampleNode {
 		if (!this.isStarted) {
 			return;
 		}
+		const pauseTime = GodotAudio.ctx
+			? Math.max(this._estimatePlaybackPosition() - this.offset, 0)
+			: this.pauseTime;
 		this.isPaused = true;
 		if(GodotAudio.ctx){
-			this.pauseTime = (GodotAudio.ctx.currentTime - this._sourceStartTime) / this.getPlaybackRate();
+			this.pauseTime = pauseTime;
+			this._playbackPosition = this.offset + this.pauseTime;
 			this._source.stop();
 		}
 	}
@@ -2084,7 +2119,8 @@ const GodotAudioWorklet = {
 					for (let i = output_pool.length - 1; i >= 0; i--) {
 						const buffer = output_pool[i];
 						if (buffer.length === size) {
-							output_pool.splice(i, 1);
+							output_pool[i] = output_pool[output_pool.length - 1];
+							output_pool.pop();
 							return buffer;
 						}
 					}
@@ -2139,6 +2175,8 @@ const GodotAudioWorklet = {
 
 				this.recycleOutput = function (buffer) {
 					if (buffer && output_pool.length < MAX_OUTPUT_POOL_SIZE) {
+						// Keep mismatched recycled buffers in the pool to avoid extra
+						// churn if the render quantum size flips again later.
 						output_pool.push(new Float32Array(buffer));
 					}
 				};
