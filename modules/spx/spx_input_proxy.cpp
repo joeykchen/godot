@@ -30,7 +30,25 @@
 
 #include "spx_input_proxy.h"
 
+#include "core/os/keyboard.h"
 #include "spx_engine.h"
+
+// Printable Unicode is normalized through fix_keycode() so shifted symbols
+// such as '!' map correctly before falling back to label, logical, then physical keycodes.
+static GdInt normalize_key_event_code(const Ref<InputEventKey> &p_event) {
+	const char32_t unicode = p_event->get_unicode();
+	if (unicode >= 0x20 && unicode != 0x7F) {
+		return (GdInt)fix_keycode(unicode, p_event->get_keycode());
+	}
+	Key key = p_event->get_key_label();
+	if (key == Key::NONE) {
+		key = p_event->get_keycode();
+		if (key == Key::NONE) {
+			key = p_event->get_physical_keycode();
+		}
+	}
+	return (GdInt)key;
+}
 
 void SpxInputProxy::ready() {
 	set_process_input(true);
@@ -39,10 +57,11 @@ void SpxInputProxy::ready() {
 void SpxInputProxy::input(const Ref<InputEvent> &p_event) {
 	Ref<InputEventKey> k = p_event;
 	if (k.is_valid()) {
+		const GdInt keyid = normalize_key_event_code(k);
 		if (k->is_pressed()) {
-			SPX_CALLBACK->func_on_key_pressed((GdInt)k->get_keycode());
+			SPX_CALLBACK->func_on_key_pressed(keyid);
 		} else if (k->is_released()) {
-			SPX_CALLBACK->func_on_key_released((GdInt)k->get_keycode());
+			SPX_CALLBACK->func_on_key_released(keyid);
 		}
 		return;
 	}
