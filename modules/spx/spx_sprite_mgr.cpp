@@ -291,9 +291,16 @@ GdInt SpxSpriteMgr::_create_sprite(GdString path, GdVec2 pos, GdBool is_backdrop
 			print_error("Failed to load sprite scene " + path_str);
 			return NULL_OBJECT_ID;
 		} else {
-			sprite = dynamic_cast<SpxSprite *>(scene->instantiate());
+			Node *node = scene->instantiate();
+			if (node == nullptr) {
+				print_error("Failed to instantiate sprite scene " + path_str);
+				return NULL_OBJECT_ID;
+			}
+			sprite = dynamic_cast<SpxSprite *>(node);
 			if (sprite == nullptr) {
-				print_error("Failed to load sprite scene , type invalid " + path_str);
+				print_error("Failed to load sprite scene, type invalid " + path_str);
+				memdelete(node);
+				return NULL_OBJECT_ID;
 			}
 		}
 	}

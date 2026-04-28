@@ -81,6 +81,10 @@ ESpxUiType SpxUiMgr::get_node_type(Node *obj) {
 		return ESpxUiType::Input;
 	}
 
+	if (dynamic_cast<SpxSlider *>(obj)) {
+		return ESpxUiType::Slider;
+	}
+
 	if (dynamic_cast<SpxControl *>(obj)) {
 		return ESpxUiType::Control;
 	}
@@ -233,11 +237,15 @@ GdObj SpxUiMgr::create_toggle(GdString path, GdBool value) {
 }
 
 GdObj SpxUiMgr::create_slider(GdString path, GdFloat value) {
-	return 0;
+	CREATE_UI_NODE(Slider)
+	control->set_value(value);
+	return node->get_gid();
 }
 
 GdObj SpxUiMgr::create_input(GdString path, GdString text) {
-	return 0;
+	CREATE_UI_NODE(Input)
+	control->set_text(SpxStr(text));
+	return node->get_gid();
 }
 
 GdBool SpxUiMgr::destroy_node(GdObj obj) {

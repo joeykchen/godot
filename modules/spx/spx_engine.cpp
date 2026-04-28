@@ -59,16 +59,17 @@
 #include "spx_tilemapparser_mgr.h"
 #include "spx_ui_mgr.h"
 
+
 void SpxEngine::register_runtime_panic_callbacks(GDExtensionSpxGlobalRuntimePanicCallback callback) {
-	singleton->on_runtime_panic = callback;
+	_register_runtime_callback(&SpxEngine::on_runtime_panic, callback, __func__);
 }
 
 void SpxEngine::register_runtime_exit_callbacks(GDExtensionSpxGlobalRuntimeExitCallback callback) {
-	singleton->on_runtime_exit = callback;
+	_register_runtime_callback(&SpxEngine::on_runtime_exit, callback, __func__);
 }
 
 void SpxEngine::register_runtime_reset_callbacks(GDExtensionSpxGlobalRuntimeResetCallback callback) {
-	singleton->on_runtime_reset = callback;
+	_register_runtime_callback(&SpxEngine::on_runtime_reset, callback, __func__);
 }
 
 static SpxCallbackInfo get_default_spx_callbacks() {

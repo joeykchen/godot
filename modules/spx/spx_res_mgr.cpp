@@ -483,8 +483,8 @@ GdString SpxResMgr::read_all_text(GdString p_path) {
 			file_content += line + "\n";
 		}
 		value = file_content;
+		file->close();
 	}
-	file->close();
 	return SpxReturnStr(value);
 }
 
