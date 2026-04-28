@@ -85,6 +85,10 @@ SpxInput *SpxUi::get_input() {
 	GET_SPX_CONTROL_TYPE(Input)
 }
 
+SpxSlider *SpxUi::get_slider() {
+	GET_SPX_CONTROL_TYPE(Slider)
+}
+
 void SpxUi::on_destroy_call() {
 	if (!Spx::initialed) {
 		return;
