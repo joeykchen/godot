@@ -45,20 +45,20 @@ public:
 	void on_destroy() override;
 	void on_reset(int reset_code) override;
 
-	void destroy_all_pens();
-	GdObj create_pen();
-	void destroy_pen(GdObj obj);
+	SPX_API void destroy_all_pens();
+	SPX_API GdObj create_pen();
+	SPX_API void destroy_pen(GdObj obj);
 	// Pen operation methods
-	void pen_stamp(GdObj obj);
-	void move_pen_to(GdObj obj, GdVec2 position);
-	void pen_down(GdObj obj, GdBool move_by_mouse);
-	void pen_up(GdObj obj);
-	void set_pen_color_to(GdObj obj, GdColor color);
-	void change_pen_by(GdObj obj, GdInt property, GdFloat amount);
-	void set_pen_to(GdObj obj, GdInt property, GdFloat value);
-	void change_pen_size_by(GdObj obj, GdFloat amount);
-	void set_pen_size_to(GdObj obj, GdFloat size);
-	void set_pen_stamp_texture(GdObj obj, GdString texture_path);
+	SPX_API void pen_stamp(GdObj obj);
+	SPX_API void move_pen_to(GdObj obj, GdVec2 position);
+	SPX_API void pen_down(GdObj obj, GdBool move_by_mouse);
+	SPX_API void pen_up(GdObj obj);
+	SPX_API void set_pen_color_to(GdObj obj, GdColor color);
+	SPX_API void change_pen_by(GdObj obj, GdInt property, GdFloat amount);
+	SPX_API void set_pen_to(GdObj obj, GdInt property, GdFloat value);
+	SPX_API void change_pen_size_by(GdObj obj, GdFloat amount);
+	SPX_API void set_pen_size_to(GdObj obj, GdFloat size);
+	SPX_API void set_pen_stamp_texture(GdObj obj, GdString texture_path);
 };
 
 #endif // SPX_PEN_MGR_H

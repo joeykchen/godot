@@ -46,6 +46,14 @@ public:                                      \
 #define SpxStr(str) (String::utf8((const char *)str))
 #define SpxReturnStr(str) (SpxBaseMgr::to_return_cstr(str))
 
+#ifndef SPX_API
+#define SPX_API
+#endif
+
+#ifndef SPX_BIND
+#define SPX_BIND SPX_API
+#endif
+
 #define NULL_OBJECT_ID 0
 
 class Window;

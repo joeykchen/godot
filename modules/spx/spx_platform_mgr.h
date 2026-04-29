@@ -48,30 +48,30 @@ public:
 
 public:
 	//Expose as few interfaces as possible to prevent misuse.
-	void set_stretch_mode(GdBool enable);
-	void set_stretch_aspect(GdBool is_keep);
-	void set_stretch_content_scale(GdInt width, GdInt height);
+	SPX_API void set_stretch_mode(GdBool enable);
+	SPX_API void set_stretch_aspect(GdBool is_keep);
+	SPX_API void set_stretch_content_scale(GdInt width, GdInt height);
 
-	void set_window_position(GdVec2 pos);
-	GdVec2 get_window_position();
-	void set_window_size(GdInt width, GdInt height, GdBool with_content_scale);
-	GdVec2 get_window_size();
-	void set_window_title(GdString title);
-	GdString get_window_title();
-	void set_window_fullscreen(GdBool enable);
-	GdBool is_window_fullscreen();
-	void set_debug_mode(GdBool enable);
-	GdBool is_debug_mode();
+	SPX_API void set_window_position(GdVec2 pos);
+	SPX_API GdVec2 get_window_position();
+	SPX_API void set_window_size(GdInt width, GdInt height, GdBool with_content_scale);
+	SPX_API GdVec2 get_window_size();
+	SPX_API void set_window_title(GdString title);
+	SPX_API GdString get_window_title();
+	SPX_API void set_window_fullscreen(GdBool enable);
+	SPX_API GdBool is_window_fullscreen();
+	SPX_API void set_debug_mode(GdBool enable);
+	SPX_API GdBool is_debug_mode();
 
-	GdFloat get_time_scale();
-	void set_time_scale(GdFloat time_scale);
+	SPX_API GdFloat get_time_scale();
+	SPX_API void set_time_scale(GdFloat time_scale);
 
-	GdInt get_max_fps();
-	void set_max_fps(GdInt fps);
+	SPX_API GdInt get_max_fps();
+	SPX_API void set_max_fps(GdInt fps);
 
-	GdString get_persistant_data_dir();
-	void set_persistant_data_dir(GdString path);
-	GdBool is_in_persistant_data_dir(GdString path);
+	SPX_API GdString get_persistant_data_dir();
+	SPX_API void set_persistant_data_dir(GdString path);
+	SPX_API GdBool is_in_persistant_data_dir(GdString path);
 };
 
 #endif // SPX_OS_MGR_H
