@@ -102,16 +102,16 @@ public:
 	String _to_engine_path(const String &p_path);
 
 public:
-	void create_animation(GdString p_sprite_type, GdString p_anim_name, GdString p_json_ctx, GdInt fps, GdBool is_atlas);
-	void set_load_mode(GdBool is_direct_mode);
-	GdBool get_load_mode();
-	GdRect2 get_bound_from_alpha(GdString p_path);
-	GdVec2 get_image_size(GdString p_path);
-	GdString read_all_text(GdString p_path);
-	GdBool has_file(GdString p_path);
-	void reload_texture(GdString path);
-	void free_str(GdString str);
-	void set_default_font(GdString font_path);
+	SPX_API void create_animation(GdString p_sprite_type, GdString p_anim_name, GdString p_json_ctx, GdInt fps, GdBool is_atlas);
+	SPX_API void set_load_mode(GdBool is_direct_mode);
+	SPX_API GdBool get_load_mode();
+	SPX_API GdRect2 get_bound_from_alpha(GdString p_path);
+	SPX_API GdVec2 get_image_size(GdString p_path);
+	SPX_API GdString read_all_text(GdString p_path);
+	SPX_API GdBool has_file(GdString p_path);
+	SPX_API void reload_texture(GdString path);
+	SPX_API void free_str(GdString str);
+	SPX_API void set_default_font(GdString font_path);
 };
 
 #endif // SPX_RES_MGR_H

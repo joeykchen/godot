@@ -46,14 +46,14 @@ protected:
 	SpxInputProxy *input_proxy = nullptr;
 
 public:
-	GdVec2 get_global_mouse_pos();
-	GdBool get_key(GdInt key);
-	GdBool get_mouse_state(GdInt mouse_id);
-	GdInt get_key_state(GdInt key);
-	GdFloat get_axis(GdString neg_action, GdString pos_action);
-	GdBool is_action_pressed(GdString action);
-	GdBool is_action_just_pressed(GdString action);
-	GdBool is_action_just_released(GdString action);
+	SPX_API GdVec2 get_global_mouse_pos();
+	SPX_API GdBool get_key(GdInt key);
+	SPX_API GdBool get_mouse_state(GdInt mouse_id);
+	SPX_API GdInt get_key_state(GdInt key);
+	SPX_API GdFloat get_axis(GdString neg_action, GdString pos_action);
+	SPX_API GdBool is_action_pressed(GdString action);
+	SPX_API GdBool is_action_just_pressed(GdString action);
+	SPX_API GdBool is_action_just_released(GdString action);
 };
 
 #endif // SPX_INPUT_MGR_H
