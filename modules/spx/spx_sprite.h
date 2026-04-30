@@ -43,6 +43,8 @@ class SpriteFrames;
 class AnimatedSprite2D;
 class Area2D;
 class CollisionShape2D;
+class ShaderMaterial;
+class Texture2D;
 class VisibleOnScreenNotifier2D;
 
 // Interface for sortable sprites
@@ -93,7 +95,7 @@ private:
 	Vector2 pivot_offset;
 
 public:
-	CollisionShape2D *collider2d;
+	CollisionShape2D *collider2d = nullptr;
 
 	void set_sort_id(GdObj id) { sort_id = id; }
 	GdObj get_sort_id_internal() const { return sort_id; }
@@ -127,7 +129,7 @@ public:
 	};
 
 private:
-	GdObj gid;
+	GdObj gid = 0;
 
 	Vector2 pivot_offset; // Pivot offset for sorting
 
@@ -140,20 +142,27 @@ private:
 	float friction_value = 300.0f; // Ground friction coefficient
 	Vector2 external_forces = Vector2(); // External applied forces
 	Vector2 applied_forces = Vector2(); // Applied forces
-	bool collision_enabled = true; // Whether collision is enabled
 	float _gravity = 980.0f; // Gravity value (from ProjectSettings)
 
-	bool _is_collision_enabled = false;
-	bool _is_trigger_enabled = false;
+	bool _is_collision_enabled = true;
+	bool _is_trigger_enabled = true;
 	bool debug_collision_visible = true; // Per-sprite debug collision visibility control
 
 	template <typename T>
 	T *get_component(Node *node, GdBool recursive = false);
-	Node *get_component(Node *node, StringName name, GdBool recursive);
+	Node *_find_component_by_name(Node *node, StringName name, GdBool recursive);
 
-	bool use_default_frames;
+	bool use_default_frames = false;
 	void set_use_default_frames(bool is_on);
 	bool get_use_default_frames();
+	void _resolve_runtime_components();
+	void _initialize_default_frames();
+	void _ensure_visible_notifier();
+	void _connect_runtime_signals();
+	bool _can_enable_collider() const;
+	void _update_collider_disabled_state();
+	void _update_trigger_disabled_state();
+	bool _ensure_material_ready(const char *context, GdBool create_if_missing = false);
 
 	// animation frame offset
 	bool enable_dynamic_frame_offset = true; // enable dynamic frame offset
@@ -189,17 +198,17 @@ protected:
 
 	Ref<SpriteFrames> default_sprite_frames;
 	Ref<ShaderMaterial> default_material;
-	Area2D *area2d;
-	CollisionShape2D *trigger2d;
-	CollisionShape2D *collider2d;
-	VisibleOnScreenNotifier2D *visible_notifier;
+	Area2D *area2d = nullptr;
+	CollisionShape2D *trigger2d = nullptr;
+	CollisionShape2D *collider2d = nullptr;
+	VisibleOnScreenNotifier2D *visible_notifier = nullptr;
 	Vector2 _render_scale = Vector2(1.0f, 1.0f);
 
 public:
-	AnimatedSprite2D *anim2d;
+	AnimatedSprite2D *anim2d = nullptr;
 	CollisionShape2D *get_trigger() { return trigger2d; }
 	Area2D *get_area2d() { return area2d; }
-	bool is_backdrop;
+	bool is_backdrop = false;
 
 public:
 	template <typename T>
@@ -234,9 +243,6 @@ public:
 
 	void set_spx_type_name(String type_name);
 	String get_spx_type_name();
-	// Enhanced animation scaling support
-	void _check_and_switch_animation_scale();
-	String _extract_base_animation_name(const String &full_anim_name);
 	void _play_single_image_animation(Ref<Texture2D> texture);
 
 public:
@@ -380,7 +386,7 @@ T *SpxSprite::get_component(GdBool recursive) {
 
 template <typename T>
 T *SpxSprite::get_component(StringName name, GdBool recursive) {
-	Node *node = get_component(this, name, recursive);
+	Node *node = _find_component_by_name(this, name, recursive);
 	return Object::cast_to<T>(node);
 }
 #endif // SPX_SPRITE_H
